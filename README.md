@@ -14,7 +14,7 @@
 
 ![Persona Theme Screenshot](screenshot.png)
 
-[Demo](https://hanson-hschang.github.io/persona-zola-theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
+[Demo](https://hanson-hschang.github.io/persona-zola-theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Structure](STRUCTURE.md) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
 
 </div>
 
@@ -245,6 +245,7 @@ See `static/assets/css/variables.css` for the complete list of customizable vari
 
 ### Getting Help
 - Read the [Zola documentation](https://www.getzola.org/documentation/)
+- Check [STRUCTURE.md](STRUCTURE.md) for detailed theme architecture and organization
 - Report issues or request features by [contributing](CONTRIBUTING.md) on GitHub
 
 
