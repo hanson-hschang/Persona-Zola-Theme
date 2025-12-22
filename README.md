@@ -162,6 +162,71 @@ type = "type"  # "plain", "category", or "blog"
 +++
 ```
 
+### Theme Customization
+
+The theme provides extensive customization options through CSS variables defined in `static/assets/css/variables.css`. You can override these variables to customize colors, fonts, dimensions, and spacing without modifying the core theme files.
+
+#### Customization Methods
+
+1. **Direct Modification** (for theme developers):
+   Edit `static/assets/css/variables.css` directly in the theme directory.
+
+2. **Custom CSS Override** (recommended for users):
+   Create a custom CSS file in your site's `static/css/custom.css` and load it after the theme CSS:
+
+   ```html
+   <!-- In your template or base.html extension -->
+   <link rel="stylesheet" href="{{ get_url(path='css/custom.css') }}">
+   ```
+
+   Then override specific variables:
+
+   ```css
+   :root {
+     --accent-color: #ff6b6b;
+     --heading-color: #2c3e50;
+     --title-font-size: 72px;
+   }
+   ```
+
+#### Available Customization Variables
+
+**Colors:**
+- `--background-color`: Background color for the entire website
+- `--default-color`: Default text color
+- `--heading-color`: Color for headings and titles
+- `--accent-color`: Brand color for buttons, links, and highlights
+- `--surface-color`: Background for cards and boxed elements
+- `--contrast-color`: Text color for use against accent colors
+- `--nav-color`: Navigation menu link color
+- `--nav-hover-color`: Navigation menu hover/active color
+
+**Typography:**
+- `--default-font`: Main font family for body text
+- `--heading-font`: Font family for headings
+- `--nav-font`: Font family for navigation
+- `--normal-font-size`: Base font size (default: 16px)
+- `--heading-font-size`: Heading font size (default: 32px)
+- `--subtitle-font-size`: Subtitle font size (default: 24px)
+- `--title-font-size`: Hero title font size (default: 64px)
+- `--footer-font-size`: Footer text size (default: 14px)
+
+**Dimensions:**
+- `--nav-menu-width`: Desktop navigation menu width
+- `--nav-menu-mobile-width`: Mobile navigation menu width
+- `--nav-icon-size`: Navigation icon size
+- `--img-border-radius`: Border radius for images
+- `--botton-size`: Size of circular buttons
+
+**Spacing:**
+- `--spacing-xxs` through `--spacing-xxl`: Consistent spacing scale (0.25rem to 4rem)
+
+**Animation:**
+- `--transition-hover-time`: Duration of hover transitions
+- `--transparency`: Default transparency level for overlays
+
+See `static/assets/css/variables.css` for the complete list of customizable variables with detailed descriptions.
+
 ## 🆘 Troubleshooting
 
 ### Common Issues
