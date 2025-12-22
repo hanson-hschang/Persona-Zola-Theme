@@ -58,6 +58,7 @@ social_links = [
 # Find icon classes from:
 # - Bootstrap Icons: https://icons.getbootstrap.com/
 contact_infos = [
+  { item = "_navigation", content = "Contact", icon_class = "bi bi-chat-text" },
   { item = "Name", content = "Persona, Zola Theme", icon_class = "bi bi-person"},
   { item = "Email", content = "persona.zola.theme@gmail.com", icon_class = "bi bi-envelope"}
 ]

@@ -20,12 +20,12 @@
   {% set_global poss = [] %}
   {% for subsection_path in section.subsections %}
     {% set subsection = get_section(path=subsection_path) %}
-    {% if subsection.extra.order and subsection.extra.order > 0 %}
+    {% if subsection.extra.order and subsection.extra.order > 0 and (subsection.extra.landing_page is not defined or subsection.extra.landing_page == true) %}
       {% set_global poss = poss | concat(with=[subsection]) %}
     {% endif %}
   {% endfor %}
   {% for page in section.pages %}
-    {% if page.extra.order and page.extra.order > 0 %}
+    {% if page.extra.order and page.extra.order > 0 and (page.extra.landing_page is not defined or page.extra.landing_page == true) %}
       {% set_global poss = poss | concat(with=[page]) %}
     {% endif %}
   {% endfor %}

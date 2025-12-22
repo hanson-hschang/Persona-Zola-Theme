@@ -6,7 +6,12 @@
 {% if config.extra.persona.contact_infos is defined %}
   <section id="contact" class="contact section">
 
-    {{ render_macro::section_title(title="Contact") }}
+    {% for info in config.extra.persona.contact_infos %}
+      {% if info.item == "_navigation" %}
+        {{ render_macro::section_title(title=info.content) }}
+      {% endif %}
+    {% endfor %}
+    
 
     <div class="container" data-aos="fade" data-aos-delay="200">
       <div class="row gy-4">
