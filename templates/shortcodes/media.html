@@ -1,0 +1,30 @@
+{% if page %}
+    {% set image_path = page.colocated_path ~ path %}
+{% elif section %}
+    {% set image_path = section.path ~ path %}
+{% else %}
+    {# Fallback if neither is defined, e.g., in a macro or index #}
+    {% set image_path = path %}
+{% endif %}
+
+{% if portion is not defined %}
+    {% set portion = 2 %}
+{% endif %}
+
+{% if portion < 1 %}
+  {% set portion = 1 %}
+{% elif portion > 11 %}
+  {% set portion = 11 %}
+{% endif %}
+
+<div class="row gy-4 justify-content-center">
+  {% if title != "" %}
+    <h2> {{ title }} </h2>
+  {% endif %}
+  <div class="col-lg-{{ portion }}">
+    <img alt="{{ alt }}" src="{{ image_path }}" class="img-fluid">
+  </div>
+  <p class="col-lg-{{ 12 - portion }}">
+    {{ content | safe }}
+  </p>
+</div>
