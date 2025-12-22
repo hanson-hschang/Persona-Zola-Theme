@@ -113,6 +113,7 @@ git submodule update --init --recursive
 
     # Contact information
     contact_infos = [
+      { item = "_navigation", content = "Contact", icon_class = "bi bi-chat-text" }, # Special item for header navigation (REQUIRED)
       { item = "Name", content = "Your Name", icon_class = "bi bi-person" },
       { item = "Location", content = "Your City, Country", icon_class = "bi bi-geo-alt" },
       { item = "Email", content = "your.email@example.com", icon_class = "bi bi-envelope" },
