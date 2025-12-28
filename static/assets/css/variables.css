@@ -10,16 +10,41 @@
 --------------------------------------------------------------*/
 :root {
   /* Font Families */
+  /* 
+  * Font Stack Explanation:
+  * 
+  * DEFAULT FONT (Body Text):
+  * - Long fallback chain ensures consistent appearance across all platforms
+  * - Browser reads left-to-right, uses first available font
+  * - "Roboto" = web font from Google Fonts or CDN
+  * - system-ui = Modern browser's system UI font
+  * - -apple-system = macOS/iOS system font (San Francisco)
+  * - "Segoe UI" = Windows system font
+  * - Roboto = System-installed Roboto (mainly Android)
+  * - "Helvetica Neue" = Older macOS versions
+  * - Arial = Universal fallback, available on nearly all systems
+  * - "Noto Sans" = Google's font for international/multi-language support
+  * - "Liberation Sans" = Linux system font
+  * - sans-serif = Generic family, browser's default sans-serif
+  * - "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" = Proper emoji rendering
+  * 
+  * HEADING & NAV FONTS:
+  * - Shorter fallback chains by design
+  * - Decorative fonts (Raleway, Poppins) have no close substitutes
+  * - Better to fall back to system sans-serif than approximate
+  * - Less critical for consistency since they're smaller content portions
+  * - Strategy: "Use my custom font or just use the default"
+  */
   --default-font: "Roboto",  system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --heading-font: "Raleway",  sans-serif;
   --nav-font: "Poppins",  sans-serif;
 
   /* Font Sizes */
-  --normal-font-size: 16px; /* Base font size for the website */
   --footer-font-size: 14px; /* Font size for footer text */
-  --heading-font-size: 32px; /* Base font size for headings */
+  --normal-font-size: 16px; /* Base font size for the website */
   --subtitle-font-size: 24px; /* Font size for subtitles, such as section titles */
-  --title-font-size: 64px; /* Font size for titles, such as hero section titles */
+  --heading-font-size: 32px; /* Base font size for headings */
+  --title-font-size: 64px; /* Base font size for titles, such as hero section titles */
 }
 
 /*--------------------------------------------------------------

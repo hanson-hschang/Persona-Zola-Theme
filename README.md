@@ -164,7 +164,8 @@ type = "type"  # "plain", "category", or "blog"
 
 ### Theme Customization
 
-The theme provides extensive customization options through CSS variables defined in `static/assets/css/variables.css`. You can override these variables to customize colors, fonts, dimensions, and spacing without modifying the core theme files.
+The theme provides extensive customization options through CSS variables defined in `static/assets/css/variables.css`. 
+You can override these variables to customize colors and fonts without modifying the core theme files.
 
 #### Customization Methods
 
@@ -189,7 +190,8 @@ The theme provides extensive customization options through CSS variables defined
    }
    ```
 
-#### Available Customization Variables
+<details>
+<summary>Available Customization Variables</summary>
 
 **Colors:**
 - `--background-color`: Background color for the entire website
@@ -198,34 +200,23 @@ The theme provides extensive customization options through CSS variables defined
 - `--accent-color`: Brand color for buttons, links, and highlights
 - `--surface-color`: Background for cards and boxed elements
 - `--contrast-color`: Text color for use against accent colors
-- `--nav-color`: Navigation menu link color
-- `--nav-hover-color`: Navigation menu hover/active color
+
 
 **Typography:**
-- `--default-font`: Main font family for body text
-- `--heading-font`: Font family for headings
-- `--nav-font`: Font family for navigation
-- `--normal-font-size`: Base font size (default: 16px)
-- `--heading-font-size`: Heading font size (default: 32px)
-- `--subtitle-font-size`: Subtitle font size (default: 24px)
-- `--title-font-size`: Hero title font size (default: 64px)
-- `--footer-font-size`: Footer text size (default: 14px)
-
-**Dimensions:**
-- `--nav-menu-width`: Desktop navigation menu width
-- `--nav-menu-mobile-width`: Mobile navigation menu width
-- `--nav-icon-size`: Navigation icon size
-- `--img-border-radius`: Border radius for images
-- `--botton-size`: Size of circular buttons
-
-**Spacing:**
-- `--spacing-xxs` through `--spacing-xxl`: Consistent spacing scale (0.25rem to 4rem)
-
-**Animation:**
-- `--transition-hover-time`: Duration of hover transitions
-- `--transparency`: Default transparency level for overlays
+- Font Families
+  - `--default-font`: Main font family for body text
+  - `--heading-font`: Font family for headings
+  - `--nav-font`: Font family for navigation
+- Font Sizes
+  - `--footer-font-size`: Footer text size (default: 14px)
+  - `--normal-font-size`: Base font size (default: 16px)
+  - `--subtitle-font-size`: Subtitle font size (default: 24px)
+  - `--heading-font-size`: Base font size for heading (default: 32px)
+  - `--title-font-size`: Base font size for title (default: 64px)
 
 See `static/assets/css/variables.css` for the complete list of customizable variables with detailed descriptions.
+
+</details>
 
 ## 🆘 Troubleshooting
 

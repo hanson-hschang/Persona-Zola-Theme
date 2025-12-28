@@ -18,13 +18,13 @@
 {% endif %}
 
 <div class="row gy-4 justify-content-center">
-  {% if title != "" %}
-    <h2> {{ title }} </h2>
-  {% endif %}
   <div class="col-lg-{{ portion }}">
     <img alt="{{ alt }}" src="{{ image_path }}" class="img-fluid">
   </div>
-  <p class="col-lg-{{ 12 - portion }}">
+  <div class="col-lg-{{ 12 - portion }}">
+    {% if title != "" %}
+      <h2> {{ title }} </h2>
+    {% endif %}
     {{ content | safe }}
-  </p>
+  </div>
 </div>
