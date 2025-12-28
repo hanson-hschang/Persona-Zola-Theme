@@ -24,7 +24,7 @@ This document describes the organization and structure of the Persona Zola theme
 │   ├── index.html          # Home page template
 │   ├── section.html        # Section page template
 │   ├── page.html           # Single page template
-│   ├── blog-post.html      # Blog post template
+│   ├── post.html           # Blog post template
 │   ├── 404.html            # Error page template
 │   ├── macros/             # Reusable template macros
 │   ├── partials/           # Reusable template components
@@ -62,7 +62,7 @@ Located in `templates/` root:
   - For standalone pages
   - Plain content rendering
 
-- **blog-post.html**: Blog post template
+- **post.html**: Blog post template
   - Dedicated template for blog posts
   - Includes breadcrumbs, widgets, metadata
   - Supports KaTeX for mathematical expressions
@@ -133,21 +133,22 @@ CSS files in `static/assets/css/`:
 
 ```
 css/
-├── variables.css          # Customization variables (colors, fonts, dimensions)
-├── base.css              # Core base styles
-├── footer.css            # Footer styles
-├── hero.css              # Hero section styles
-├── navigation.css        # Navigation menu styles (standard pages)
-├── navigation-index.css  # Navigation menu styles (home page)
-├── preloader.css         # Page preloader styles
-├── breadcrumbs.css       # Breadcrumb navigation styles
-├── section.css           # Section container styles
-├── plain.css             # Plain section content styles
-├── category.css          # Category section styles
-├── blog.css              # Blog listing styles
-├── blog-post.css         # Blog post content styles
-├── contact.css           # Contact section styles
-└── widgets.css           # Sidebar widget styles
+├── theme.css              # Customization variables (colors, fonts, dimensions)
+├── base.css               # Core base styles
+├── footer.css             # Footer styles
+├── hero.css               # Hero section styles
+├── navigation.css         # Navigation menu styles (standard pages)
+├── navigation-index.css   # Navigation menu styles (home page)
+├── preloader.css          # Page preloader styles
+├── breadcrumbs.css        # Breadcrumb navigation styles
+├── section.css            # Section container styles
+├── plain.css              # Plain section content styles
+├── category.css           # Category section styles
+├── blog.css               # Blog listing styles
+├── post.css               # Blog post content styles
+├── contact.css            # Contact section styles
+├── widgets.css            # Sidebar widget styles
+└── custom.css             # User custom styles (loaded last)
 ```
 
 ### CSS Loading Strategy
@@ -155,10 +156,11 @@ css/
 CSS files are loaded conditionally based on template type:
 
 **Base Template** (loaded on all pages):
-- variables.css
+- theme.css
 - base.css
 - footer.css
 - preloader.css
+- custom.css
 
 **Home Page** (index.html):
 - navigation-index.css
@@ -173,9 +175,9 @@ CSS files are loaded conditionally based on template type:
 - section.css
 - Type-specific: plain.css, category.css, or blog.css + breadcrumbs.css
 
-**Blog Posts** (blog-post.html):
+**Blog Posts** (post.html):
 - navigation.css
-- blog-post.css
+- post.css
 - breadcrumbs.css
 - widgets.css
 
@@ -192,7 +194,7 @@ CSS files are loaded conditionally based on template type:
 
 ### CSS Variables
 
-All customizable theme values are defined in `variables.css`:
+All customizable theme values are defined in `theme.css`:
 
 **Color Variables:**
 - Global colors (background, text, headings, accent)
@@ -228,22 +230,20 @@ JavaScript files in `static/assets/js/`:
 ## Customization Guide
 
 ### Method 1: Direct Modification
-Edit `static/assets/css/variables.css` to change theme defaults.
+Edit `static/assets/css/theme.css` to change theme defaults.
 
 ### Method 2: CSS Override (Recommended)
-Create `static/css/custom.css` in your site and override specific variables:
+Use `static/assets/css/custom.css` (included in the theme) to override theme defaults:
 
 ```css
+/* In static/assets/css/custom.css */
 :root {
   --accent-color: #your-color;
   --heading-font: "Your Font", sans-serif;
 }
 ```
 
-Load it in your templates after theme CSS:
-```html
-<link rel="stylesheet" href="{{ get_url(path='css/custom.css') }}">
-```
+The `custom.css` file is automatically loaded after all theme CSS files, so your customizations will take precedence.
 
 ## Development Workflow
 
@@ -276,8 +276,8 @@ Load it in your templates after theme CSS:
 
 ## File Naming Conventions
 
-- **Templates**: lowercase with hyphens (e.g., `blog-post.html`)
-- **CSS files**: lowercase with hyphens (e.g., `blog-post.css`)
+- **Templates**: lowercase with hyphens (e.g., `post.html`)
+- **CSS files**: lowercase with hyphens (e.g., `post.css`)
 - **JavaScript**: lowercase with hyphens (e.g., `home.js`)
 - **Macros**: lowercase, descriptive names
 - **Variables**: CSS custom properties with `--` prefix, kebab-case
@@ -287,7 +287,7 @@ Load it in your templates after theme CSS:
 1. **Separation of Concerns**: Keep logic in macros, styling in CSS, structure in templates
 2. **Reusability**: Use macros and partials for repeated patterns
 3. **Conditional Loading**: Only load CSS/JS needed for specific pages
-4. **CSS Variables**: Use variables.css for all customizable values
+4. **CSS Variables**: Use theme.css for all customizable values
 5. **Documentation**: Update this file when adding new components or changing structure
 6. **Testing**: Test on multiple devices and browsers after changes
 

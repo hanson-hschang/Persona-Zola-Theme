@@ -164,25 +164,19 @@ type = "type"  # "plain", "category", or "blog"
 
 ### Theme Customization
 
-The theme provides extensive customization options through CSS variables defined in `static/assets/css/variables.css`. 
+The theme provides extensive customization options through CSS variables defined in `static/assets/css/theme.css`. 
 You can override these variables to customize colors and fonts without modifying the core theme files.
 
 #### Customization Methods
 
 1. **Direct Modification** (for theme developers):
-   Edit `static/assets/css/variables.css` directly in the theme directory.
+   Edit `static/assets/css/theme.css` directly in the theme directory.
 
 2. **Custom CSS Override** (recommended for users):
-   Create a custom CSS file in your site's `static/css/custom.css` and load it after the theme CSS:
-
-   ```html
-   <!-- In your template or base.html extension -->
-   <link rel="stylesheet" href="{{ get_url(path='css/custom.css') }}">
-   ```
-
-   Then override specific variables:
+   The theme includes `static/assets/css/custom.css` which is loaded after all theme CSS files. Add your custom styles there to override theme defaults:
 
    ```css
+   /* In static/assets/css/custom.css */
    :root {
      --accent-color: #ff6b6b;
      --heading-color: #2c3e50;
@@ -214,7 +208,7 @@ You can override these variables to customize colors and fonts without modifying
   - `--heading-font-size`: Base font size for heading (default: 32px)
   - `--title-font-size`: Base font size for title (default: 64px)
 
-See `static/assets/css/variables.css` for the complete list of customizable variables with detailed descriptions.
+See `static/assets/css/theme.css` for the complete list of customizable variables with detailed descriptions.
 
 </details>
 
