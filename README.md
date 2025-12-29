@@ -173,7 +173,8 @@ You can override these variables to customize colors and fonts without modifying
    Edit `static/assets/css/theme.css` directly in the theme directory.
 
 2. **Custom CSS Override** (recommended for users):
-   The theme includes `static/assets/css/custom.css` which is loaded after all theme CSS files. Add your custom styles there to override theme defaults:
+   The theme includes `static/assets/css/custom.css` which is loaded after all theme CSS files. 
+   Add your custom styles there to override theme defaults:
 
    ```css
    /* In static/assets/css/custom.css */

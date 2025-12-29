@@ -62,8 +62,8 @@ Located in `templates/` root:
   - For standalone pages
   - Plain content rendering
 
-- **post.html**: Blog post template
-  - Dedicated template for blog posts
+- **post.html**: Post template
+  - Dedicated template for blog and portfolio posts
   - Includes breadcrumbs, widgets, metadata
   - Supports KaTeX for mathematical expressions
 
