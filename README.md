@@ -14,7 +14,7 @@
 
 ![Persona Theme Screenshot](screenshot.png)
 
-[Demo](https://hanson-hschang.github.io/persona-zola-theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
+[Demo](https://hanson-hschang.github.io/persona-zola-theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Structure](STRUCTURE.md) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
 
 </div>
 
@@ -162,6 +162,57 @@ type = "type"  # "plain", "category", or "blog"
 +++
 ```
 
+### Theme Customization
+
+The theme provides extensive customization options through CSS variables defined in `static/assets/css/theme.css`. 
+You can override these variables to customize colors and fonts without modifying the core theme files.
+
+#### Customization Methods
+
+1. **Direct Modification** (for theme developers):
+   Edit `static/assets/css/theme.css` directly in the theme directory.
+
+2. **Custom CSS Override** (recommended for users):
+   The theme includes `static/assets/css/custom.css` which is loaded after all theme CSS files. 
+   Add your custom styles there to override theme defaults:
+
+   ```css
+   /* In static/assets/css/custom.css */
+   :root {
+     --accent-color: #ff6b6b;
+     --heading-color: #2c3e50;
+     --title-font-size: 72px;
+   }
+   ```
+
+<details>
+<summary>Available Customization Variables</summary>
+
+**Colors:**
+- `--background-color`: Background color for the entire website
+- `--default-color`: Default text color
+- `--heading-color`: Color for headings and titles
+- `--accent-color`: Brand color for buttons, links, and highlights
+- `--surface-color`: Background for cards and boxed elements
+- `--contrast-color`: Text color for use against accent colors
+
+
+**Typography:**
+- Font Families
+  - `--default-font`: Main font family for body text
+  - `--heading-font`: Font family for headings
+  - `--nav-font`: Font family for navigation
+- Font Sizes
+  - `--footer-font-size`: Footer text size (default: 14px)
+  - `--normal-font-size`: Base font size (default: 16px)
+  - `--subtitle-font-size`: Subtitle font size (default: 24px)
+  - `--heading-font-size`: Base font size for heading (default: 32px)
+  - `--title-font-size`: Base font size for title (default: 64px)
+
+See `static/assets/css/theme.css` for the complete list of customizable variables with detailed descriptions.
+
+</details>
+
 ## 🆘 Troubleshooting
 
 ### Common Issues
@@ -180,6 +231,7 @@ type = "type"  # "plain", "category", or "blog"
 
 ### Getting Help
 - Read the [Zola documentation](https://www.getzola.org/documentation/)
+- Check [STRUCTURE.md](STRUCTURE.md) for detailed theme architecture and organization
 - Report issues or request features by [contributing](CONTRIBUTING.md) on GitHub
 
 

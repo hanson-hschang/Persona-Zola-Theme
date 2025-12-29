@@ -100,7 +100,7 @@ This is a **theme repository**, not a complete site. To test functionality:
     ├── 404.html                    # 404 error page
     ├── section.html                # Section template
     ├── page.html                   # Page template
-    ├── blog-post.html              # Blog post template
+    ├── post.html                   # Blog post template
     ├── categories/                 # Category templates
     │   ├── list.html               # Category list template
     │   └── single.html             # Single category template
