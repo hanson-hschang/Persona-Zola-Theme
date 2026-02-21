@@ -2,19 +2,19 @@
 
 # `Persona` [Zola](https://www.getzola.org/) Theme
 
-![code-size](https://img.shields.io/github/languages/code-size/hanson-hschang/persona-zola-theme)
-![repo-size](https://img.shields.io/github/repo-size/hanson-hschang/persona-zola-theme)
-![GitHub Issues](https://img.shields.io/github/issues/hanson-hschang/persona-zola-theme)
-![GitHub Created At](https://img.shields.io/github/created-at/hanson-hschang/persona-zola-theme)
-![activity](https://img.shields.io/github/last-commit/hanson-hschang/persona-zola-theme)
-![Website](https://img.shields.io/website?url=https%3A%2F%2Fhanson-hschang.github.io%2Fpersona-zola-theme)
-![GitHub Release](https://img.shields.io/github/v/release/hanson-hschang/persona-zola-theme)
+![code-size](https://img.shields.io/github/languages/code-size/hanson-hschang/Persona-Zola-Theme)
+![repo-size](https://img.shields.io/github/repo-size/hanson-hschang/Persona-Zola-Theme)
+![GitHub Issues](https://img.shields.io/github/issues/hanson-hschang/Persona-Zola-Theme)
+![GitHub Created At](https://img.shields.io/github/created-at/hanson-hschang/Persona-Zola-Theme)
+![activity](https://img.shields.io/github/last-commit/hanson-hschang/Persona-Zola-Theme)
+![Website](https://img.shields.io/website?url=https%3A%2F%2Fhanson-hschang.github.io%2FPersona-Zola-Theme)
+![GitHub Release](https://img.shields.io/github/v/release/hanson-hschang/Persona-Zola-Theme)
 
 **a modern, responsive and lightweight theme for resume, portfolio, and blog**
 
-![Persona Theme Screenshot](screenshot.png)
+[![pagespeed report](pagespeed-report.svg)](https://pagespeed.web.dev/)
 
-[Demo](https://hanson-hschang.github.io/persona-zola-theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Structure](STRUCTURE.md) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
+[Demo](https://hanson-hschang.github.io/Persona-Zola-Theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Structure](STRUCTURE.md) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
 
 </div>
 
@@ -29,11 +29,6 @@
 - 📧 **Contact Forms**: Integrated contact form support with Web3Forms
 - 🔍 **Search Ready**: Built-in search index generation
 
-<div align="center">
-
-[![pagespeed report](pagespeed-report.svg)](https://pagespeed.web.dev/)
-
-</div>
 
 ## 🌟 Showcase
 
@@ -56,7 +51,7 @@ After [initializing your Zola site](https://www.getzola.org/documentation/gettin
 cd your-zola-site
 
 # Add the theme as a submodule
-git submodule add https://github.com/hanson-hschang/persona-zola-theme.git themes/persona
+git submodule add https://github.com/hanson-hschang/Persona-Zola-Theme.git themes/persona
 ```
 
 To update the theme:
@@ -117,7 +112,7 @@ git submodule update --init --recursive
       { item = "Name", content = "Your Name", icon_class = "bi bi-person" },
       { item = "Location", content = "Your City, Country", icon_class = "bi bi-geo-alt" },
       { item = "Email", content = "your.email@example.com", icon_class = "bi bi-envelope" },
-      { item = "Phone", content = "+1 (555) 123-4567", icon_class = "bi bi-phone" },
+      { item = "Phone", content = "+0 (123) 456-7890", icon_class = "bi bi-phone" },
     ]
     ```
 
@@ -258,6 +253,6 @@ See `static/assets/css/theme.css` for the complete list of customizable variable
 
 <div align="center">
 
-**[⭐ Star this repository](https://github.com/hanson-hschang/persona-zola-theme) if you find it helpful!**
+**[⭐ Star this repository](https://github.com/hanson-hschang/Persona-Zola-Theme) if you find it helpful!**
 
 </div>

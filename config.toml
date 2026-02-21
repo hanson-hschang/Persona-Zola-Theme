@@ -35,7 +35,7 @@ external_links_no_referrer = true
 [markdown.highlighting]
 # Use "class" for themes that generate CSS files
 style = "class"
-# Theme for dark mode                                                                                    
+# Theme for dark mode
 dark_theme = "github-dark"
 # Theme for light mode
 light_theme = "github-light" 
