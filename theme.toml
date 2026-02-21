@@ -14,7 +14,7 @@ license = "MIT"
 homepage = "https://hanson-hschang.github.io/Persona-Zola-Theme"
 
 # The minimum version of Zola required
-min_version = "0.20.0"
+min_version = "0.22.0"
 
 # Refer to provided config.toml; [extra.persona]
 [extra]
