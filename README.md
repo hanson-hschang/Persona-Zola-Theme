@@ -63,6 +63,12 @@ git submodule update --init --recursive
 
 ## ⚙️ Configuration
 
+<div align="center">
+
+[Basic Setup](#basic-setup) • [Section Configuration](#section-configuration) • [Theme Customization](#theme-customization)
+
+</div>
+
 ### Basic Setup
 
 1. **Copy the configuration and the landing page content** from the theme to get started quickly:
