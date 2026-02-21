@@ -23,11 +23,11 @@
 - 🎨 **Modern Design**: Clean and professional layout easy for customization
 - 📱 **Fully Responsive**: Optimized for desktop, tablet, and mobile devices
 - ⚡️ **Fast Performance**: Lightweight and optimized for speed
-- 📋 **Resume/CV Section**: Dedicated section for your resume or CV
-- 🎭 **Portfolio Showcase**: Showcase your work with elegant project sections
+- 📋 **Resume/CV Section**: Dedicated section for your resume or CV *(--upcoming feature--)*
+- 🎭 **Portfolio Showcase**: Showcase your work with elegant project sections *(--upcoming feature--)*
 - 📝 **Blog with $\TeX$**: Built-in blog functionality with KaTeX support
 - 📧 **Contact Forms**: Integrated contact form support with Web3Forms
-- 🔍 **Search Ready**: Built-in search index generation
+- 🔍 **Search Ready**: Built-in search index generation *(--upcoming feature--)*
 
 
 ## 🌟 Showcase
@@ -159,26 +159,17 @@ type = "type"  # "plain", "category", or "blog"
 
 ### Theme Customization
 
-The theme provides extensive customization options through CSS variables defined in `static/assets/css/theme.css`. 
-You can override these variables to customize colors and fonts without modifying the core theme files.
+The theme provides extensive options to customize colors and fonts through overriding CSS variables in `static/assets/css/custom.css` without modifying the core theme files.
+For example, to change the accent color, heading color, and title font size, you can use the following CSS:
 
-#### Customization Methods
-
-1. **Direct Modification** (for theme developers):
-   Edit `static/assets/css/theme.css` directly in the theme directory.
-
-2. **Custom CSS Override** (recommended for users):
-   The theme includes `static/assets/css/custom.css` which is loaded after all theme CSS files. 
-   Add your custom styles there to override theme defaults:
-
-   ```css
-   /* In static/assets/css/custom.css */
-   :root {
-     --accent-color: #ff6b6b;
-     --heading-color: #2c3e50;
-     --title-font-size: 72px;
-   }
-   ```
+```css
+/* static/assets/css/custom.css */
+:root {
+  --accent-color: #FF5F05;   /* Override accent color to vibrant orange */
+  --heading-color: #13294B;  /* Override heading color to dark blue */
+  --title-font-size: 72px;   /* Increase title font size for more impact */
+}
+```
 
 <details>
 <summary>Available Customization Variables</summary>
@@ -213,7 +204,7 @@ See `static/assets/css/theme.css` for the complete list of customizable variable
 ### Common Issues
 
 - **Theme not loading:**
-  - Ensure `theme = "persona"` is set in `config.toml`
+  - Ensure `theme = "persona"` is set at the first line of `config.toml`
   - Check that the theme is in the correct directory: `themes/persona/`
 
 - **Navigation not working:**
