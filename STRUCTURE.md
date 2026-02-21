@@ -1,6 +1,6 @@
-# Persona Theme Structure Documentation
+# Zola Theme Structure
 
-This document describes the organization and structure of the Persona Zola theme codebase.
+This document describes the organization and structure of the codebase.
 
 ## Directory Structure
 
@@ -227,24 +227,6 @@ JavaScript files in `static/assets/js/`:
   - AOS initialization
   - Typed.js for text animation
 
-## Customization Guide
-
-### Method 1: Direct Modification
-Edit `static/assets/css/theme.css` to change theme defaults.
-
-### Method 2: CSS Override (Recommended)
-Use `static/assets/css/custom.css` (included in the theme) to override theme defaults:
-
-```css
-/* In static/assets/css/custom.css */
-:root {
-  --accent-color: #your-color;
-  --heading-font: "Your Font", sans-serif;
-}
-```
-
-The `custom.css` file is automatically loaded after all theme CSS files, so your customizations will take precedence.
-
 ## Development Workflow
 
 1. **Check theme**: `zola check`
@@ -293,9 +275,6 @@ The `custom.css` file is automatically loaded after all theme CSS files, so your
 
 ## Dependencies
 
-### Required
-- Zola (v0.20.0+)
-
 ### Included Vendors
 - Bootstrap 5.3.x
 - Bootstrap Icons
@@ -310,5 +289,6 @@ The `custom.css` file is automatically loaded after all theme CSS files, so your
 
 - [README.md](README.md) - Main theme documentation
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
-- [config.toml](config.toml) - Configuration reference
+- [theme.toml](theme.toml) - Theme metadata and configuration
+- [config.toml](config.toml) - Configuration template for user site
 - [Zola Documentation](https://www.getzola.org/documentation/) - Zola reference

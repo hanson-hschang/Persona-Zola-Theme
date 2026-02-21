@@ -1,23 +1,21 @@
-# Contributing to Persona
+# Contributing
 
-Thank you for your interest in contributing to the Persona Zola theme! 
+Thank you for your interest in contributing to this Zola theme! 
 We welcome contributions from the community and appreciate your help in making this theme better.
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- [Zola](https://www.getzola.org/documentation/getting-started/installation/) 0.20.0 or later
-- Git
-- A text editor or IDE
+- [Zola](https://www.getzola.org/documentation/getting-started/installation/) installed locally (check version with `zola --version`)
 
 ### Development Setup
 
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
     ```bash
-    git clone https://github.com/YOUR-USERNAME/persona-zola-theme.git
-    cd persona-zola-theme
+    git clone https://github.com/YOUR-USERNAME/Persona-Zola-Theme.git
+    cd Persona-Zola-Theme
     ```
 
 3. **Start the development server**:
