@@ -2,17 +2,17 @@
 
 # `Persona` [Zola](https://www.getzola.org/) Theme
 
-![code-size](https://img.shields.io/github/languages/code-size/hanson-hschang/Persona-Zola-Theme)
-![repo-size](https://img.shields.io/github/repo-size/hanson-hschang/Persona-Zola-Theme)
-![GitHub Issues](https://img.shields.io/github/issues/hanson-hschang/Persona-Zola-Theme)
-![GitHub Created At](https://img.shields.io/github/created-at/hanson-hschang/Persona-Zola-Theme)
-![activity](https://img.shields.io/github/last-commit/hanson-hschang/Persona-Zola-Theme)
-![Website](https://img.shields.io/website?url=https%3A%2F%2Fhanson-hschang.github.io%2FPersona-Zola-Theme)
-![GitHub Release](https://img.shields.io/github/v/release/hanson-hschang/Persona-Zola-Theme)
-
 **a modern, responsive and lightweight theme for resume, portfolio, and blog**
 
 [![pagespeed report](pagespeed-report.svg)](https://pagespeed.web.dev/)
+
+<img alt="code-size" src="https://img.shields.io/github/languages/code-size/hanson-hschang/Persona-Zola-Theme">
+<img alt="repo-size" src="https://img.shields.io/github/repo-size/hanson-hschang/Persona-Zola-Theme">
+<img alt="GitHub Issues" src="https://img.shields.io/github/issues/hanson-hschang/Persona-Zola-Theme">
+<img alt="GitHub Created At" src="https://img.shields.io/github/created-at/hanson-hschang/Persona-Zola-Theme">
+<img alt="activity" src="https://img.shields.io/github/last-commit/hanson-hschang/Persona-Zola-Theme">
+<img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fhanson-hschang.github.io%2FPersona-Zola-Theme">
+<img alt="GitHub Release" src="https://img.shields.io/github/v/release/hanson-hschang/Persona-Zola-Theme">
 
 [Demo](https://hanson-hschang.github.io/Persona-Zola-Theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Structure](STRUCTURE.md) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
 
