@@ -11,7 +11,8 @@ tags = ["portfolio", "resume", "blog"]
 license = "MIT"
 
 # A live demo URL
-homepage = "https://hanson-hschang.github.io/Persona-Zola-Theme"
+homepage = "https://github.com/hanson-hschang/Persona-Zola-Theme"
+demo = "https://hanson-hschang.github.io/Persona-Zola-Theme"
 
 # The minimum version of Zola required
 min_version = "0.22.0"
