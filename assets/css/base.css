@@ -1,0 +1,57 @@
+/*--------------------------------------------------------------
+# Base Styles
+# Theme customization variables are defined in variables.css
+# Modify variables.css to customize colors, fonts, dimensions, and spacing
+--------------------------------------------------------------*/
+
+/* Smooth scroll */
+:root {
+  scroll-behavior: smooth;
+}
+
+/*--------------------------------------------------------------
+# General
+--------------------------------------------------------------*/
+body {
+  color: var(--default-color);
+  background-color: var(--background-color);
+  font-family: var(--default-font);
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: var(--transition-hover-time);
+}
+
+a:hover {
+  color: color-mix(in srgb, var(--accent-color), transparent var(--transition-hover-transparency));
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--heading-color);
+  font-family: var(--heading-font);
+}
+
+p {
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+/*--------------------------------------------------------------
+# Disable aos animation delay on mobile devices
+--------------------------------------------------------------*/
+@media screen and (max-width: 767px) {
+  [data-aos-delay] {
+    transition-delay: 0 !important;
+  }
+}
