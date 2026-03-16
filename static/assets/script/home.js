@@ -52,7 +52,7 @@
    * Application Module
    * ------------------------------------------------------------------------
    */
-  const App = {
+  const app = {
     /**
      * Initializes all necessary components and libraries.
      */
@@ -158,7 +158,7 @@
       }
 
       const toggleHeader = () => {
-        header.classList.toggle('header--navmenu-show');
+        header.classList.toggle('header__navmenu-show');
         headerToggleBtn.classList.toggle('bi-list');
         headerToggleBtn.classList.toggle('bi-x');
       };
@@ -182,7 +182,7 @@
 
       navmenuLinks.forEach(link => {
         link.addEventListener('click', () => {
-          if (header.classList.contains('header--navmenu-show') && this.headerToggle) {
+          if (header.classList.contains('header__navmenu-show') && this.headerToggle) {
             this.headerToggle();
           }
         });
@@ -366,6 +366,6 @@
   };
 
   // Start the application
-  App.init();
+  app.init();
 
 })();
