@@ -24,7 +24,7 @@
     left: calc(-1 * var(--nav-menu-mobile-width));
   }
 
-  @include mixins.respond-to(lg) {
+  @include mixins.respond-above(lg) {
     & ~ main {
       margin-left: calc(var(--nav-menu-width) + 2 * var(--nav-menu-border-padding));
     }
@@ -51,7 +51,7 @@
     margin: 0;
     width: calc(var(--nav-menu-mobile-width) - 2 * var(--nav-menu-border-padding));
 
-    @include mixins.respond-to(lg) {
+    @include mixins.respond-above(lg) {
       width: var(--nav-menu-width);
     }
   }
@@ -80,7 +80,7 @@
       padding: 0 5px 0 7px;
     }
 
-    @include mixins.respond-to(lg) {
+    @include mixins.respond-above(lg) {
       max-width: var(--nav-icon-size);
 
       span {

@@ -3,8 +3,7 @@
 // Shared helpers used across component partials.
 // ─────────────────────────────────────────────────────────────────────────────
 
-// ── Responsive breakpoints ───────────────────────────────────────────────────
-// Bootstrap-aligned grid breakpoints (min-width, mobile-first).
+// ── Responsive Breakpoints ───────────────────────────────────────────────────
 $grid-breakpoints: (
   xs:  0,
   sm:  576px,
@@ -14,29 +13,37 @@ $grid-breakpoints: (
   xxl: 1400px
 );
 
-// Usage:  @include respond-to('md') { ... }
-//         Applies styles from the given breakpoint and up.
-@mixin respond-to($breakpoint) {
+// 1. Mobile-First: ABOVE [Breakpoint]
+@mixin respond-above($breakpoint) {
   $value: map-get($grid-breakpoints, $breakpoint);
-  @if $value == null {
-    @warn "Unknown breakpoint `#{$breakpoint}`. Available: #{map-keys($grid-breakpoints)}.";
-  } @else if $value == 0 {
-    @content;
-  } @else {
+
+  @if $value != null {
     @media (min-width: $value) { @content; }
+  } @else {
+    @warn "Invalid breakpoint: `#{$breakpoint}`. Check your breakpoint name.";
   }
 }
 
-// Usage:  @include respond-below('md') { ... }
-//         Applies styles below the given breakpoint.
+// 2. Desktop-First: BELOW [Breakpoint]
 @mixin respond-below($breakpoint) {
   $value: map-get($grid-breakpoints, $breakpoint);
-  @if $value == null {
-    @warn "Unknown breakpoint `#{$breakpoint}`. Available: #{map-keys($grid-breakpoints)}.";
-  } @else if $value == 0 {
-    @content;
+
+  @if $value != null {
+    @media (max-width: ($value - 0.02px)) { @content; }
   } @else {
-    @media (max-width: $value - 1px) { @content; }
+    @warn "Invalid breakpoint: `#{$breakpoint}`. Check your breakpoint name.";
+  }
+}
+
+// 3. Range: only BETWEEN [Lower] and [Upper]
+@mixin respond-between($lower, $upper) {
+  $min: map-get($grid-breakpoints, $lower);
+  $max: map-get($grid-breakpoints, $upper);
+
+  @if $min != null and $max != null {
+    @media (min-width: $min) and (max-width: ($max - 0.02px)) { @content; }
+  } @else {
+    @warn "Invalid breakpoint range: `#{$lower}` to `#{$upper}`. Check your breakpoint names.";
   }
 }
 
