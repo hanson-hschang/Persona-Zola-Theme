@@ -1,6 +1,7 @@
-# Zola Theme Structure
+# Codebase Architecture
 
-This document describes the organization and structure of the codebase.
+This document describes the architecture and organization of the Zola theme codebase, including templates, Sass, JavaScript, and development workflow. 
+It serves as a guide for contributors to understand how the theme is structured and how to add new features or make changes.
 
 ## Directory Structure
 
@@ -228,22 +229,18 @@ Each template loads only the CSS it needs:
 
 All customizable theme values start in `_variables.scss` as **SCSS variables**, then are re-exported as **CSS custom properties** inside `:root` so they remain accessible at runtime.
 
-**Color variables** (e.g. `$color-accent: #0563bb` → `--accent-color`):
+**Color variables**:
 - Global colors: background, text, headings, accent, surface, contrast
 - Navigation colors
 - Header colors
 
-**Typography** (e.g. `$font-default: "Roboto", …` → `--default-font`):
+**Typography**:
 - Font families: default, heading, navigation
 - Font sizes: normal, footer, heading, subtitle, title
 
-**Dimensions** (e.g. `$nav-icon-size: 56px` → `--nav-icon-size`):
+**Spatial and temporal values**:
 - Navigation dimensions, border radius, button sizes and positions
-
-**Spacing** (e.g. `$spacing-md: 1.5rem` → `--spacing-md`):
-- Consistent scale: `xxs` · `xs` · `sm` · `md` · `lg` · `xl` · `xxl`
-
-**Animation** (e.g. `$transition-hover-time: 0.3s` → `--transition-hover-time`):
+- Consistent screen sizes: mobile, tablet, desktop breakpoints
 - Transition timing
 
 ## JavaScript Organization
@@ -256,6 +253,10 @@ JavaScript files in `static/assets/script/`:
   - Preloader
   - AOS initialization
   - Typed.js for text animation
+
+- **share.js**: Social sharing functionality
+  - Generates share URLs for Twitter, Facebook, LinkedIn
+  - Opens share menu when share button is clicked
 
 ## Development Workflow
 
@@ -288,23 +289,13 @@ JavaScript files in `static/assets/script/`:
 2. Document parameters and usage
 3. Import in templates where needed
 
-## File Naming Conventions
-
-- **Templates**: lowercase with hyphens (e.g., `post.html`)
-- **SCSS partials**: `_` prefix, lowercase with hyphens (e.g., `_post.scss`)
-- **SCSS entry points**: no `_` prefix, lowercase with hyphens (e.g., `post.scss`)
-- **JavaScript**: lowercase with hyphens (e.g., `home.js`)
-- **Macros**: lowercase, descriptive names
-- **Variables**: CSS custom properties with `--` prefix, kebab-case
-
 ## Best Practices
 
-1. **Separation of Concerns**: Keep logic in macros, styling in CSS, structure in templates
+1. **Separation of Concerns**: Keep logic in macros, styling in SCSS, structure in templates
 2. **Reusability**: Use macros and partials for repeated patterns
-3. **Conditional Loading**: Only load CSS/JS needed for specific pages
-4. **Sass Variables**: Define all design tokens in `_variables.scss`; use SCSS vars at compile time and CSS custom properties at runtime
-5. **Documentation**: Update this file when adding new components or changing structure
-6. **Testing**: Test on multiple devices and browsers after changes
+3. **Conditional Loading**: Only load SCSS/JS needed for specific pages
+4. **Documentation**: Update this file when adding new components or changing structure
+5. **Testing**: Test on multiple devices and browsers after changes
 
 ## Dependencies
 

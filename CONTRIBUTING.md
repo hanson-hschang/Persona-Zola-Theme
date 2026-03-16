@@ -65,7 +65,7 @@ We welcome contributions from the community and appreciate your help in making t
 
 4. **Push to your fork**:
    ```bash
-   git push origin feature/your-feature-name
+   git push origin feat/your-feature-name
    ```
 
 5. **Create a Pull Request** on GitHub
@@ -139,19 +139,23 @@ type(scope): short description
 
 - `feat`: New feature
 - `fix`: Bug fix
-- `docs`: Documentation changes
-- `style`: Code style changes (formatting, etc.)
 - `refactor`: Code refactoring
 - `test`: Adding or updating tests
 - `chore`: Maintenance tasks
 
+### Scopes
+- `config`: Configuration changes
+- `template`: HTML template changes
+- `stylesheet`: SCSS changes
+- `script`: JavaScript changes
+- `docs`: Documentation changes
+
 ### Examples
 
 ```bash
-feat(navigation): add mobile menu toggle animation
-fix(hero): resolve background image not loading on mobile
-docs(readme): update installation instructions
-style(scss): improve code formatting and organization
+feat(template): add mobile navigation menu toggle animation
+fix(stylesheet): resolve background image not loading on mobile
+refactor(script): improve code formatting and organization
 ```
 
 ## 🔄 Pull Request Process
