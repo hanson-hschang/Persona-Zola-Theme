@@ -7,11 +7,11 @@
   {% set section_type = section.extra.type %}
   
   {% if section_type == "plain" %}
-    <link rel="stylesheet" href="{{ get_url(path='assets/styles/page-plain.css') }}">
+    <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/page-plain.css') }}">
   {% elif section_type == "category" %}
-    <link rel="stylesheet" href="{{ get_url(path='assets/styles/page-category.css') }}">
+    <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/page-category.css') }}">
   {% elif section_type == "blog" %}
-    <link rel="stylesheet" href="{{ get_url(path='assets/styles/page-blog.css') }}">
+    <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/page-blog.css') }}">
   {% else %}
     {# Return to 404 #}
   {% endif %}
@@ -39,5 +39,5 @@
 {% block scripts %}
   {{ super() }}
   <script src="{{ get_url(path='vendor/aos/aos.js') }}"></script>
-  <script src="{{ get_url(path='assets/js/home.js') }}"></script>
+  <script src="{{ get_url(path='assets/script/home.js') }}"></script>
 {% endblock scripts %}

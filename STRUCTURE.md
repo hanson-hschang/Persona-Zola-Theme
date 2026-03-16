@@ -8,7 +8,7 @@ This document describes the organization and structure of the codebase.
 .
 ├── sass/                      # Sass source files (compiled by Zola natively)
 │   └── assets/
-│       └── styles/            # Compiled output → public/assets/styles/
+│       └── stylesheet/            # Compiled output → public/assets/stylesheet/
 │           ├── _variables.scss       # SCSS vars + re-exported CSS custom properties
 │           ├── _mixins.scss          # Shared mixins (breakpoints, flex, transitions)
 │           ├── _custom.scss          # User custom overrides (included last)
@@ -165,14 +165,14 @@ Zola compiles Sass natively — no external build tool or CLI is needed:
 - Files prefixed with `_` are **partials** — they are never compiled directly; they are included via `@use` from an entry point.
 - No `config.toml` changes are needed — compilation happens automatically on `zola build` and `zola serve`.
 
-Entry point files live under `sass/assets/styles/`, so compiled output lands at `public/assets/styles/`. Templates reference them as `/assets/styles/<name>.css`.
+Entry point files live under `sass/assets/stylesheet/`, so compiled output lands at `public/assets/stylesheet/`. Templates reference them as `/assets/stylesheet/<name>.css`.
 
 ### Structure
 
-Sass source files in `sass/assets/styles/`:
+Sass source files in `sass/assets/stylesheet/`:
 
 ```
-styles/
+stylesheet/
 ├── _variables.scss              # Design tokens: SCSS vars + CSS custom properties (:root)
 ├── _mixins.scss                 # Shared mixins: respond-to, flex-center, transition
 ├── _custom.scss                 # User overrides — included last in every entry point
@@ -199,7 +199,7 @@ styles/
 │   ├── _post.scss               # Individual blog post
 │   └── _widgets.scss            # Sidebar widgets
 │
-└── [entry points — no _ prefix; each compiles to public/assets/styles/<name>.css]
+└── [entry points — no _ prefix; each compiles to public/assets/stylesheet/<name>.css]
     ├── main.scss                 # All pages
     ├── home.scss                 # Home / index page
     ├── page-plain.scss           # Plain section + page template
@@ -248,7 +248,7 @@ All customizable theme values start in `_variables.scss` as **SCSS variables**, 
 
 ## JavaScript Organization
 
-JavaScript files in `static/assets/js/`:
+JavaScript files in `static/assets/script/`:
 
 - **home.js**: Home page functionality
   - Smooth scrolling
@@ -268,8 +268,8 @@ JavaScript files in `static/assets/js/`:
 
 ### Adding a New Section Type
 
-1. Create SCSS partial: `sass/assets/styles/components/_new-type.scss`
-2. Create a new entry point (e.g. `sass/assets/styles/page-new-type.scss`) that `@use`s the partial
+1. Create SCSS partial: `sass/assets/stylesheet/components/_new-type.scss`
+2. Create a new entry point (e.g. `sass/assets/stylesheet/page-new-type.scss`) that `@use`s the partial
 3. Add rendering macro in `templates/macros/section.html`
 4. Update `section.html` to load `page-new-type.css` for the new type
 5. Document in README.md
@@ -277,7 +277,7 @@ JavaScript files in `static/assets/js/`:
 ### Adding a New Component
 
 1. Create partial: `templates/partials/component-name.html`
-2. Create SCSS partial: `sass/assets/styles/components/_component-name.scss`
+2. Create SCSS partial: `sass/assets/stylesheet/components/_component-name.scss`
 3. `@use` the new partial in the relevant entry point(s)
 4. Include the HTML partial in the appropriate template
 5. Document usage
