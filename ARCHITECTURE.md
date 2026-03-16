@@ -20,7 +20,7 @@ It serves as a guide for contributors to understand how the theme is structured 
 │           ├── layout/
 │           │   ├── _navigation.scss        # Navigation (standard pages)
 │           │   ├── _navigation-index.scss  # Navigation (home page)
-│           │   ├── _section.scss           # Section container styles
+│           │   ├── _segment.scss           # Segment container styles
 │           │   └── _breadcrumbs.scss       # Breadcrumb / page-title styles
 │           ├── pages/
 │           │   ├── _hero.scss        # Hero section styles (home page)
@@ -53,7 +53,8 @@ It serves as a guide for contributors to understand how the theme is structured 
 ├── templates/                        # Zola templates
 │   ├── base.html                     # Base layout template
 │   ├── index.html                    # Home page template
-│   ├── section.html                  # Section page template
+│   ├── segment.html                  # Segment page template
+│   ├── section.html                  # Backward-compatible wrapper to segment.html
 │   ├── page.html                     # Single page template
 │   ├── post.html                     # Blog post template
 │   ├── 404.html                      # Error page template
@@ -85,9 +86,13 @@ Located in `templates/` root:
   - Renders all sections with `order > 0` from front matter
   - Shows contact section
 
-- **section.html**: Section page template
+- **segment.html**: Segment page template
   - Handles three section types: plain, category, blog
   - Conditionally loads type-specific CSS and macros
+
+- **section.html**: Backward-compatible wrapper
+  - Delegates rendering to `segment.html` / segment macros
+  - Kept to avoid conflict with Zola's built-in "section" meaning
 
 - **page.html**: Single page template
   - For standalone pages
@@ -112,7 +117,7 @@ Located in `templates/macros/`:
   - `cards()`: Renders card layouts
   - And more...
 
-- **section.html**: Section rendering logic
+- **segment.html**: Segment rendering logic
   - `populate()`: Populates section content
   - `plain()`: Renders plain sections
   - `category()`: Renders category sections
@@ -186,7 +191,7 @@ stylesheet/
 ├── layout/
 │   ├── _navigation.scss         # Sticky header + nav menu (standard pages)
 │   ├── _navigation-index.scss   # Left-sidebar icon nav (home page only)
-│   ├── _section.scss            # Section container and title
+│   ├── _segment.scss            # Segment container and title
 │   └── _breadcrumbs.scss        # Page title / breadcrumbs bar
 │
 ├── pages/
@@ -217,13 +222,13 @@ Each template loads only the CSS it needs:
 | Template | Entry point loaded | Contents |
 |---|---|---|
 | `base.html` (all pages) | `main.css` | variables, base, footer, preloader, custom |
-| `index.html` | `home.css` | nav-index, hero, section, plain, category, contact |
-| `section.html` (plain) | `page-plain.css` | navigation, section, plain |
-| `section.html` (category) | `page-category.css` | navigation, section, category |
-| `section.html` (blog) | `page-blog.css` | navigation, section, blog, breadcrumbs |
+| `index.html` | `home.css` | nav-index, hero, segment, plain, category, contact |
+| `segment.html` (plain) | `page-plain.css` | navigation, segment, plain |
+| `segment.html` (category) | `page-category.css` | navigation, segment, category |
+| `segment.html` (blog) | `page-blog.css` | navigation, segment, blog, breadcrumbs |
 | `post.html` | `post.css` | navigation, breadcrumbs, post, widgets |
-| `page.html` | `page-plain.css` | navigation, section, plain |
-| `404.html` | `page-404.css` | navigation, section, plain, contact |
+| `page.html` | `page-plain.css` | navigation, segment, plain |
+| `404.html` | `page-404.css` | navigation, segment, plain, contact |
 
 ### Design Tokens
 
@@ -271,8 +276,8 @@ JavaScript files in `static/assets/script/`:
 
 1. Create SCSS partial: `sass/assets/stylesheet/components/_new-type.scss`
 2. Create a new entry point (e.g. `sass/assets/stylesheet/page-new-type.scss`) that `@use`s the partial
-3. Add rendering macro in `templates/macros/section.html`
-4. Update `section.html` to load `page-new-type.css` for the new type
+3. Add rendering macro in `templates/macros/segment.html`
+4. Update `segment.html` to load `page-new-type.css` for the new type
 5. Document in README.md
 
 ### Adding a New Component

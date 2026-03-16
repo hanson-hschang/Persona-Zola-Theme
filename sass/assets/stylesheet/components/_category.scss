@@ -13,11 +13,11 @@
     font-size: 15px;
     margin-bottom: 10px;
     display: block;
-    color: var(--default-color);
+    color: var(--color-default);
   }
 
   &__title {
-    color: var(--heading-color);
+    color: var(--color-heading);
     font-size: 22px;
     margin-bottom: 30px;
   }
@@ -31,13 +31,13 @@
     line-height: 1.3;
 
     strong {
-      color: var(--heading-color);
+      color: var(--color-heading);
       font-weight: normal;
     }
 
     span {
       font-size: 14px;
-      color: color-mix(in srgb, var(--default-color), transparent 25%);
+      color: color-mix(in srgb, var(--color-default), transparent 25%);
     }
   }
 }
@@ -67,10 +67,10 @@
       line-height: 1.2;
 
       a {
-        color: var(--accent-color);
+        color: var(--color-accent);
 
         &:hover {
-          color: color-mix(in srgb, var(--accent-color), transparent 20%);
+          color: color-mix(in srgb, var(--color-accent), transparent 20%);
         }
       }
     }

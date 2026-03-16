@@ -158,7 +158,7 @@
       }
 
       const toggleHeader = () => {
-        header.classList.toggle('header__navmenu-show');
+        header.classList.toggle('header__navmenu__show');
         headerToggleBtn.classList.toggle('bi-list');
         headerToggleBtn.classList.toggle('bi-x');
       };
@@ -182,7 +182,7 @@
 
       navmenuLinks.forEach(link => {
         link.addEventListener('click', () => {
-          if (header.classList.contains('header__navmenu-show') && this.headerToggle) {
+          if (header.classList.contains('header__navmenu__show') && this.headerToggle) {
             this.headerToggle();
           }
         });

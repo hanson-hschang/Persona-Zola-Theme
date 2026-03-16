@@ -43,7 +43,7 @@
       
       // Toggle the menu's visibility and manage the "click outside" listener
       toggleMenu() {
-          const isActive = this.elements.menu.classList.toggle('share-menu__active');
+          const isActive = this.elements.menu.classList.toggle('share-menu__menu__active');
           
           if (isActive) {
               // If menu was opened, listen for clicks outside to close it
@@ -55,7 +55,7 @@
       // Handler to close the menu if a click occurs outside of it
       closeMenuOnClickOutside(event) {
           if (!this.elements.menu.contains(event.target) && event.target !== this.elements.button) {
-              this.elements.menu.classList.remove('share-menu__active');
+              this.elements.menu.classList.remove('share-menu__menu__active');
           }
       },
       
@@ -98,7 +98,7 @@
           setTimeout(() => {
               feedbackSpan.textContent = originalText;
               copyButton.classList.remove('share-menu__item__active');
-              this.elements.menu.classList.remove('share-menu__active');
+              this.elements.menu.classList.remove('share-menu__menu__active');
           }, 1500);
       }
   };

@@ -17,12 +17,12 @@ ol {
   }
 
   &__title {
-    font-size: var(--subtitle-font-size);
+    font-size: var(--font-size-subtitle);
   }
 
   &__date {
     color: var(--color-gray);
-    font-size: var(--normal-font-size);
+    font-size: var(--font-size-normal);
     margin-left: 40px;
     width: fit-content;
     white-space: nowrap;

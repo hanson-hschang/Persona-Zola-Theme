@@ -75,38 +75,38 @@ $transition-hover-time: 0.3s;
 /* stylelint-disable custom-property-pattern */
 :root {
   // Font Variables
-  --default-font:       #{$font-default};
-  --heading-font:       #{$font-heading};
-  --nav-font:           #{$font-nav};
+  --font-default:       #{$font-default};
+  --font-heading:       #{$font-heading};
+  --font-nav:           #{$font-nav};
 
-  --footer-font-size:   #{$font-size-footer};
-  --normal-font-size:   #{$font-size-normal};
-  --subtitle-font-size: #{$font-size-subtitle};
-  --heading-font-size:  #{$font-size-heading};
-  --title-font-size:    #{$font-size-title};
+  --font-size-footer:   #{$font-size-footer};
+  --font-size-normal:   #{$font-size-normal};
+  --font-size-subtitle: #{$font-size-subtitle};
+  --font-size-heading:  #{$font-size-heading};
+  --font-size-title:    #{$font-size-title};
 
   // Color Variables
-  --background-color: #{$color-background};
-  --default-color:    #{$color-default};
-  --heading-color:    #{$color-heading};
-  --accent-color:     #{$color-accent};
-  --surface-color:    #{$color-surface};
-  --contrast-color:   #{$color-contrast};
-  --transparency:     #{$color-transparency};
+  --color-background: #{$color-background};
+  --color-default:    #{$color-default};
+  --color-heading:    #{$color-heading};
+  --color-accent:     #{$color-accent};
+  --color-surface:    #{$color-surface};
+  --color-contrast:   #{$color-contrast};
+  --color-transparency:     #{$color-transparency};
 
   // Navigation Colors
-  --nav-color:                     #{$color-nav};
-  --nav-hover-color:               #{$color-nav-hover};
-  --nav-mobile-background-color:   #{$color-nav-mobile-bg};
-  --nav-dropdown-background-color: #{$color-nav-dropdown-bg};
-  --nav-dropdown-color:            #{$color-nav-dropdown};
-  --nav-dropdown-hover-color:      #{$color-nav-dropdown-hover};
+  --color-nav:                     #{$color-nav};
+  --color-nav-hover:               #{$color-nav-hover};
+  --color-nav-mobile-background:   #{$color-nav-mobile-bg};
+  --color-nav-dropdown-background: #{$color-nav-dropdown-bg};
+  --color-nav-dropdown:            #{$color-nav-dropdown};
+  --color-nav-dropdown-hover:      #{$color-nav-dropdown-hover};
 
   // Header Colors
-  // --header-background-color uses color-mix() which references a CSS var,
+  // --color-header-background uses color-mix() which references a CSS var,
   // so it is defined here as a CSS expression rather than an SCSS variable.
-  --header-background-color: color-mix(in srgb, var(--default-color), transparent 96%);
-  --header-color: #{$color-header};
+  --color-header-background: color-mix(in srgb, var(--color-default), transparent 96%);
+  --color-header: #{$color-header};
 
   // Navigation Dimensions
   --nav-icon-size:                #{$nav-icon-size};
@@ -136,8 +136,8 @@ $transition-hover-time: 0.3s;
 
   // Transition Variables
   --transition-hover-time:         #{$transition-hover-time};
-  // --transition-hover-transparency references --transparency, so it is a CSS expression.
-  --transition-hover-transparency: var(--transparency);
+  // --transition-hover-transparency references --color-transparency, so it is a CSS expression.
+  --transition-hover-transparency: var(--color-transparency);
 }
 /* stylelint-enable custom-property-pattern */
 
@@ -146,15 +146,15 @@ $transition-hover-time: 0.3s;
 
 // Light Background
 // .light-background {
-//   --background-color: #f9f9f9;
-//   --surface-color:    #ffffff;
+//   --color-background: #f9f9f9;
+//   --color-surface:    #ffffff;
 // }
 
 // Dark Background
 // .dark-background {
-//   --background-color: #060606;
-//   --default-color:    #ffffff;
-//   --heading-color:    #ffffff;
-//   --surface-color:    #252525;
-//   --contrast-color:   #ffffff;
+//   --color-background: #060606;
+//   --color-default:    #ffffff;
+//   --color-heading:    #ffffff;
+//   --color-surface:    #252525;
+//   --color-contrast:   #ffffff;
 // }

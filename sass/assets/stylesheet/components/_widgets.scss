@@ -12,8 +12,8 @@
 
 .widget {
   margin-bottom: 30px;
-  background-color: color-mix(in srgb, var(--default-color), transparent 98%);
-  border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+  background-color: color-mix(in srgb, var(--color-default), transparent 98%);
+  border: 1px solid color-mix(in srgb, var(--color-default), transparent 90%);
   padding: 30px;
   border-radius: 5px;
 
@@ -22,12 +22,12 @@
   }
 
   &__title {
-    color: var(--heading-color);
+    color: var(--color-heading);
     font-size: 20px;
     font-weight: 600;
     padding: 0 0 0 10px;
     margin: 0 0 20px 0;
-    border-left: 4px solid var(--accent-color);
+    border-left: 4px solid var(--color-accent);
   }
 }
 
@@ -42,26 +42,26 @@
     font-size: 24px;
     margin: 15px 0 0 0;
     padding: 0;
-    color: color-mix(in srgb, var(--default-color), transparent 20%);
+    color: color-mix(in srgb, var(--color-default), transparent 20%);
   }
 
   &__social-links {
     margin: 5px 0;
 
     a {
-      color: color-mix(in srgb, var(--default-color), transparent 60%);
+      color: color-mix(in srgb, var(--color-default), transparent 60%);
       margin: 0 3px;
       font-size: 18px;
 
       &:hover {
-        color: var(--accent-color);
+        color: var(--color-accent);
       }
     }
   }
 
   p {
     font-style: italic;
-    color: color-mix(in srgb, var(--default-color), transparent 30%);
+    color: color-mix(in srgb, var(--color-default), transparent 30%);
     margin: 10px 0 0 0;
   }
 }
@@ -69,8 +69,8 @@
 // ── Search widget ─────────────────────────────────────────────────────────────
 .search-widget {
   form {
-    background: var(--background-color);
-    border: 1px solid color-mix(in srgb, var(--default-color), transparent 75%);
+    background: var(--color-background);
+    border: 1px solid color-mix(in srgb, var(--color-default), transparent 75%);
     padding: 3px 10px;
     position: relative;
     border-radius: 50px;
@@ -81,8 +81,8 @@
       padding: 4px 10px;
       border-radius: 4px;
       width: calc(100% - 40px);
-      background-color: var(--background-color);
-      color: var(--default-color);
+      background-color: var(--color-background);
+      color: var(--color-default);
 
       &:focus {
         outline: none;
@@ -91,7 +91,7 @@
 
     button {
       background: none;
-      color: var(--default-color);
+      color: var(--color-default);
       position: absolute;
       top: 0;
       right: 0;
@@ -107,12 +107,12 @@
       }
 
       &:hover {
-        color: var(--accent-color);
+        color: var(--color-accent);
       }
     }
 
     &:is(:focus-within) {
-      border-color: var(--accent-color);
+      border-color: var(--color-accent);
     }
   }
 }
@@ -140,11 +140,11 @@
       margin-bottom: 5px;
 
       a {
-        color: var(--default-color);
+        color: var(--color-default);
         transition: 0.3s;
 
         &:hover {
-          color: var(--accent-color);
+          color: var(--color-accent);
         }
       }
     }
@@ -153,7 +153,7 @@
       display: block;
       font-style: italic;
       font-size: 14px;
-      color: color-mix(in srgb, var(--default-color), transparent 50%);
+      color: color-mix(in srgb, var(--color-default), transparent 50%);
     }
   }
 }
@@ -170,8 +170,8 @@
     }
 
     a {
-      background-color: color-mix(in srgb, var(--default-color), transparent 94%);
-      color: color-mix(in srgb, var(--default-color), transparent 30%);
+      background-color: color-mix(in srgb, var(--color-default), transparent 94%);
+      color: color-mix(in srgb, var(--color-default), transparent 30%);
       border-radius: 50px;
       font-size: 14px;
       padding: 5px 15px;
@@ -180,13 +180,13 @@
       transition: 0.3s;
 
       &:hover {
-        background: var(--accent-color);
-        color: var(--contrast-color);
+        background: var(--color-accent);
+        color: var(--color-contrast);
       }
 
       span {
         padding-left: 5px;
-        color: color-mix(in srgb, var(--default-color), transparent 60%);
+        color: color-mix(in srgb, var(--color-default), transparent 60%);
         font-size: 14px;
       }
     }
@@ -202,19 +202,19 @@
   .form-control {
     font-size: 14px;
     height: 42px;
-    border: 2px solid color-mix(in srgb, var(--default-color), transparent 40%);
+    border: 2px solid color-mix(in srgb, var(--color-default), transparent 40%);
     background: none;
-    color: var(--heading-color);
+    color: var(--color-heading);
     padding-right: 40px;
 
     &:focus {
-      border-color: color-mix(in srgb, var(--default-color), transparent 10%);
+      border-color: color-mix(in srgb, var(--color-default), transparent 10%);
     }
 
-    &::-webkit-input-placeholder { color: color-mix(in srgb, var(--heading-color), transparent 70%); }
-    &::-moz-placeholder           { color: color-mix(in srgb, var(--heading-color), transparent 70%); }
-    &:-ms-input-placeholder       { color: color-mix(in srgb, var(--heading-color), transparent 70%); }
-    &:-moz-placeholder            { color: color-mix(in srgb, var(--heading-color), transparent 70%); }
+    &::-webkit-input-placeholder { color: color-mix(in srgb, var(--color-heading), transparent 70%); }
+    &::-moz-placeholder           { color: color-mix(in srgb, var(--color-heading), transparent 70%); }
+    &:-ms-input-placeholder       { color: color-mix(in srgb, var(--color-heading), transparent 70%); }
+    &:-moz-placeholder            { color: color-mix(in srgb, var(--color-heading), transparent 70%); }
   }
 
   .btn-link {
@@ -225,7 +225,7 @@
     border-color: none;
     position: absolute;
     line-height: 0;
-    color: color-mix(in srgb, var(--heading-color), transparent 20%);
+    color: color-mix(in srgb, var(--color-heading), transparent 20%);
     top: 20px;
     right: 10px;
     transform: translateY(-50%) rotate(0deg);
@@ -261,7 +261,7 @@
 
   &__loading {
     display: none;
-    background: var(--background-color);
+    background: var(--color-background);
     text-align: center;
     padding: 15px;
     margin-top: 10px;
@@ -273,8 +273,8 @@
       width: 24px;
       height: 24px;
       margin: 0 10px -6px 0;
-      border: 3px solid var(--accent-color);
-      border-top-color: var(--background-color);
+      border: 3px solid var(--color-accent);
+      border-top-color: var(--color-background);
       animation: subscription-loading 1s linear infinite;
     }
   }

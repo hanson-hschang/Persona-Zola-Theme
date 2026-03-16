@@ -27,6 +27,19 @@ $grid-breakpoints: (
   }
 }
 
+// Usage:  @include respond-below('md') { ... }
+//         Applies styles below the given breakpoint.
+@mixin respond-below($breakpoint) {
+  $value: map-get($grid-breakpoints, $breakpoint);
+  @if $value == null {
+    @warn "Unknown breakpoint `#{$breakpoint}`. Available: #{map-keys($grid-breakpoints)}.";
+  } @else if $value == 0 {
+    @content;
+  } @else {
+    @media (max-width: $value - 1px) { @content; }
+  }
+}
+
 // ── Flex centering ───────────────────────────────────────────────────────────
 // Usage:  @include flex-center;
 @mixin flex-center {

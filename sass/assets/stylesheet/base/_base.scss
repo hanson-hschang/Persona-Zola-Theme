@@ -12,18 +12,18 @@
 
 // ── General ──────────────────────────────────────────────────────────────────
 body {
-  color: var(--default-color);
-  background-color: var(--background-color);
-  font-family: var(--default-font);
+  color: var(--color-default);
+  background-color: var(--color-background);
+  font-family: var(--font-default);
 }
 
 a {
-  color: var(--accent-color);
+  color: var(--color-accent);
   text-decoration: none;
   transition: var(--transition-hover-time);
 
   &:hover {
-    color: color-mix(in srgb, var(--accent-color), transparent var(--transition-hover-transparency));
+    color: color-mix(in srgb, var(--color-accent), transparent var(--transition-hover-transparency));
     text-decoration: none;
   }
 }
@@ -34,8 +34,8 @@ h3,
 h4,
 h5,
 h6 {
-  color: var(--heading-color);
-  font-family: var(--heading-font);
+  color: var(--color-heading);
+  font-family: var(--font-heading);
 }
 
 p {

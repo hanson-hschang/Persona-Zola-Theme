@@ -7,8 +7,8 @@
 
 section,
 .section {
-  color: var(--default-color);
-  background-color: var(--background-color);
+  color: var(--color-default);
+  background-color: var(--color-background);
   padding: var(--spacing-xxl) 0 0 0;
   overflow: clip;
 }
@@ -20,7 +20,7 @@ section,
 }
 
 .section-title h2 {
-  font-size: var(--heading-font-size);
+  font-size: var(--font-size-heading);
   font-weight: 700;
   margin-bottom: 20px;
   padding-bottom: 20px;
@@ -33,7 +33,7 @@ section,
   display: block;
   width: 160px;
   height: 1px;
-  background: color-mix(in srgb, var(--default-color), transparent 60%);
+  background: color-mix(in srgb, var(--color-default), transparent 60%);
   left: 0;
   right: 0;
   bottom: 1px;
@@ -46,7 +46,7 @@ section,
   display: block;
   width: var(--spacing-xxl);
   height: 3px;
-  background: var(--accent-color);
+  background: var(--color-accent);
   left: 0;
   right: 0;
   bottom: 0;
@@ -60,6 +60,6 @@ section,
 .section-title em {
   font-style: normal;
   font-family: "Courier New", Courier, monospace;
-  font-size: var(--subtitle-font-size);
-  color: var(--accent-color);
+  font-size: var(--font-size-subtitle);
+  color: var(--color-accent);
 }

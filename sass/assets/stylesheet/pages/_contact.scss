@@ -11,8 +11,8 @@
     }
 
     i {
-      color: var(--accent-color);
-      background: color-mix(in srgb, var(--accent-color), transparent 92%);
+      color: var(--color-accent);
+      background: color-mix(in srgb, var(--color-accent), transparent 92%);
       font-size: 20px;
       width: 44px;
       height: 44px;
@@ -25,7 +25,7 @@
     }
 
     h3 {
-      font-size: var(--normal-font-size);
+      font-size: var(--font-size-normal);
       padding: 0;
       font-size: 18px;
       font-weight: 700;
@@ -35,12 +35,12 @@
     p {
       padding: 0;
       margin-bottom: 0;
-      font-size: var(--footer-font-size);
+      font-size: var(--font-size-footer);
     }
 
     &:hover i {
-      background: var(--accent-color);
-      color: var(--contrast-color);
+      background: var(--color-accent);
+      color: var(--color-contrast);
     }
   }
 }
@@ -80,7 +80,7 @@
 
   &__loading {
     display: none;
-    background: var(--background-color);
+    background: var(--color-background);
     text-align: center;
     padding: 15px;
     margin-bottom: 24px;
@@ -92,8 +92,8 @@
       width: 24px;
       height: 24px;
       margin: 0 10px -6px 0;
-      border: 3px solid var(--accent-color);
-      border-top-color: var(--background-color);
+      border: 3px solid var(--color-accent);
+      border-top-color: var(--color-background);
       animation: animate-loading 1s linear infinite;
     }
 
@@ -111,20 +111,20 @@
 
     input,
     textarea {
-      font-size: var(--footer-font-size);
+      font-size: var(--font-size-footer);
       outline: none;
       padding: 15px 15px 10px 15px;
       display: block;
       width: 100%;
       border-radius: 4px;
-      border: 2px solid color-mix(in srgb, var(--default-color), transparent 80%);
-      background: color-mix(in srgb, var(--background-color), transparent 50%);
-      color: var(--default-color);
+      border: 2px solid color-mix(in srgb, var(--color-default), transparent 80%);
+      background: color-mix(in srgb, var(--color-background), transparent 50%);
+      color: var(--color-default);
       transition: border-color 0.3s ease;
 
       &:focus,
       &:valid {
-        border-color: var(--accent-color);
+        border-color: var(--color-accent);
       }
     }
 
@@ -135,20 +135,20 @@
 
     input:user-invalid ~ .contact-form__label {
       transform: translateY(-25px);
-      font-size: var(--footer-font-size);
+      font-size: var(--font-size-footer);
     }
   }
 
   &__label {
-    color: color-mix(in srgb, var(--default-color), transparent 30%);
-    font-size: var(--footer-font-size);
+    color: color-mix(in srgb, var(--color-default), transparent 30%);
+    font-size: var(--font-size-footer);
     font-weight: normal;
     position: absolute;
     pointer-events: none;
     left: 24px;
     top: 15px;
     transition: all 0.3s ease;
-    background: var(--background-color);
+    background: var(--color-background);
     padding: 0 4px;
   }
 
@@ -157,20 +157,20 @@
   &__input-box textarea:focus ~ &__label,
   &__input-box textarea:valid ~ &__label {
     transform: translateY(-25px);
-    font-size: var(--footer-font-size);
-    color: var(--accent-color);
+    font-size: var(--font-size-footer);
+    color: var(--color-accent);
   }
 
   button[type=submit] {
-    color: var(--contrast-color);
-    background: var(--accent-color);
+    color: var(--color-contrast);
+    background: var(--color-accent);
     border: 0;
     padding: 10px 30px;
     transition: 0.4s;
     border-radius: 50px;
 
     &:hover {
-      background: color-mix(in srgb, var(--accent-color), transparent 25%);
+      background: color-mix(in srgb, var(--color-accent), transparent 25%);
     }
   }
 }

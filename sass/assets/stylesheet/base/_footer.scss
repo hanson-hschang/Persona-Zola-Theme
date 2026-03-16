@@ -5,16 +5,16 @@
 @use '../mixins';
 
 .footer {
-  color: var(--default-color);
-  background-color: color-mix(in srgb, var(--default-color), transparent 97%);
-  font-size: var(--normal-font-size);
+  color: var(--color-default);
+  background-color: color-mix(in srgb, var(--color-default), transparent 97%);
+  font-size: var(--font-size-normal);
   text-align: center;
   padding: var(--spacing-lg) 0;
   position: relative;
   margin: var(--spacing-xxl) 0 0 0;
 
   &__sitename {
-    font-size: var(--heading-font-size);
+    font-size: var(--font-size-heading);
     font-weight: 700;
     position: relative;
     padding: 0;
@@ -22,7 +22,7 @@
   }
 
   &__quote {
-    font-size: var(--normal-font-size);
+    font-size: var(--font-size-normal);
     font-style: italic;
     padding: 0;
     margin: 0 0 var(--spacing-lg) 0;
@@ -35,8 +35,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--accent-color);
-      color: var(--contrast-color);
+      background: var(--color-accent);
+      color: var(--color-contrast);
       line-height: 1;
       margin: 0 var(--spacing-xxs);
       border-radius: 50%;
@@ -46,15 +46,15 @@
       transition: 0.3s;
 
       &:hover {
-        background: color-mix(in srgb, var(--accent-color), transparent var(--transition-hover-transparency));
+        background: color-mix(in srgb, var(--color-accent), transparent var(--transition-hover-transparency));
       }
     }
   }
 
   &__copyright {
-    font-size: var(--footer-font-size);
+    font-size: var(--font-size-footer);
     padding-top: var(--spacing-md);
-    border-top: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+    border-top: 1px solid color-mix(in srgb, var(--color-default), transparent 90%);
 
     p {
       margin-bottom: 0;
@@ -62,7 +62,7 @@
   }
 
   &__credits {
-    font-size: var(--footer-font-size);
+    font-size: var(--font-size-footer);
     padding-top: var(--spacing-xxs);
 
     p {

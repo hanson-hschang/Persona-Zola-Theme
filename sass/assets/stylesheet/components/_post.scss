@@ -11,7 +11,7 @@
 
   &__article {
     padding: 30px;
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--default-color), transparent 90%);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--color-default), transparent 90%);
   }
 
   &__img {
@@ -20,7 +20,7 @@
   }
 
   &__title {
-    color: var(--heading-color);
+    color: var(--color-heading);
     font-size: 28px;
     font-weight: 700;
     padding: 0;
@@ -55,14 +55,14 @@
 
     blockquote {
       overflow: hidden;
-      background-color: color-mix(in srgb, var(--default-color), transparent 95%);
+      background-color: color-mix(in srgb, var(--color-default), transparent 95%);
       padding: 30px;
       position: relative;
       text-align: center;
       margin: 20px 0;
 
       p {
-        color: var(--default-color);
+        color: var(--color-default);
         line-height: 1.6;
         margin-bottom: 0;
         font-style: italic;
@@ -77,7 +77,7 @@
         top: 0;
         bottom: 0;
         width: 3px;
-        background-color: var(--accent-color);
+        background-color: var(--color-accent);
         margin-top: 20px;
         margin-bottom: 20px;
       }
@@ -162,7 +162,7 @@
 
   &__meta {
     margin-top: 10px;
-    color: color-mix(in srgb, var(--default-color), transparent 40%);
+    color: color-mix(in srgb, var(--color-default), transparent 40%);
     margin-bottom: 10px;
 
     ul {
@@ -186,12 +186,12 @@
       font-size: 16px;
       margin-right: 8px;
       line-height: 0;
-      color: color-mix(in srgb, var(--default-color), transparent 40%);
+      color: color-mix(in srgb, var(--color-default), transparent 40%);
     }
 
     time,
     span {
-      color: color-mix(in srgb, var(--default-color), transparent 40%);
+      color: color-mix(in srgb, var(--color-default), transparent 40%);
       font-size: 14px;
       display: inline-block;
       line-height: 1;
@@ -200,7 +200,7 @@
 
   &__date,
   &__time {
-    color: color-mix(in srgb, var(--default-color), transparent 40%);
+    color: color-mix(in srgb, var(--color-default), transparent 40%);
     font-size: 14px;
     display: inline-block;
     line-height: 1;
@@ -209,19 +209,19 @@
   // ── Meta footer ───────────────────────────────────────────────────────────────
   &__meta-footer {
     padding-top: 10px;
-    border-top: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+    border-top: 1px solid color-mix(in srgb, var(--color-default), transparent 90%);
 
     i {
-      color: color-mix(in srgb, var(--default-color), transparent 40%);
+      color: color-mix(in srgb, var(--color-default), transparent 40%);
       display: inline;
     }
 
     a {
-      color: color-mix(in srgb, var(--default-color), transparent 40%);
+      color: color-mix(in srgb, var(--color-default), transparent 40%);
       transition: 0.3s;
 
       &:hover {
-        color: var(--accent-color);
+        color: var(--color-accent);
       }
     }
 
@@ -247,7 +247,7 @@
 
         & + li::before {
           padding-right: 6px;
-          color: var(--default-color);
+          color: var(--color-default);
           content: ",";
         }
       }
@@ -292,7 +292,7 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    background-color: var(--background-color);
+    background-color: var(--color-background);
     border: none;
     cursor: pointer;
 
@@ -318,7 +318,7 @@
   z-index: 100;
   overflow: hidden;
 
-  &__active {
+  &__menu__active {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
@@ -341,8 +341,8 @@
     }
 
     &__active {
-      background-color: color-mix(in srgb, var(--accent-color), transparent 80%);
-      color: var(--accent-color);
+      background-color: color-mix(in srgb, var(--color-accent), transparent 80%);
+      color: var(--color-accent);
     }
 
     i {
@@ -399,17 +399,17 @@
 
       a {
         font-weight: bold;
-        color: var(--default-color);
+        color: var(--color-default);
         transition: 0.3s;
 
         &:hover {
-          color: var(--accent-color);
+          color: var(--color-accent);
         }
       }
 
       .reply {
         padding-left: 10px;
-        color: color-mix(in srgb, var(--default-color), transparent 20%);
+        color: color-mix(in srgb, var(--color-default), transparent 20%);
 
         i {
           font-size: 20px;
@@ -420,7 +420,7 @@
     time {
       display: block;
       font-size: 14px;
-      color: color-mix(in srgb, var(--default-color), transparent 40%);
+      color: color-mix(in srgb, var(--color-default), transparent 40%);
       margin-bottom: 5px;
     }
 
@@ -437,7 +437,7 @@
   form {
     margin-top: 30px;
     padding: 30px;
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--default-color), transparent 90%);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--color-default), transparent 90%);
 
     h4 {
       font-weight: bold;
@@ -449,23 +449,23 @@
     }
 
     input {
-      background-color: var(--background-color);
-      color: var(--default-color);
-      border: 1px solid color-mix(in srgb, var(--default-color), transparent 70%);
+      background-color: var(--color-background);
+      color: var(--color-default);
+      border: 1px solid color-mix(in srgb, var(--color-default), transparent 70%);
       font-size: 14px;
       border-radius: 4px;
       padding: 10px 10px;
 
       &:focus {
         box-shadow: none;
-        border-color: var(--accent-color);
+        border-color: var(--color-accent);
       }
     }
 
     textarea {
-      background-color: var(--background-color);
-      color: var(--default-color);
-      border: 1px solid color-mix(in srgb, var(--default-color), transparent 70%);
+      background-color: var(--color-background);
+      color: var(--color-default);
+      border: 1px solid color-mix(in srgb, var(--color-default), transparent 70%);
       border-radius: 4px;
       padding: 10px 10px;
       font-size: 14px;
@@ -473,7 +473,7 @@
 
       &:focus {
         box-shadow: none;
-        border-color: var(--accent-color);
+        border-color: var(--color-accent);
       }
     }
 
@@ -485,12 +485,12 @@
       border-radius: 4px;
       padding: 10px 20px;
       border: 0;
-      background-color: var(--accent-color);
-      color: var(--contrast-color);
+      background-color: var(--color-accent);
+      color: var(--color-contrast);
 
       &:hover {
-        color: var(--contrast-color);
-        background-color: color-mix(in srgb, var(--accent-color), transparent 20%);
+        color: var(--color-contrast);
+        background-color: color-mix(in srgb, var(--color-accent), transparent 20%);
       }
     }
   }
