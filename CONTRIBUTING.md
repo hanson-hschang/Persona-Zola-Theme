@@ -75,10 +75,10 @@ We welcome contributions from the community and appreciate your help in making t
 ### Code Style
 
 - **HTML**: Use semantic HTML5 elements
-- **CSS**: Follow BEM naming convention where applicable
+- **SCSS**: Follow BEM naming convention where applicable
 - **Templates**: Use clear, descriptive variable names
 - **Comments**: Add comments for complex logic
-- **Indentation**: Use 2 spaces for HTML/CSS, follow existing patterns
+- **Indentation**: Use 2 spaces for HTML/SCSS, follow existing patterns
 
 ### Template Guidelines
 
@@ -87,13 +87,21 @@ We welcome contributions from the community and appreciate your help in making t
 - **Performance**: Optimize for speed and minimal resource usage
 - **Browser Support**: Test in modern browsers (Chrome, Firefox, Safari, Edge)
 
-### CSS / SCSS Guidelines
+### SCSS Guidelines
 
 - **Mobile First**: Write SCSS with a mobile-first approach using `@include respond-to('sm')` and up
-- **CSS Variables**: Use CSS custom properties for theme colors (defined in `sass/assets/stylesheet/_variables.scss`)
+- **SCSS Variables**: Use SCSS variables and CSS custom properties for design tokens (defined in `sass/assets/stylesheet/_variables.scss`)
 - **Bootstrap**: Leverage Bootstrap classes when possible
-- **Optimization**: Minimize custom CSS, prefer existing utilities
+- **Optimization**: Minimize custom SCSS, prefer existing utilities
 - **`@use` over `@import`**: Always use `@use` to load SCSS partials — `@import` is deprecated in Dart Sass
+- **Breakpoints**: Use `@include respond-to('<key>')` with the Bootstrap-aligned breakpoints (defined in `sass/assets/stylesheet/_mixins.scss`):
+  - `xs`:  ≥0 (all screens)
+  - `sm`:  ≥576px
+  - `md`:  ≥768px
+  - `lg`:  ≥992px
+  - `xl`:  ≥1200px
+  - `xxl`: ≥1400px
+- **Test on real devices** when possible to verify responsive behaviour
 
 ### Documentation
 
@@ -119,17 +127,6 @@ Before submitting a PR, please test:
 - **Maintain visual hierarchy**
 - **Use consistent spacing** (Bootstrap spacing utilities)
 - **Respect brand colors** and typography
-
-### Responsiveness
-
-- **Test on real devices** when possible
-- **Use Bootstrap breakpoints** (defined in `sass/assets/stylesheet/_mixins.scss`):
-  - `xs`:  ≥0 (all screens)
-  - `sm`:  ≥576px
-  - `md`:  ≥768px
-  - `lg`:  ≥992px
-  - `xl`:  ≥1200px
-  - `xxl`: ≥1400px
 
 ### Accessibility
 
