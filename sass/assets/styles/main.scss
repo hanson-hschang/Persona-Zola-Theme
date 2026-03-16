@@ -1,0 +1,10 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// main — Loaded on every page via base.html
+// Includes: design tokens, base styles, footer, preloader, custom overrides.
+// Compiled output: public/assets/styles/main.css
+// ─────────────────────────────────────────────────────────────────────────────
+@use 'variables';
+@use 'base/base';
+@use 'base/footer';
+@use 'base/preloader';
+@use 'custom';

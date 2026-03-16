@@ -1,7 +1,11 @@
-/*--------------------------------------------------------------
-# Global Header
---------------------------------------------------------------*/
-/* Header - Desktop */
+// ─────────────────────────────────────────────────────────────────────────────
+// Navigation — Home / Index Page
+// Fixed left-sidebar icon nav used exclusively on the landing page.
+// ─────────────────────────────────────────────────────────────────────────────
+@use '../variables';
+@use '../mixins';
+
+// ── Header ───────────────────────────────────────────────────────────────────
 .header {
   color: var(--default-color);
   position: fixed;
@@ -26,15 +30,15 @@
 @media (min-width: 992px) {
   .header~main {
     margin-left: calc(
-      var(--nav-menu-width) + 
-      calc(2*var(--nav-menu-border-padding))
+      var(--nav-menu-width) +
+      calc(2 * var(--nav-menu-border-padding))
     );
   }
 
   .header~main .hero {
     margin-left: calc(
-      calc(-1*var(--nav-menu-width)) -
-      calc(2*var(--nav-menu-border-padding))
+      calc(-1 * var(--nav-menu-width)) -
+      calc(2 * var(--nav-menu-border-padding))
     );
     width: 100vw;
   }
@@ -44,10 +48,7 @@
   left: 0;
 }
 
-
-/*--------------------------------------------------------------
-# Navigation Menu
---------------------------------------------------------------*/
+// ── Navigation Menu ───────────────────────────────────────────────────────────
 .navmenu {
   padding: 0;
   z-index: 9997;
@@ -57,7 +58,7 @@
   list-style: none;
   padding: 0 0 20px 0;
   margin: 0;
-  width: calc(var(--nav-menu-mobile-width)-2*var(--nav-menu-border-padding));
+  width: calc(var(--nav-menu-mobile-width) - 2 * var(--nav-menu-border-padding));
 }
 
 .navmenu a,
@@ -88,7 +89,6 @@
 }
 
 @media (min-width: 992px) {
-
   .navmenu ul {
     width: var(--nav-menu-width);
   }
@@ -123,10 +123,7 @@
   display: block;
 }
 
-
-/*--------------------------------------------------------------
-# Navigation Toggle
---------------------------------------------------------------*/
+// ── Navigation Toggle ─────────────────────────────────────────────────────────
 .nav-toggle {
   color: var(--contrast-color);
   background-color: var(--accent-color);

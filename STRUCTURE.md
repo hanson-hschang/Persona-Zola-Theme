@@ -6,9 +6,39 @@ This document describes the organization and structure of the codebase.
 
 ```
 .
+├── sass/                      # Sass source files (compiled by Zola natively)
+│   └── assets/
+│       └── styles/            # Compiled output → public/assets/styles/
+│           ├── _variables.scss       # SCSS vars + re-exported CSS custom properties
+│           ├── _mixins.scss          # Shared mixins (breakpoints, flex, transitions)
+│           ├── _custom.scss          # User custom overrides (included last)
+│           ├── base/
+│           │   ├── _base.scss        # Core base styles
+│           │   ├── _footer.scss      # Footer styles
+│           │   └── _preloader.scss   # Page preloader styles
+│           ├── layout/
+│           │   ├── _navigation.scss        # Navigation (standard pages)
+│           │   ├── _navigation-index.scss  # Navigation (home page)
+│           │   ├── _section.scss           # Section container styles
+│           │   └── _breadcrumbs.scss       # Breadcrumb / page-title styles
+│           ├── pages/
+│           │   ├── _hero.scss        # Hero section styles (home page)
+│           │   ├── _contact.scss     # Contact section styles
+│           │   └── _plain.scss       # Plain section content styles
+│           ├── components/
+│           │   ├── _category.scss    # Category section styles
+│           │   ├── _blog.scss        # Blog listing styles
+│           │   ├── _post.scss        # Blog post content styles
+│           │   └── _widgets.scss     # Sidebar widget styles
+│           ├── main.scss             # Entry point: all pages (→ main.css)
+│           ├── home.scss             # Entry point: home page (→ home.css)
+│           ├── page-plain.scss       # Entry point: plain sections (→ page-plain.css)
+│           ├── page-category.scss    # Entry point: category sections (→ page-category.css)
+│           ├── page-blog.scss        # Entry point: blog sections (→ page-blog.css)
+│           ├── post.scss             # Entry point: blog posts (→ post.css)
+│           └── page-404.scss         # Entry point: 404 error page (→ page-404.css)
 ├── static/                    # Static assets
 │   ├── assets/               # Theme-specific assets
-│   │   ├── css/             # Stylesheets
 │   │   ├── js/              # JavaScript files
 │   │   └── img/             # Images (favicons, backgrounds)
 │   └── vendor/              # Third-party libraries
@@ -125,96 +155,96 @@ Content shortcodes for use in markdown:
 - **list.html**: Tag listing page  
 - **single.html**: Single tag page
 
-## CSS Organization
+## Sass / CSS Organization
+
+### How Zola Compiles Sass
+
+Zola compiles Sass natively — no external build tool or CLI is needed:
+
+- Any `.scss` file in `sass/` **without** a `_` prefix is compiled to a `.css` file at the same relative path under `public/`.
+- Files prefixed with `_` are **partials** — they are never compiled directly; they are included via `@use` from an entry point.
+- No `config.toml` changes are needed — compilation happens automatically on `zola build` and `zola serve`.
+
+Entry point files live under `sass/assets/styles/`, so compiled output lands at `public/assets/styles/`. Templates reference them as `/assets/styles/<name>.css`.
 
 ### Structure
 
-CSS files in `static/assets/css/`:
+Sass source files in `sass/assets/styles/`:
 
 ```
-css/
-├── theme.css              # Customization variables (colors, fonts, dimensions)
-├── base.css               # Core base styles
-├── footer.css             # Footer styles
-├── hero.css               # Hero section styles
-├── navigation.css         # Navigation menu styles (standard pages)
-├── navigation-index.css   # Navigation menu styles (home page)
-├── preloader.css          # Page preloader styles
-├── breadcrumbs.css        # Breadcrumb navigation styles
-├── section.css            # Section container styles
-├── plain.css              # Plain section content styles
-├── category.css           # Category section styles
-├── blog.css               # Blog listing styles
-├── post.css               # Blog post content styles
-├── contact.css            # Contact section styles
-├── widgets.css            # Sidebar widget styles
-└── custom.css             # User custom styles (loaded last)
+styles/
+├── _variables.scss              # Design tokens: SCSS vars + CSS custom properties (:root)
+├── _mixins.scss                 # Shared mixins: respond-to, flex-center, transition
+├── _custom.scss                 # User overrides — included last in every entry point
+│
+├── base/
+│   ├── _base.scss               # Core styles (scroll, links, headings, AOS)
+│   ├── _footer.scss             # Footer
+│   └── _preloader.scss          # Page preloader
+│
+├── layout/
+│   ├── _navigation.scss         # Sticky header + nav menu (standard pages)
+│   ├── _navigation-index.scss   # Left-sidebar icon nav (home page only)
+│   ├── _section.scss            # Section container and title
+│   └── _breadcrumbs.scss        # Page title / breadcrumbs bar
+│
+├── pages/
+│   ├── _hero.scss               # Hero section (home page only)
+│   ├── _contact.scss            # Contact form and info
+│   └── _plain.scss              # Plain section content
+│
+├── components/
+│   ├── _category.scss           # Category card listing
+│   ├── _blog.scss               # Blog post listing
+│   ├── _post.scss               # Individual blog post
+│   └── _widgets.scss            # Sidebar widgets
+│
+└── [entry points — no _ prefix; each compiles to public/assets/styles/<name>.css]
+    ├── main.scss                 # All pages
+    ├── home.scss                 # Home / index page
+    ├── page-plain.scss           # Plain section + page template
+    ├── page-category.scss        # Category section pages
+    ├── page-blog.scss            # Blog listing section pages
+    ├── post.scss                 # Individual blog post pages
+    └── page-404.scss             # 404 error page
 ```
 
 ### CSS Loading Strategy
 
-CSS files are loaded conditionally based on template type:
+Each template loads only the CSS it needs:
 
-**Base Template** (loaded on all pages):
-- theme.css
-- base.css
-- footer.css
-- preloader.css
-- custom.css
+| Template | Entry point loaded | Contents |
+|---|---|---|
+| `base.html` (all pages) | `main.css` | variables, base, footer, preloader, custom |
+| `index.html` | `home.css` | nav-index, hero, section, plain, category, contact |
+| `section.html` (plain) | `page-plain.css` | navigation, section, plain |
+| `section.html` (category) | `page-category.css` | navigation, section, category |
+| `section.html` (blog) | `page-blog.css` | navigation, section, blog, breadcrumbs |
+| `post.html` | `post.css` | navigation, breadcrumbs, post, widgets |
+| `page.html` | `page-plain.css` | navigation, section, plain |
+| `404.html` | `page-404.css` | navigation, section, plain, contact |
 
-**Home Page** (index.html):
-- navigation-index.css
-- hero.css
-- section.css
-- plain.css
-- category.css
-- contact.css
+### Design Tokens
 
-**Section Pages** (section.html):
-- navigation.css
-- section.css
-- Type-specific: plain.css, category.css, or blog.css + breadcrumbs.css
+All customisable theme values start in `_variables.scss` as **SCSS variables**, then are re-exported as **CSS custom properties** inside `:root` so they remain accessible at runtime.
 
-**Blog Posts** (post.html):
-- navigation.css
-- post.css
-- breadcrumbs.css
-- widgets.css
-
-**Regular Pages** (page.html):
-- navigation.css
-- plain.css
-- section.css
-
-**Error Pages** (404.html):
-- navigation.css
-- section.css
-- plain.css
-- contact.css
-
-### CSS Variables
-
-All customizable theme values are defined in `theme.css`:
-
-**Color Variables:**
-- Global colors (background, text, headings, accent)
+**Color variables** (e.g. `$color-accent: #0563bb` → `--accent-color`):
+- Global colors: background, text, headings, accent, surface, contrast
 - Navigation colors
 - Header colors
 
-**Typography:**
-- Font families (default, heading, navigation)
-- Font sizes (normal, footer, heading, subtitle, title)
+**Typography** (e.g. `$font-default: "Roboto", …` → `--default-font`):
+- Font families: default, heading, navigation
+- Font sizes: normal, footer, heading, subtitle, title
 
-**Dimensions:**
-- Navigation dimensions
-- Border radius
-- Button sizes and positions
+**Dimensions** (e.g. `$nav-icon-size: 56px` → `--nav-icon-size`):
+- Navigation dimensions, border radius, button sizes and positions
 
-**Spacing:**
-- Consistent spacing scale (--spacing-xxs through --spacing-xxl)
+**Spacing** (e.g. `$spacing-md: 1.5rem` → `--spacing-md`):
+- Consistent scale: `xxs` · `xs` · `sm` · `md` · `lg` · `xl` · `xxl`
 
-**Animation:**
-- Transition timing and effects
+**Animation** (e.g. `$transition-hover-time: 0.3s` → `--transition-hover-time`):
+- Transition timing
 
 ## JavaScript Organization
 
@@ -238,17 +268,19 @@ JavaScript files in `static/assets/js/`:
 
 ### Adding a New Section Type
 
-1. Create CSS file: `static/assets/css/new-type.css`
-2. Add rendering macro in `templates/macros/section.html`
-3. Update section.html to include new type
-4. Document in README.md
+1. Create SCSS partial: `sass/assets/styles/components/_new-type.scss`
+2. Create a new entry point (e.g. `sass/assets/styles/page-new-type.scss`) that `@use`s the partial
+3. Add rendering macro in `templates/macros/section.html`
+4. Update `section.html` to load `page-new-type.css` for the new type
+5. Document in README.md
 
 ### Adding a New Component
 
 1. Create partial: `templates/partials/component-name.html`
-2. Create CSS: `static/assets/css/component-name.css`
-3. Include in appropriate template
-4. Document usage
+2. Create SCSS partial: `sass/assets/styles/components/_component-name.scss`
+3. `@use` the new partial in the relevant entry point(s)
+4. Include the HTML partial in the appropriate template
+5. Document usage
 
 ### Adding a New Macro
 
@@ -259,7 +291,8 @@ JavaScript files in `static/assets/js/`:
 ## File Naming Conventions
 
 - **Templates**: lowercase with hyphens (e.g., `post.html`)
-- **CSS files**: lowercase with hyphens (e.g., `post.css`)
+- **SCSS partials**: `_` prefix, lowercase with hyphens (e.g., `_post.scss`)
+- **SCSS entry points**: no `_` prefix, lowercase with hyphens (e.g., `post.scss`)
 - **JavaScript**: lowercase with hyphens (e.g., `home.js`)
 - **Macros**: lowercase, descriptive names
 - **Variables**: CSS custom properties with `--` prefix, kebab-case
@@ -269,7 +302,7 @@ JavaScript files in `static/assets/js/`:
 1. **Separation of Concerns**: Keep logic in macros, styling in CSS, structure in templates
 2. **Reusability**: Use macros and partials for repeated patterns
 3. **Conditional Loading**: Only load CSS/JS needed for specific pages
-4. **CSS Variables**: Use theme.css for all customizable values
+4. **Sass Variables**: Define all design tokens in `_variables.scss`; use SCSS vars at compile time and CSS custom properties at runtime
 5. **Documentation**: Update this file when adding new components or changing structure
 6. **Testing**: Test on multiple devices and browsers after changes
 

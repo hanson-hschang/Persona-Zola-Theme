@@ -1,0 +1,27 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Mixins
+// Shared helpers used across component partials.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Responsive breakpoints ───────────────────────────────────────────────────
+// Usage:  @include respond-to('md') { ... }
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == 'sm'  { @media (max-width: 575px)  { @content; } }
+  @if $breakpoint == 'md'  { @media (max-width: 768px)  { @content; } }
+  @if $breakpoint == 'lg'  { @media (max-width: 1024px) { @content; } }
+}
+
+// ── Flex centering ───────────────────────────────────────────────────────────
+// Usage:  @include flex-center;
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ── Transitions ──────────────────────────────────────────────────────────────
+// Usage:  @include transition;
+//         @include transition(color, 0.2s, ease-in);
+@mixin transition($props: all, $duration: 0.3s, $easing: ease) {
+  transition: $props $duration $easing;
+}

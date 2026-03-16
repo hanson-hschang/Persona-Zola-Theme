@@ -1,6 +1,9 @@
-/*--------------------------------------------------------------
-# Contact Section
---------------------------------------------------------------*/
+// ─────────────────────────────────────────────────────────────────────────────
+// Contact Section
+// ─────────────────────────────────────────────────────────────────────────────
+@use '../variables';
+@use '../mixins';
+
 .contact .info-item+.info-item {
   margin-top: 40px;
 }
@@ -169,7 +172,7 @@
   }
 }
 
-/* Show messaging elements when the 'show' class is added by JS */
+// Show messaging elements when the 'show' class is added by JS
 .contact .contact-form .loading.show,
 .contact .contact-form .error-message.show,
 .contact .contact-form .sent-message.show {

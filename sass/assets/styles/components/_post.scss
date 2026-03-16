@@ -1,6 +1,10 @@
-/*--------------------------------------------------------------
-# Blog Post Section
---------------------------------------------------------------*/
+// ─────────────────────────────────────────────────────────────────────────────
+// Blog Post Page
+// ─────────────────────────────────────────────────────────────────────────────
+@use '../variables';
+@use '../mixins';
+
+// ── Article ───────────────────────────────────────────────────────────────────
 .blog-post {
   padding-bottom: 30px;
   margin: 60px 0 0 0;
@@ -36,12 +40,12 @@
   max-width: 100%;
   height: auto;
   display: block;
-  border-radius:4px;
-  box-shadow:0 10px 16px rgba(0,0,0,0.33), 0 0 0 1px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  box-shadow: 0 10px 16px rgba(0,0,0,0.33), 0 0 0 1px rgba(0, 0, 0, 0.1);
   margin-left: auto;
   margin-right: auto;
-  margin-bottom:20px;
-  margin-top:10px
+  margin-bottom: 20px;
+  margin-top: 10px;
 }
 
 .blog-post .post-content h3 {
@@ -80,8 +84,7 @@
   margin-bottom: 20px;
 }
 
-/* meta top styles */
-
+// ── Meta top ─────────────────────────────────────────────────────────────────
 .meta-top-divider {
   height: 1px;
   background-color: #e0e0e0;
@@ -127,6 +130,7 @@
   line-height: 1;
 }
 
+// ── Meta bottom ───────────────────────────────────────────────────────────────
 .blog-post .meta-bottom {
   padding-top: 10px;
   border-top: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
@@ -182,7 +186,6 @@
   padding-left: 5px;
 }
 
-
 .blog-post .post-tags {
   margin-top: 0.5em;
 }
@@ -200,7 +203,7 @@
   margin-top: 2em;
 }
 
-/* Post header layout */
+// ── Post header layout ────────────────────────────────────────────────────────
 .post-header {
   margin-bottom: 2em;
 }
@@ -217,11 +220,9 @@
   flex: 1;
 }
 
-
-/* Share button styles */
+// ── Share button ──────────────────────────────────────────────────────────────
 .share-container {
   position: relative;
-  /* margin-left: 20px; */
 }
 
 .share-button {
@@ -230,24 +231,16 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  /* border-radius: 50%; */
   background-color: var(--background-color);
-  /* background-color: #f0f0f0; */
-  /* color: #333; */
   border: none;
   cursor: pointer;
-  /* transition: background-color 0.2s; */
 }
-
-/* .share-button:hover {
-  background-color: #e0e0e0;
-} */
 
 .share-button i {
   font-size: 20px;
 }
 
-/* Share menu */
+// ── Share menu ────────────────────────────────────────────────────────────────
 .share-menu {
   position: absolute;
   right: 0;
@@ -306,7 +299,7 @@
   font-weight: 500;
 }
 
-/* LaTeX equation styles */
+// ── LaTeX / MathJax equation styles ──────────────────────────────────────────
 .MathJax {
   overflow-x: auto;
   overflow-y: hidden;
@@ -322,35 +315,35 @@
   padding: 0;
 }
 
-/* Ensure equation numbers are visible */
+// Ensure equation numbers are visible
 .post-content .mjx-chtml .mjx-right {
   margin-right: 0 !important;
   float: right !important;
   text-align: right !important;
 }
 
-/* LaTeX equation overflow handling with centered content */
+// Equation overflow handling with centered content
 .post-content .MathJax_Display,
 .post-content .mjx-chtml.MJXc-display {
   overflow-x: auto;
   overflow-y: hidden;
   margin: 1em 0;
   padding: 0.5em 0;
-  width: 100% !important; /* Force width to ensure scrollbar works */
+  width: 100% !important;
   max-width: 100%;
-  display: flex !important; /* Use flexbox for centering */
+  display: flex !important;
   justify-content: center !important;
 }
 
-/* Center the math content while allowing it to be wider than container */
+// Allow math content to be wider than its container
 .post-content .mjx-chtml .mjx-math {
-  min-width: min-content !important; /* Allow content to determine width */
+  min-width: min-content !important;
   display: inline-block !important;
   text-align: center !important;
   margin: 0 auto !important;
 }
 
-/* Style the scrollbar for better appearance */
+// Scrollbar styling
 .post-content .mjx-chtml.MJXc-display::-webkit-scrollbar,
 .post-content .MathJax_Display::-webkit-scrollbar {
   height: 8px;
@@ -373,22 +366,18 @@
   background: #999;
 }
 
-/* Ensure equation container doesn't overflow */
 .post-content .MathJax_SVG_Display,
 .post-content .MathJax {
   max-width: 100%;
 }
 
-/* Ensure container for equations has proper overflow */
 .post-content .mjx-container {
   overflow-x: auto;
   overflow-y: hidden;
   max-width: 100%;
 }
 
-/*--------------------------------------------------------------
-# Blog Comments Section
---------------------------------------------------------------*/
+// ── Blog Comments Section ─────────────────────────────────────────────────────
 .blog-comments {
   padding: 10px 0;
 }
@@ -445,9 +434,7 @@
   padding-left: 40px;
 }
 
-/*--------------------------------------------------------------
-# Comment Form Section
---------------------------------------------------------------*/
+// ── Comment Form Section ──────────────────────────────────────────────────────
 .comment-form {
   padding-top: 10px;
 }

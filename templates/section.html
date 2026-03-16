@@ -3,18 +3,15 @@
 
 {% block head %}
   {{ super() }}
-  <link rel="stylesheet" href="{{ get_url(path='assets/css/navigation.css') }}">
-  <link rel="stylesheet" href="{{ get_url(path='assets/css/section.css') }}">
 
   {% set section_type = section.extra.type %}
   
   {% if section_type == "plain" %}
-    <link rel="stylesheet" href="{{ get_url(path='assets/css/plain.css') }}">
+    <link rel="stylesheet" href="{{ get_url(path='assets/styles/page-plain.css') }}">
   {% elif section_type == "category" %}
-    <link rel="stylesheet" href="{{ get_url(path='assets/css/category.css') }}">
+    <link rel="stylesheet" href="{{ get_url(path='assets/styles/page-category.css') }}">
   {% elif section_type == "blog" %}
-    <link rel="stylesheet" href="{{ get_url(path='assets/css/blog.css') }}">
-    <link rel="stylesheet" href="{{ get_url(path='assets/css/breadcrumbs.css') }}">
+    <link rel="stylesheet" href="{{ get_url(path='assets/styles/page-blog.css') }}">
   {% else %}
     {# Return to 404 #}
   {% endif %}

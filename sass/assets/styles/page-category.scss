@@ -1,0 +1,8 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// page-category — Loaded on category section pages
+// Includes: navigation, section, category cards.
+// Compiled output: public/assets/styles/page-category.css
+// ─────────────────────────────────────────────────────────────────────────────
+@use 'layout/navigation';
+@use 'layout/section';
+@use 'components/category';

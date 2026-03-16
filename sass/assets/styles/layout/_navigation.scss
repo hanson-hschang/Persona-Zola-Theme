@@ -1,7 +1,11 @@
-/*--------------------------------------------------------------
-# Global Header
---------------------------------------------------------------*/
-/* Header - Desktop */
+// ─────────────────────────────────────────────────────────────────────────────
+// Navigation — Standard Pages
+// Applied to all pages except the home / index page.
+// ─────────────────────────────────────────────────────────────────────────────
+@use '../variables';
+@use '../mixins';
+
+// ── Header — Desktop ─────────────────────────────────────────────────────────
 @media (min-width: 768px) {
   .header {
     color: var(--default-color);
@@ -44,7 +48,7 @@
   }
 }
 
-/* Header - Mobile */
+// ── Header — Mobile ───────────────────────────────────────────────────────────
 @media (max-width: 767px) {
   .header {
     color: var(--default-color);
@@ -68,10 +72,7 @@
   }
 }
 
-/*--------------------------------------------------------------
-# Navigation Menu
---------------------------------------------------------------*/
-/* Navmenu - Desktop */
+// ── Navigation Menu — Desktop ─────────────────────────────────────────────────
 @media (min-width: 768px) {
   .navmenu {
     padding: 0;
@@ -182,20 +183,20 @@
   }
 }
 
-/* Navmenu - Mobile */
+// ── Navigation Menu — Mobile ──────────────────────────────────────────────────
 @media (max-width: 767px) {
   .navmenu {
     padding: 0;
     z-index: 9997;
   }
-  
+
   .navmenu>ul {
     list-style: none;
     padding: 0 0 20px 0;
     margin: 0;
-    width: calc(var(--nav-menu-mobile-width)-2*var(--nav-menu-border-padding));
+    width: calc(var(--nav-menu-mobile-width) - 2 * var(--nav-menu-border-padding));
   }
-  
+
   .navmenu a,
   .navmenu a:focus {
     color: var(--nav-color);
@@ -212,17 +213,17 @@
     overflow: hidden;
     transition: 0.3s;
   }
-  
+
   .navmenu a i,
   .navmenu a:focus i {
     font-size: 20px;
   }
-  
+
   .navmenu a span,
   .navmenu a:focus span {
     padding: 0 5px 0 7px;
   }
-  
+
   .navmenu a:hover,
   .navmenu .active,
   .navmenu .active:focus,
@@ -230,13 +231,13 @@
     color: var(--contrast-color);
     background: var(--nav-hover-color);
   }
-  
+
   .navmenu a:hover,
   .navmenu li:hover>a {
     max-width: 100%;
     color: var(--contrast-color);
   }
-  
+
   .navmenu a:hover span,
   .navmenu li:hover>a span {
     display: block;
@@ -246,10 +247,7 @@
     display: none;
   }
 
-
-  /*--------------------------------------------------------------
-  # Navigation Toggle
-  --------------------------------------------------------------*/
+  // ── Navigation Toggle ───────────────────────────────────────────────────────
   .nav-toggle {
     color: var(--contrast-color);
     background-color: var(--accent-color);
@@ -272,5 +270,4 @@
     color: var(--contrast-color);
     background-color: color-mix(in srgb, var(--accent-color) 90%, white 15%);
   }
-
 }

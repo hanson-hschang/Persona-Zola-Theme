@@ -1,6 +1,10 @@
-/*--------------------------------------------------------------
-# Section
---------------------------------------------------------------*/
+// ─────────────────────────────────────────────────────────────────────────────
+// Section Container
+// Shared layout for all section types.
+// ─────────────────────────────────────────────────────────────────────────────
+@use '../variables';
+@use '../mixins';
+
 section,
 .section {
   color: var(--default-color);
@@ -59,4 +63,3 @@ section,
   font-size: var(--subtitle-font-size);
   color: var(--accent-color);
 }
-  
