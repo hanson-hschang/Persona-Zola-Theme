@@ -1,5 +1,10 @@
-on: push
-name: Build and deploy GH Pages
+name: Build and Deploy GH Pages
+
+on: 
+  push:
+    branches: [main]
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest

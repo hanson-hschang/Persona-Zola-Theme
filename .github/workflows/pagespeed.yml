@@ -1,10 +1,10 @@
 name: PageSpeed Insights Report
 
 on:
-  pull_request:
+  workflow_run:
+    workflows: ["Build and Deploy GH Pages"]
     branches: [main]
-  push:
-    branches: [main]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -19,10 +20,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           lfs: true
-
-      - name: Sleep for 2 minutes to allow GH Pages to update
-        run: sleep 120s
-        shell: bash
 
       - name: Create PageSpeed Report
         uses: lowlighter/metrics@latest
