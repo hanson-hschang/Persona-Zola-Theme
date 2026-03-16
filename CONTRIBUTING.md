@@ -76,23 +76,21 @@ We welcome contributions from the community and appreciate your help in making t
 
 - **HTML**: Use [semantic HTML5 elements](https://www.w3schools.com/html/html5_semantic_elements.asp)
 - **SCSS**: Follow [BEM naming convention](https://en.bem.info/methodology/naming-convention/) where applicable
-- **Templates**: Use clear, descriptive variable names
+- **Scripts**: Use clear and descriptive variable names and functions
 - **Comments**: Add comments for complex logic
-- **Indentation**: Use 2 spaces for HTML/SCSS, follow existing patterns
+- **Consistency**: Follow existing code patterns and structure
 
 ### Template Guidelines
 
 - **Responsive Design**: Ensure all changes work on mobile, tablet, and desktop
 - **Accessibility**: Follow [web content accessibility guidelines (WCAG 2.1)](https://www.w3.org/WAI/standards-guidelines/wcag/)
 - **Performance**: Optimize for speed and minimal resource usage
-- **Browser Support**: Test in modern browsers (Chrome, Firefox, Safari, Edge)
 
-### SCSS Guidelines
+### Stylesheet Guidelines
 
-- **Mobile First**: Write SCSS with a mobile-first approach using `@include respond-to('sm')` and up
-- **SCSS Variables**: Use SCSS variables for design tokens (defined in `sass/assets/stylesheet/_variables.scss`)
-- **Bootstrap**: Leverage Bootstrap classes when possible
-- **Optimization**: Minimize custom SCSS, prefer existing utilities
+- **Mobile First**: Write SCSS with a mobile-first approach using `@include respond-to('sm')` and up for larger screens
+- **Bootstrap**: Leverage Bootstrap classes when possible to maintain consistency
+- **Minimization**: Minimize custom SCSS, prefer existing SCSS variables and mixins for consistency
 - **`@use` over `@import`**: Always use `@use` to load SCSS partials — `@import` is deprecated in Dart Sass
 
 ### Documentation
@@ -103,7 +101,7 @@ We welcome contributions from the community and appreciate your help in making t
 
 ## 🧪 Testing
 
-Before submitting a PR, please test:
+Before submitting a Pull Request, please test:
 
 1. **Different screen sizes** (mobile, tablet, desktop)
 2. **Multiple browsers** (Chrome, Firefox, Safari, Edge)
@@ -117,12 +115,10 @@ Before submitting a PR, please test:
 
 - **Follow existing design patterns**
 - **Maintain visual hierarchy**
-- **Use consistent spacing**
 - **Respect brand colors** and typography
 
 ### Accessibility
 
-- **Use semantic HTML** elements
 - **Provide alt text** for images
 - **Maintain color contrast** ratios
 - **Test with screen readers** when possible
@@ -168,9 +164,9 @@ style(scss): improve code formatting and organization
 - [ ] Ensure backwards compatibility
 - [ ] Check for console errors
 
-### PR Description
+### Pull Request Description
 
-Include in your PR description:
+Include in your Pull Request description:
 
 1. **What changes were made**
 2. **Why the changes were necessary**
@@ -180,9 +176,9 @@ Include in your PR description:
 
 ### Review Process
 
-- Maintainers will review PRs as time permits
+- Maintainers will review Pull Requests as time permits
 - You may be asked to make changes
-- Once approved, your PR will be merged
+- Once approved, your Pull Request will be merged
 - Your contribution will be credited
 
 ## 🎯 Areas for Contribution
