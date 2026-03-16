@@ -164,7 +164,7 @@ type(scope): short description
 feat(navigation): add mobile menu toggle animation
 fix(hero): resolve background image not loading on mobile
 docs(readme): update installation instructions
-style(css): improve code formatting and organization
+style(scss): improve code formatting and organization
 ```
 
 ## 🔄 Pull Request Process

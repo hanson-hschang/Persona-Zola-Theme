@@ -6,9 +6,9 @@ This document describes the organization and structure of the codebase.
 
 ```
 .
-├── sass/                      # Sass source files (compiled by Zola natively)
+├── sass/                             # Sass source files (compiled by Zola natively)
 │   └── assets/
-│       └── stylesheet/            # Compiled output → public/assets/stylesheet/
+│       └── stylesheet/               # Compiled output → public/assets/stylesheet/
 │           ├── _variables.scss       # SCSS vars + re-exported CSS custom properties
 │           ├── _mixins.scss          # Shared mixins (breakpoints, flex, transitions)
 │           ├── _custom.scss          # User custom overrides (included last)
@@ -37,34 +37,34 @@ This document describes the organization and structure of the codebase.
 │           ├── page-blog.scss        # Entry point: blog sections (→ page-blog.css)
 │           ├── post.scss             # Entry point: blog posts (→ post.css)
 │           └── page-404.scss         # Entry point: 404 error page (→ page-404.css)
-├── static/                    # Static assets
-│   ├── assets/               # Theme-specific assets
-│   │   ├── js/              # JavaScript files
-│   │   └── img/             # Images (favicons, backgrounds)
-│   └── vendor/              # Third-party libraries
-│       ├── bootstrap/       # Bootstrap framework
-│       ├── bootstrap-icons/ # Icon library
-│       ├── aos/            # Animate On Scroll
-│       ├── glightbox/      # Lightbox library
-│       ├── swiper/         # Slider library
-│       ├── academicons/    # Academic icons
-│       └── typed.js/       # Text typing animation
-├── templates/               # Zola templates
-│   ├── base.html           # Base layout template
-│   ├── index.html          # Home page template
-│   ├── section.html        # Section page template
-│   ├── page.html           # Single page template
-│   ├── post.html           # Blog post template
-│   ├── 404.html            # Error page template
-│   ├── macros/             # Reusable template macros
-│   ├── partials/           # Reusable template components
-│   ├── shortcodes/         # Content shortcodes
-│   ├── categories/         # Category taxonomy templates
-│   └── tags/               # Tag taxonomy templates
-├── content/                 # Site content (user-created)
-├── config.toml             # Site configuration
-├── theme.toml              # Theme metadata
-└── README.md               # Theme documentation
+├── static/                           # Static assets
+│   ├── assets/                       # Theme-specific assets
+│   │   ├── script/                   # JavaScript files
+│   │   └── img/                      # Images (favicons, backgrounds)
+│   └── vendor/                       # Third-party libraries
+│       ├── bootstrap/                # Bootstrap framework
+│       ├── bootstrap-icons/          # Icon library
+│       ├── aos/                      # Animate On Scroll
+│       ├── glightbox/                # Lightbox library
+│       ├── swiper/                   # Slider library
+│       ├── academicons/              # Academic icons
+│       └── typed.js/                 # Text typing animation
+├── templates/                        # Zola templates
+│   ├── base.html                     # Base layout template
+│   ├── index.html                    # Home page template
+│   ├── section.html                  # Section page template
+│   ├── page.html                     # Single page template
+│   ├── post.html                     # Blog post template
+│   ├── 404.html                      # Error page template
+│   ├── macros/                       # Reusable template macros
+│   ├── partials/                     # Reusable template components
+│   ├── shortcodes/                   # Content shortcodes
+│   ├── categories/                   # Category taxonomy templates
+│   └── tags/                         # Tag taxonomy templates
+├── content/                          # Site content (user-created)
+├── config.toml                       # Site configuration
+├── theme.toml                        # Theme metadata
+└── README.md                         # Theme documentation
 ```
 
 ## Template Organization
