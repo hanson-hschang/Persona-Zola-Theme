@@ -226,7 +226,7 @@ Each template loads only the CSS it needs:
 
 ### Design Tokens
 
-All customisable theme values start in `_variables.scss` as **SCSS variables**, then are re-exported as **CSS custom properties** inside `:root` so they remain accessible at runtime.
+All customizable theme values start in `_variables.scss` as **SCSS variables**, then are re-exported as **CSS custom properties** inside `:root` so they remain accessible at runtime.
 
 **Color variables** (e.g. `$color-accent: #0563bb` → `--accent-color`):
 - Global colors: background, text, headings, accent, surface, contrast
