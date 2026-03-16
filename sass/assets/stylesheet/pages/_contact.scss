@@ -120,7 +120,7 @@
       border: 2px solid color-mix(in srgb, var(--default-color), transparent 80%);
       background: color-mix(in srgb, var(--background-color), transparent 50%);
       color: var(--default-color);
-      transition: var(--accent-color) 0.3s ease;
+      transition: border-color 0.3s ease;
 
       &:focus,
       &:valid {

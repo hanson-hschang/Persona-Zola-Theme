@@ -45,7 +45,7 @@
     {% set subtitle = "" %}
   {% endif %}
 
-  <section id="{{ title | lower }}" class="plain segment">
+  <section id="{{ title | slugify }}" class="plain segment">
 
     {{ render_macro::section_title(title=title, subtitle=subtitle) }}
 
@@ -57,7 +57,7 @@
 
 {% macro category(pos) %}
 
-  <section id="{{ pos.title | lower }}" class="category segment">
+  <section id="{{ pos.title | slugify }}" class="category segment">
   
     {{ render_macro::section_title(title=pos.title) }}
   
@@ -80,7 +80,7 @@
 
   {{ render_macro::breadcrumbs(crumbs=pos.components) }}
 
-  <section id="{{ pos.title | lower }}" class="category segment">
+  <section id="{{ pos.title | slugify }}" class="category segment">
   
     {{ render_macro::section_title(title=pos.title) }}
   

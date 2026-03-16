@@ -41,7 +41,7 @@
       selector: '.contact-form',
       loading: '.contact-form__loading',
       errorMessage: '.contact-form__error',
-      sentMessage: '.contact-form__success',
+      successMessage: '.contact-form__success',
       submitButton: 'button[type="submit"]',
       hideMessageDelay: 3000
     }
@@ -239,13 +239,13 @@
 
       const loading = form.querySelector(CONFIG.contactForm.loading);
       const errorMessage = form.querySelector(CONFIG.contactForm.errorMessage);
-      const sentMessage = form.querySelector(CONFIG.contactForm.sentMessage);
+      const successMessage = form.querySelector(CONFIG.contactForm.successMessage);
       const submitButton = form.querySelector(CONFIG.contactForm.submitButton);
 
       function hideAllMessages() {
         loading.classList.remove('show');
         errorMessage.classList.remove('show');
-        sentMessage.classList.remove('show');
+        successMessage.classList.remove('show');
       }
 
       function showLoading() {
@@ -257,7 +257,7 @@
 
       function showSuccess() {
         hideAllMessages();
-        sentMessage.classList.add('show');
+        successMessage.classList.add('show');
         submitButton.disabled = false;
         submitButton.textContent = 'Send Message';
         form.reset();
