@@ -74,8 +74,8 @@ We welcome contributions from the community and appreciate your help in making t
 
 ### Code Style
 
-- **HTML**: Use semantic HTML5 elements
-- **SCSS**: Follow BEM naming convention where applicable
+- **HTML**: Use [semantic HTML5 elements](https://www.w3schools.com/html/html5_semantic_elements.asp)
+- **SCSS**: Follow [BEM naming convention](https://en.bem.info/methodology/naming-convention/) where applicable
 - **Templates**: Use clear, descriptive variable names
 - **Comments**: Add comments for complex logic
 - **Indentation**: Use 2 spaces for HTML/SCSS, follow existing patterns
@@ -83,25 +83,17 @@ We welcome contributions from the community and appreciate your help in making t
 ### Template Guidelines
 
 - **Responsive Design**: Ensure all changes work on mobile, tablet, and desktop
-- **Accessibility**: Follow web accessibility guidelines (WCAG 2.1)
+- **Accessibility**: Follow [web content accessibility guidelines (WCAG 2.1)](https://www.w3.org/WAI/standards-guidelines/wcag/)
 - **Performance**: Optimize for speed and minimal resource usage
 - **Browser Support**: Test in modern browsers (Chrome, Firefox, Safari, Edge)
 
 ### SCSS Guidelines
 
 - **Mobile First**: Write SCSS with a mobile-first approach using `@include respond-to('sm')` and up
-- **SCSS Variables**: Use SCSS variables and CSS custom properties for design tokens (defined in `sass/assets/stylesheet/_variables.scss`)
+- **SCSS Variables**: Use SCSS variables for design tokens (defined in `sass/assets/stylesheet/_variables.scss`)
 - **Bootstrap**: Leverage Bootstrap classes when possible
 - **Optimization**: Minimize custom SCSS, prefer existing utilities
 - **`@use` over `@import`**: Always use `@use` to load SCSS partials — `@import` is deprecated in Dart Sass
-- **Breakpoints**: Use `@include respond-to('<key>')` with the Bootstrap-aligned breakpoints (defined in `sass/assets/stylesheet/_mixins.scss`):
-  - `xs`:  ≥0 (all screens)
-  - `sm`:  ≥576px
-  - `md`:  ≥768px
-  - `lg`:  ≥992px
-  - `xl`:  ≥1200px
-  - `xxl`: ≥1400px
-- **Test on real devices** when possible to verify responsive behaviour
 
 ### Documentation
 
@@ -125,7 +117,7 @@ Before submitting a PR, please test:
 
 - **Follow existing design patterns**
 - **Maintain visual hierarchy**
-- **Use consistent spacing** (Bootstrap spacing utilities)
+- **Use consistent spacing**
 - **Respect brand colors** and typography
 
 ### Accessibility
