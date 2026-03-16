@@ -21,11 +21,11 @@ a {
   color: var(--accent-color);
   text-decoration: none;
   transition: var(--transition-hover-time);
-}
 
-a:hover {
-  color: color-mix(in srgb, var(--accent-color), transparent var(--transition-hover-transparency));
-  text-decoration: none;
+  &:hover {
+    color: color-mix(in srgb, var(--accent-color), transparent var(--transition-hover-transparency));
+    text-decoration: none;
+  }
 }
 
 h1,

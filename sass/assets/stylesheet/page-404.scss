@@ -1,9 +1,9 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // page-404 — Loaded on the 404 error page
-// Includes: navigation, section, plain content, contact info.
+// Includes: navigation, segment, plain content, contact info.
 // Compiled output: public/assets/styles/page-404.css
 // ─────────────────────────────────────────────────────────────────────────────
 @use 'layout/navigation';
-@use 'layout/section';
+@use 'layout/segment';
 @use 'pages/plain';
 @use 'pages/contact';

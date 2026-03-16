@@ -1,8 +1,8 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // page-plain — Loaded on plain section pages and the page template
-// Includes: navigation, section, plain content.
+// Includes: navigation, segment, plain content.
 // Compiled output: public/assets/styles/page-plain.css
 // ─────────────────────────────────────────────────────────────────────────────
 @use 'layout/navigation';
-@use 'layout/section';
+@use 'layout/segment';
 @use 'pages/plain';

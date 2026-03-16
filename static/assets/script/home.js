@@ -39,9 +39,9 @@
     },
     contactForm: {
       selector: '.contact-form',
-      loading: '.loading',
-      errorMessage: '.error-message',
-      sentMessage: '.sent-message',
+      loading: '.contact-form__loading',
+      errorMessage: '.contact-form__error',
+      sentMessage: '.contact-form__success',
       submitButton: 'button[type="submit"]',
       hideMessageDelay: 3000
     }
@@ -158,7 +158,7 @@
       }
 
       const toggleHeader = () => {
-        header.classList.toggle('navmenu-show');
+        header.classList.toggle('header--navmenu-show');
         headerToggleBtn.classList.toggle('bi-list');
         headerToggleBtn.classList.toggle('bi-x');
       };
@@ -182,7 +182,7 @@
 
       navmenuLinks.forEach(link => {
         link.addEventListener('click', () => {
-          if (header.classList.contains('navmenu-show') && this.headerToggle) {
+          if (header.classList.contains('header--navmenu-show') && this.headerToggle) {
             this.headerToggle();
           }
         });

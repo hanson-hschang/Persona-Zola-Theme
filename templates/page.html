@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import "macros/section.html" as section_macro %}
+{% import "macros/segment.html" as segment_macro %}
 
 {% block head %}
   {{ super() }}
@@ -8,7 +8,7 @@
 
 
 {% block main %}
-  {{ section_macro::plain(pos=page) }}
+  {{ segment_macro::plain(pos=page) }}
 {% endblock main %}
 
 

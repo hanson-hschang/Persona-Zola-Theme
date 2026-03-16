@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import "macros/section.html" as section_macro %}
+{% import "macros/segment.html" as segment_macro %}
 
 
 {% block head %}
@@ -25,7 +25,7 @@
     {% endif %}
   {% endfor %}
   {% set_global poss = poss | sort(attribute="extra.order") %}
-  {{ section_macro::populate(poss=poss) }}
+  {{ segment_macro::populate(poss=poss) }}
 
   {% include "partials/contact.html" %}
 

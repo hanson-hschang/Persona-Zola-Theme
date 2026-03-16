@@ -1,9 +1,9 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // page-blog — Loaded on blog listing section pages
-// Includes: navigation, section, blog listing, breadcrumbs.
+// Includes: navigation, segment, blog listing, breadcrumbs.
 // Compiled output: public/assets/styles/page-blog.css
 // ─────────────────────────────────────────────────────────────────────────────
 @use 'layout/navigation';
-@use 'layout/section';
+@use 'layout/segment';
 @use 'components/blog';
 @use 'layout/breadcrumbs';
