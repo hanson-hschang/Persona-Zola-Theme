@@ -4,11 +4,27 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── Responsive breakpoints ───────────────────────────────────────────────────
+// Bootstrap-aligned grid breakpoints (min-width, mobile-first).
+$grid-breakpoints: (
+  xs:  0,
+  sm:  576px,
+  md:  768px,
+  lg:  992px,
+  xl:  1200px,
+  xxl: 1400px
+);
+
 // Usage:  @include respond-to('md') { ... }
+//         Applies styles from the given breakpoint and up.
 @mixin respond-to($breakpoint) {
-  @if $breakpoint == 'sm'  { @media (max-width: 575px)  { @content; } }
-  @if $breakpoint == 'md'  { @media (max-width: 768px)  { @content; } }
-  @if $breakpoint == 'lg'  { @media (max-width: 1024px) { @content; } }
+  $value: map-get($grid-breakpoints, $breakpoint);
+  @if $value == null {
+    @warn "Unknown breakpoint `#{$breakpoint}`. Available: #{map-keys($grid-breakpoints)}.";
+  } @else if $value == 0 {
+    @content;
+  } @else {
+    @media (min-width: $value) { @content; }
+  }
 }
 
 // ── Flex centering ───────────────────────────────────────────────────────────

@@ -87,12 +87,13 @@ We welcome contributions from the community and appreciate your help in making t
 - **Performance**: Optimize for speed and minimal resource usage
 - **Browser Support**: Test in modern browsers (Chrome, Firefox, Safari, Edge)
 
-### CSS Guidelines
+### CSS / SCSS Guidelines
 
-- **Mobile First**: Write CSS with mobile-first approach
-- **CSS Variables**: Use CSS custom properties for theme colors
+- **Mobile First**: Write SCSS with a mobile-first approach using `@include respond-to('sm')` and up
+- **CSS Variables**: Use CSS custom properties for theme colors (defined in `sass/assets/stylesheet/_variables.scss`)
 - **Bootstrap**: Leverage Bootstrap classes when possible
 - **Optimization**: Minimize custom CSS, prefer existing utilities
+- **`@use` over `@import`**: Always use `@use` to load SCSS partials — `@import` is deprecated in Dart Sass
 
 ### Documentation
 
@@ -122,12 +123,13 @@ Before submitting a PR, please test:
 ### Responsiveness
 
 - **Test on real devices** when possible
-- **Use Bootstrap breakpoints**:
-  - `xs`: <576px
-  - `sm`: ≥576px
-  - `md`: ≥768px
-  - `lg`: ≥992px
-  - `xl`: ≥1200px
+- **Use Bootstrap breakpoints** (defined in `sass/assets/stylesheet/_mixins.scss`):
+  - `xs`:  ≥0 (all screens)
+  - `sm`:  ≥576px
+  - `md`:  ≥768px
+  - `lg`:  ≥992px
+  - `xl`:  ≥1200px
+  - `xxl`: ≥1400px
 
 ### Accessibility
 
