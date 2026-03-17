@@ -3,16 +3,13 @@
 
 {% block head %}
   {{ super() }}
-  <link rel="stylesheet" href="{{ get_url(path='assets/css/navigation.css') }}">
-  <link rel="stylesheet" href="{{ get_url(path='assets/css/section.css') }}">
-  <link rel="stylesheet" href="{{ get_url(path='assets/css/plain.css') }}">
-  <link rel="stylesheet" href="{{ get_url(path='assets/css/contact.css') }}">
+  <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/page-404.css') }}">
 {% endblock head %}
 
 
 {% block main %}
 
-  <section class="plain section">
+  <section class="plain segment">
 
     {{ render_macro::section_title(
       title="Error 404 - Page Not Found", 
@@ -33,5 +30,5 @@
 {% block scripts %}
   {{ super() }}
   <script src="{{ get_url(path='vendor/aos/aos.js') }}"></script>
-  <script src="{{ get_url(path='assets/js/home.js') }}"></script>
+  <script src="{{ get_url(path='assets/script/home.js') }}"></script>
 {% endblock scripts %}

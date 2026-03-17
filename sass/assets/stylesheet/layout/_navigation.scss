@@ -1,0 +1,273 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Navigation — Standard Pages
+// Applied to all pages except the home / index page.
+// ─────────────────────────────────────────────────────────────────────────────
+@use '../variables';
+@use '../mixins';
+
+// ── Header ────────────────────────────────────────────────────────────────────
+.header {
+  // ── Desktop ─────────────────────────────────────────────────────────────────
+  @include mixins.respond-above(md) {
+    color: var(--color-default);
+    background-color: var(--color-background);
+    padding: 20px 0;
+    @include mixins.transition;
+    z-index: 997;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    flex-direction: row;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--color-header-background);
+      z-index: -1;
+    }
+
+    .logo {
+      line-height: 1;
+
+      img {
+        max-height: 32px;
+        margin-right: 8px;
+      }
+
+      h1 {
+        font-size: 30px;
+        margin: 0;
+        font-weight: 300;
+        color: var(--color-heading);
+      }
+    }
+  }
+
+  // ── Mobile ───────────────────────────────────────────────────────────────────
+  @include mixins.respond-below(md) {
+    color: var(--color-default);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    padding: 0 var(--nav-menu-border-padding);
+    @include mixins.transition;
+    overflow-y: auto;
+    z-index: 997;
+    width: calc(var(--nav-menu-mobile-width) + var(--nav-menu-mobile-border-width));
+    background: var(--color-background);
+    border-right: var(--nav-menu-mobile-border-width) solid color-mix(in srgb, var(--color-default), transparent variables.$transparency-almost);
+    left: calc(-1 * var(--nav-menu-mobile-width));
+    flex-direction: column;
+  }
+
+  &__navmenu__show {
+    left: 0;
+  }
+}
+
+.scrolled .header {
+  @include mixins.respond-above(md) {
+    box-shadow: 0px 0 18px color-mix(in srgb, var(--color-default), transparent variables.$transparency-heavy);
+  }
+}
+
+// ── Navigation Menu — Desktop ─────────────────────────────────────────────────
+.navmenu {
+  @include mixins.respond-above(md) {
+    padding: 0;
+
+    ul {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      list-style: none;
+      align-items: center;
+    }
+
+    li {
+      position: relative;
+    }
+
+    a,
+    a:focus {
+      color: var(--color-nav);
+      padding: 18px 15px;
+      font-size: 16px;
+      font-family: var(--font-nav);
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      white-space: nowrap;
+      @include mixins.transition;
+
+      i {
+        display: none;
+        font-size: 12px;
+        line-height: 0;
+        margin-left: 5px;
+        @include mixins.transition;
+      }
+    }
+
+    li:last-child a {
+      padding-right: 0;
+    }
+
+    li:hover > a,
+    .active,
+    .active:focus {
+      color: var(--color-nav-hover);
+    }
+
+    .dropdown {
+      ul {
+        margin: 0;
+        padding: 10px 0;
+        background: var(--color-nav-dropdown-background);
+        display: block;
+        position: absolute;
+        visibility: hidden;
+        left: 14px;
+        top: 130%;
+        opacity: 0;
+        @include mixins.transition;
+        border-radius: 4px;
+        z-index: 99;
+        box-shadow: 0px 0px 30px color-mix(in srgb, var(--color-default), transparent variables.$transparency-heavy);
+
+        li {
+          min-width: 200px;
+        }
+
+        a {
+          padding: 10px 20px;
+          font-size: 15px;
+          text-transform: none;
+          color: var(--color-nav-dropdown);
+
+          i {
+            font-size: 12px;
+          }
+
+          &:hover,
+          &.active:hover {
+            color: var(--color-nav-dropdown-hover);
+          }
+        }
+
+        li:hover > a {
+          color: var(--color-nav-dropdown-hover);
+        }
+      }
+
+      &:hover > ul {
+        opacity: 1;
+        top: 100%;
+        visibility: visible;
+      }
+
+      .dropdown {
+        ul {
+          top: 0;
+          left: -90%;
+          visibility: hidden;
+        }
+
+        &:hover > ul {
+          opacity: 1;
+          top: 0;
+          left: -100%;
+          visibility: visible;
+        }
+      }
+    }
+  }
+
+  // ── Mobile ───────────────────────────────────────────────────────────────────
+  @include mixins.respond-below(md) {
+    padding: 0;
+    z-index: 9997;
+
+    > ul {
+      list-style: none;
+      padding: 0 0 20px 0;
+      margin: 0;
+      width: calc(var(--nav-menu-mobile-width) - 2 * var(--nav-menu-border-padding));
+    }
+
+    a,
+    a:focus {
+      color: var(--color-nav);
+      font-family: var(--font-nav);
+      display: flex;
+      align-items: center;
+      padding: 10px 18px;
+      margin-bottom: 8px;
+      font-size: 15px;
+      border-radius: 50px;
+      background: color-mix(in srgb, var(--color-default), transparent variables.$transparency-almost);
+      height: var(--nav-icon-size);
+      width: 100%;
+      overflow: hidden;
+      @include mixins.transition;
+
+      i {
+        font-size: 20px;
+      }
+
+      span {
+        padding: 0 5px 0 7px;
+      }
+    }
+
+    a:hover,
+    .active,
+    .active:focus,
+    li:hover > a {
+      color: var(--color-contrast);
+      background: var(--color-nav-hover);
+    }
+
+    a:hover,
+    li:hover > a {
+      max-width: 100%;
+      color: var(--color-contrast);
+
+      span {
+        display: block;
+      }
+    }
+
+    .dropdown {
+      ul {
+        display: none;
+      }
+    }
+  }
+}
+
+// ── Navigation Toggle ─────────────────────────────────────────────────────────
+.nav-toggle {
+  color: var(--color-contrast);
+  background-color: var(--color-accent);
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--botton-size);
+  height: var(--botton-size);
+  border-radius: 50%;
+  cursor: pointer;
+  position: fixed;
+  top: var(--botton-position-away-from-corner-vertical-distance);
+  right: var(--botton-position-away-from-corner-horizontal-distance);
+  z-index: 9999;
+  @include mixins.transition(background-color);
+
+  &:hover {
+    color: var(--color-contrast);
+    background-color: color-mix(in srgb, var(--color-accent) 90%, white 15%);
+  }
+}

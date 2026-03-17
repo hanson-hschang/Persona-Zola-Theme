@@ -1,0 +1,35 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Blog Listing
+// ─────────────────────────────────────────────────────────────────────────────
+@use '../variables';
+@use '../mixins';
+
+ol {
+  list-style-type: none;
+}
+
+.post-entry {
+  margin-bottom: 30px;
+
+  &__meta {
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+
+  &__title {
+    font-size: var(--font-size-subtitle);
+  }
+
+  &__date {
+    color: var(--color-gray);
+    font-size: var(--font-size-normal);
+    margin-left: 40px;
+    width: fit-content;
+    white-space: nowrap;
+  }
+
+  p {
+    text-align: justify;
+    margin-left: 20px;
+  }
+}

@@ -65,7 +65,7 @@ We welcome contributions from the community and appreciate your help in making t
 
 4. **Push to your fork**:
    ```bash
-   git push origin feature/your-feature-name
+   git push origin feat/your-feature-name
    ```
 
 5. **Create a Pull Request** on GitHub
@@ -74,25 +74,24 @@ We welcome contributions from the community and appreciate your help in making t
 
 ### Code Style
 
-- **HTML**: Use semantic HTML5 elements
-- **CSS**: Follow BEM naming convention where applicable
-- **Templates**: Use clear, descriptive variable names
+- **HTML**: Use [semantic HTML5 elements](https://www.w3schools.com/html/html5_semantic_elements.asp)
+- **SCSS**: Follow [BEM naming convention](https://en.bem.info/methodology/naming-convention/) where applicable
+- **Scripts**: Use clear and descriptive variable names and functions
 - **Comments**: Add comments for complex logic
-- **Indentation**: Use 2 spaces for HTML/CSS, follow existing patterns
+- **Consistency**: Follow existing code patterns and structure
 
 ### Template Guidelines
 
 - **Responsive Design**: Ensure all changes work on mobile, tablet, and desktop
-- **Accessibility**: Follow web accessibility guidelines (WCAG 2.1)
+- **Accessibility**: Follow [web content accessibility guidelines (WCAG 2.1)](https://www.w3.org/WAI/standards-guidelines/wcag/)
 - **Performance**: Optimize for speed and minimal resource usage
-- **Browser Support**: Test in modern browsers (Chrome, Firefox, Safari, Edge)
 
-### CSS Guidelines
+### Stylesheet Guidelines
 
-- **Mobile First**: Write CSS with mobile-first approach
-- **CSS Variables**: Use CSS custom properties for theme colors
-- **Bootstrap**: Leverage Bootstrap classes when possible
-- **Optimization**: Minimize custom CSS, prefer existing utilities
+- **Mobile First**: Write SCSS with a mobile-first approach using `@include respond-to('sm')` and up for larger screens
+- **Bootstrap**: Leverage Bootstrap classes when possible to maintain consistency
+- **Minimization**: Minimize custom SCSS, prefer existing SCSS variables and mixins for consistency
+- **`@use` over `@import`**: Always use `@use` to load SCSS partials — `@import` is deprecated in Dart Sass
 
 ### Documentation
 
@@ -102,7 +101,7 @@ We welcome contributions from the community and appreciate your help in making t
 
 ## 🧪 Testing
 
-Before submitting a PR, please test:
+Before submitting a Pull Request, please test:
 
 1. **Different screen sizes** (mobile, tablet, desktop)
 2. **Multiple browsers** (Chrome, Firefox, Safari, Edge)
@@ -116,22 +115,10 @@ Before submitting a PR, please test:
 
 - **Follow existing design patterns**
 - **Maintain visual hierarchy**
-- **Use consistent spacing** (Bootstrap spacing utilities)
 - **Respect brand colors** and typography
-
-### Responsiveness
-
-- **Test on real devices** when possible
-- **Use Bootstrap breakpoints**:
-  - `xs`: <576px
-  - `sm`: ≥576px
-  - `md`: ≥768px
-  - `lg`: ≥992px
-  - `xl`: ≥1200px
 
 ### Accessibility
 
-- **Use semantic HTML** elements
 - **Provide alt text** for images
 - **Maintain color contrast** ratios
 - **Test with screen readers** when possible
@@ -152,19 +139,23 @@ type(scope): short description
 
 - `feat`: New feature
 - `fix`: Bug fix
-- `docs`: Documentation changes
-- `style`: Code style changes (formatting, etc.)
 - `refactor`: Code refactoring
 - `test`: Adding or updating tests
 - `chore`: Maintenance tasks
 
+### Scopes
+- `config`: Configuration changes
+- `template`: HTML template changes
+- `stylesheet`: SCSS changes
+- `script`: JavaScript changes
+- `docs`: Documentation changes
+
 ### Examples
 
 ```bash
-feat(navigation): add mobile menu toggle animation
-fix(hero): resolve background image not loading on mobile
-docs(readme): update installation instructions
-style(css): improve code formatting and organization
+feat(template): add mobile navigation menu toggle animation
+fix(stylesheet): resolve background image not loading on mobile
+refactor(script): improve code formatting and organization
 ```
 
 ## 🔄 Pull Request Process
@@ -177,9 +168,9 @@ style(css): improve code formatting and organization
 - [ ] Ensure backwards compatibility
 - [ ] Check for console errors
 
-### PR Description
+### Pull Request Description
 
-Include in your PR description:
+Include in your Pull Request description:
 
 1. **What changes were made**
 2. **Why the changes were necessary**
@@ -189,9 +180,9 @@ Include in your PR description:
 
 ### Review Process
 
-- Maintainers will review PRs as time permits
+- Maintainers will review Pull Requests as time permits
 - You may be asked to make changes
-- Once approved, your PR will be merged
+- Once approved, your Pull Request will be merged
 - Your contribution will be credited
 
 ## 🎯 Areas for Contribution

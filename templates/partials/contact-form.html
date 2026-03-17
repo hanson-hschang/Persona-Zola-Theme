@@ -3,25 +3,25 @@
     
     <fieldset class="row gy-4">
       <legend style="display: none;">Contact Information</legend>
-      <div class="col-md-6 input-box">
+      <div class="col-md-6 contact-form__input-box">
         <input required type="text" id="name" name="name" class="form-control">
-        <label class="label" for="name">Name</label>
+        <label class="contact-form__label" for="name">Name</label>
       </div>
-      <div class="col-md-6 input-box">
+      <div class="col-md-6 contact-form__input-box">
         <input type="email" id="email" name="email" class="form-control" required>
-        <label class="label" for="email">Email</label>
+        <label class="contact-form__label" for="email">Email</label>
       </div>
     </fieldset>
     
     <fieldset class="row gy-4">
       <legend style="display: none;">Contact Content</legend>
-      <div class="col-md-12 input-box">
+      <div class="col-md-12 contact-form__input-box">
         <input type="text" id="subject" name="subject" class="form-control" required>
-        <label class="label" for="subject">Subject</label>
+        <label class="contact-form__label" for="subject">Subject</label>
       </div>
-      <div class="col-md-12 input-box">
+      <div class="col-md-12 contact-form__input-box">
         <textarea name="message" id="message" class="form-control" rows="3" required></textarea>
-        <label class="label" for="message">Message</label>
+        <label class="contact-form__label" for="message">Message</label>
       </div>
     </fieldset>
     
@@ -41,9 +41,9 @@
 
     <div class="row gy-4">
       <div class="col-md-12 text-center">
-        <div class="loading">Loading</div>
-        <div class="error-message"></div>
-        <div class="sent-message">
+        <div class="contact-form__loading">Loading</div>
+        <div class="contact-form__error"></div>
+        <div class="contact-form__success">
           Your message has been sent. Thank you!
         </div>
 

@@ -1,0 +1,46 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Plain Section Content
+// ─────────────────────────────────────────────────────────────────────────────
+@use '../variables';
+@use '../mixins';
+
+.plain {
+  .content {
+    h2 {
+      font-weight: 700;
+      font-size: 24px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+
+      li {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+      }
+
+      strong {
+        margin-right: 10px;
+      }
+
+      i {
+        font-size: 16px;
+        margin-right: 5px;
+        color: var(--color-accent);
+        line-height: 0;
+      }
+    }
+
+    p {
+      text-align: justify;
+    }
+  }
+
+  img {
+    width: 100%;
+    display: flex;
+    border-radius: var(--img-border-radius);
+  }
+}

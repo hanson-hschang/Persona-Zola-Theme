@@ -1,0 +1,9 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// post — Loaded on individual blog post pages
+// Includes: navigation, breadcrumbs, post content, sidebar widgets.
+// Compiled output: public/assets/styles/post.css
+// ─────────────────────────────────────────────────────────────────────────────
+@use 'layout/navigation';
+@use 'layout/breadcrumbs';
+@use 'components/post';
+@use 'components/widgets';

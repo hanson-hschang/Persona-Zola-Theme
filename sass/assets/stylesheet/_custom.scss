@@ -1,0 +1,20 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Custom overrides — add your own styles here.
+// This file is included last in every entry point,
+// so your rules will take precedence over all theme defaults.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Example: override the accent color for your brand.
+//
+// :root {
+//   --color-accent: #e91e63;
+// }
+//
+// Example: add a custom font.
+// Add a <link> tag in templates/partials/head-title.html, e.g.:
+//   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter&display=swap">
+// Then override the CSS variable here:
+//
+// :root {
+//   --font-default: 'Inter', sans-serif;
+// }

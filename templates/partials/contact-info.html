@@ -1,6 +1,6 @@
 {% for info in config.extra.persona.contact_infos %}
   {% if info.item != "_navigation" %}
-    <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+    <div class="contact__info-item d-flex" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
       <i class="flex-shrink-0 {{ info.icon_class}}"></i>
       <div>
         <h3>{{ info.item }}</h3>

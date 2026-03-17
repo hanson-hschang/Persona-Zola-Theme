@@ -1,4 +1,4 @@
-<section id="hero" class="hero section">
+<section id="hero" class="hero segment">
   <img src="{{ get_url(path='assets/img/background.jpg') }}" alt="background image">
   <div class="container" data-aos="zoom-out">
     <div class="row justify-content-center">
@@ -9,7 +9,7 @@
             <span class="typed" data-typed-items="{{ section.extra.subtitles }}"></span>
           </p>
         {% endif %}
-        <div class="social-links">
+        <div class="hero__social-links">
           {% include "partials/social-icon.html" %}
         </div>
       </div>

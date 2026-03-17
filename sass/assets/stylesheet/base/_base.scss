@@ -1,0 +1,54 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Base Styles
+// Core styles applied to every page.
+// ─────────────────────────────────────────────────────────────────────────────
+@use '../variables';
+@use '../mixins';
+
+// Smooth scroll
+:root {
+  scroll-behavior: smooth;
+}
+
+// ── General ──────────────────────────────────────────────────────────────────
+body {
+  color: var(--color-default);
+  background-color: var(--color-background);
+  font-family: var(--font-default);
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+   @include mixins.transition;
+
+  &:hover {
+    color: color-mix(in srgb, var(--color-accent), transparent variables.$transparency-light);
+    text-decoration: none;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--color-heading);
+  font-family: var(--font-heading);
+}
+
+p {
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+// ── Disable AOS animation delay on mobile devices ────────────────────────────
+@include mixins.respond-below(md) {
+  [data-aos-delay] {
+    transition-delay: 0 !important;
+  }
+}

@@ -1,0 +1,169 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Variables
+// All design tokens: SCSS variables + re-exported CSS custom properties.
+// Modify the SCSS variables below to customize colors, fonts, dimensions, and
+// spacing across the entire theme.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Typography ───────────────────────────────────────────────────────────────
+// Font stack explanation:
+//  DEFAULT FONT (Body Text): long fallback chain for consistent cross-platform rendering.
+//  HEADING & NAV FONTS: shorter chains — decorative fonts fall back to system sans-serif.
+
+$font-default:    "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+$font-heading:    "Raleway", sans-serif;
+$font-nav:        "Poppins", sans-serif;
+
+// ── Font Sizes ───────────────────────────────────────────────────────────────
+$font-size-footer:    14px;   // Footer text
+$font-size-normal:    16px;   // Base body font size
+$font-size-subtitle:  24px;   // Section subtitles
+$font-size-heading:   32px;   // Section headings
+$font-size-title:     64px;   // Hero title
+
+// ── Global Colors ────────────────────────────────────────────────────────────
+$color-background:   #ffffff;  // Site-wide background
+$color-default:      #272829;  // Default body text
+$color-heading:      #45505b;  // Headings and subheadings
+$color-accent:       #0563bb;  // Brand accent — buttons, links, highlights
+$color-surface:      #ffffff;  // Card / boxed element backgrounds
+$color-contrast:     #ffffff;  // Text on accent/heading/default backgrounds
+$color-transparency: 25%;        // Base transparency level for hover effects
+
+// ── Navigation Colors ────────────────────────────────────────────────────────
+$color-nav:                  #45505b;  // Default nav link color
+$color-nav-hover:            #0563bb;  // Nav link hover / active color
+$color-nav-mobile-bg:        #ffffff;  // Mobile nav panel background
+$color-nav-dropdown-bg:      #ffffff;  // Dropdown menu background
+$color-nav-dropdown:         #212529;  // Dropdown link color
+$color-nav-dropdown-hover:   #0563bb;  // Dropdown link hover color
+
+// ── Header Colors ────────────────────────────────────────────────────────────
+$color-header: #ffffff;
+
+// ── Navigation Dimensions ────────────────────────────────────────────────────
+$nav-icon-size:                56px;
+$nav-menu-width:               140px;
+$nav-menu-mobile-width:        300px;
+$nav-menu-border-padding:      15px;
+$nav-menu-mobile-border-width: 1px;
+
+// ── Border Radius ────────────────────────────────────────────────────────────
+$img-border-radius: 10px;
+
+// ── Button Dimensions ────────────────────────────────────────────────────────
+$button-size:             40px;
+$button-corner-distance:  15px;  // Default distance from corners
+$button-corner-vertical:  30px;  // Vertical distance from corners
+
+// ── Spacing Scale ────────────────────────────────────────────────────────────
+$spacing-xxs: 0.25rem;  //  4px (assuming 16px base)
+$spacing-xs:  0.5rem;   //  8px
+$spacing-sm:  1rem;     // 16px
+$spacing-md:  1.5rem;   // 24px
+$spacing-lg:  2rem;     // 32px
+$spacing-xl:  3rem;     // 48px
+$spacing-xxl: 4rem;     // 64px
+
+// ── Animation / Transition ───────────────────────────────────────────────────
+$transition-time: 0.3s;
+
+// -- Transparency Levels (for hover effects, etc.) ───────────────────────────────────
+// These can be used with color-mix() to create hover states and other effects.
+$transparency-subtle: 5%;
+$transparency-light: 25%;
+$transparency-medium: 50%;
+$transparency-heavy: 75%;
+$transparency-almost: 95%;
+
+// ── Re-export as CSS custom properties ───────────────────────────────────────
+// These properties are referenced at runtime by component stylesheets and JS.
+// Do not remove or rename them — only update the SCSS variables above.
+
+/* stylelint-disable custom-property-pattern */
+:root {
+  // Font Variables
+  --font-default:       #{$font-default};
+  --font-heading:       #{$font-heading};
+  --font-nav:           #{$font-nav};
+
+  --font-size-footer:   #{$font-size-footer};
+  --font-size-normal:   #{$font-size-normal};
+  --font-size-subtitle: #{$font-size-subtitle};
+  --font-size-heading:  #{$font-size-heading};
+  --font-size-title:    #{$font-size-title};
+
+  // Color Variables
+  --color-background: #{$color-background};
+  --color-default:    #{$color-default};
+  --color-heading:    #{$color-heading};
+  --color-accent:     #{$color-accent};
+  --color-surface:    #{$color-surface};
+  --color-contrast:   #{$color-contrast};
+
+  // Navigation Colors
+  --color-nav:                     #{$color-nav};
+  --color-nav-hover:               #{$color-nav-hover};
+  --color-nav-mobile-background:   #{$color-nav-mobile-bg};
+  --color-nav-dropdown-background: #{$color-nav-dropdown-bg};
+  --color-nav-dropdown:            #{$color-nav-dropdown};
+  --color-nav-dropdown-hover:      #{$color-nav-dropdown-hover};
+
+  // Header Colors
+  --color-header-background: color-mix(in srgb, var(--color-default), transparent #{$transparency-almost});
+  --color-header: #{$color-header};
+
+  // Transparency Levels
+  --transparency-light: #{$transparency-light};
+  --transparency-medium: #{$transparency-medium};
+  --transparency-heavy: #{$transparency-heavy};
+  --transparency-almost: #{$transparency-almost};
+
+  // Navigation Dimensions
+  --nav-icon-size:                #{$nav-icon-size};
+  --nav-menu-width:               #{$nav-menu-width};
+  --nav-menu-mobile-width:        #{$nav-menu-mobile-width};
+  --nav-menu-border-padding:      #{$nav-menu-border-padding};
+  --nav-menu-mobile-border-width: #{$nav-menu-mobile-border-width};
+
+  // Border Radius
+  --img-border-radius: #{$img-border-radius};
+
+  // Button Dimensions
+  --botton-size:                                        #{$button-size};
+  --botton-position-away-from-corner-distance:          #{$button-corner-distance};
+  // The horizontal distance re-uses the base corner distance via a CSS reference.
+  --botton-position-away-from-corner-horizontal-distance: var(--botton-position-away-from-corner-distance);
+  --botton-position-away-from-corner-vertical-distance: #{$button-corner-vertical};
+
+  // Spacing Variables
+  --spacing-xxs: #{$spacing-xxs};
+  --spacing-xs:  #{$spacing-xs};
+  --spacing-sm:  #{$spacing-sm};
+  --spacing-md:  #{$spacing-md};
+  --spacing-lg:  #{$spacing-lg};
+  --spacing-xl:  #{$spacing-xl};
+  --spacing-xxl: #{$spacing-xxl};
+
+  // Transition Variables
+  --transition-time: #{$transition-time};
+}
+/* stylelint-enable custom-property-pattern */
+
+// ── Optional Color Presets ───────────────────────────────────────────────────
+// Uncomment to enable light / dark background variations.
+
+// Light Background
+// .light-background {
+//   --color-background: #f9f9f9;
+//   --color-surface:    #ffffff;
+// }
+
+// Dark Background
+// .dark-background {
+//   --color-background: #060606;
+//   --color-default:    #ffffff;
+//   --color-heading:    #ffffff;
+//   --color-surface:    #252525;
+//   --color-contrast:   #ffffff;
+// }

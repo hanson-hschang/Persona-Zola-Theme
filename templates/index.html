@@ -1,15 +1,10 @@
 {% extends "base.html" %}
-{% import "macros/section.html" as section_macro %}
+{% import "macros/segment.html" as segment_macro %}
 
 
 {% block head %}
   {{ super() }}
-  <link rel="stylesheet" href="{{ get_url(path='assets/css/navigation-index.css') }}">
-  <link rel="stylesheet" href="{{ get_url(path='assets/css/hero.css') }}">
-  <link rel="stylesheet" href="{{ get_url(path='assets/css/section.css') }}">
-  <link rel="stylesheet" href="{{ get_url(path='assets/css/plain.css') }}">
-  <link rel="stylesheet" href="{{ get_url(path='assets/css/category.css') }}">
-  <link rel="stylesheet" href="{{ get_url(path='assets/css/contact.css') }}">
+  <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/home.css') }}">
 {% endblock head %}
 
 
@@ -30,7 +25,7 @@
     {% endif %}
   {% endfor %}
   {% set_global poss = poss | sort(attribute="extra.order") %}
-  {{ section_macro::populate(poss=poss) }}
+  {{ segment_macro::populate(poss=poss) }}
 
   {% include "partials/contact.html" %}
 
@@ -41,5 +36,5 @@
   {{ super() }}
   <script src="{{ get_url(path='vendor/aos/aos.js') }}"></script>
   <script src="{{ get_url(path='vendor/typed.js/typed.umd.js') }}"></script>
-  <script src="{{ get_url(path='assets/js/home.js') }}"></script>
+  <script src="{{ get_url(path='assets/script/home.js') }}"></script>
 {% endblock scripts %}

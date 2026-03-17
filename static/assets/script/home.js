@@ -39,9 +39,9 @@
     },
     contactForm: {
       selector: '.contact-form',
-      loading: '.loading',
-      errorMessage: '.error-message',
-      sentMessage: '.sent-message',
+      loading: '.contact-form__loading',
+      errorMessage: '.contact-form__error',
+      successMessage: '.contact-form__success',
       submitButton: 'button[type="submit"]',
       hideMessageDelay: 3000
     }
@@ -52,7 +52,7 @@
    * Application Module
    * ------------------------------------------------------------------------
    */
-  const App = {
+  const app = {
     /**
      * Initializes all necessary components and libraries.
      */
@@ -158,7 +158,7 @@
       }
 
       const toggleHeader = () => {
-        header.classList.toggle('navmenu-show');
+        header.classList.toggle('header__navmenu__show');
         headerToggleBtn.classList.toggle('bi-list');
         headerToggleBtn.classList.toggle('bi-x');
       };
@@ -182,7 +182,7 @@
 
       navmenuLinks.forEach(link => {
         link.addEventListener('click', () => {
-          if (header.classList.contains('navmenu-show') && this.headerToggle) {
+          if (header.classList.contains('header__navmenu__show') && this.headerToggle) {
             this.headerToggle();
           }
         });
@@ -239,13 +239,13 @@
 
       const loading = form.querySelector(CONFIG.contactForm.loading);
       const errorMessage = form.querySelector(CONFIG.contactForm.errorMessage);
-      const sentMessage = form.querySelector(CONFIG.contactForm.sentMessage);
+      const successMessage = form.querySelector(CONFIG.contactForm.successMessage);
       const submitButton = form.querySelector(CONFIG.contactForm.submitButton);
 
       function hideAllMessages() {
         loading.classList.remove('show');
         errorMessage.classList.remove('show');
-        sentMessage.classList.remove('show');
+        successMessage.classList.remove('show');
       }
 
       function showLoading() {
@@ -257,7 +257,7 @@
 
       function showSuccess() {
         hideAllMessages();
-        sentMessage.classList.add('show');
+        successMessage.classList.add('show');
         submitButton.disabled = false;
         submitButton.textContent = 'Send Message';
         form.reset();
@@ -366,6 +366,6 @@
   };
 
   // Start the application
-  App.init();
+  app.init();
 
 })();

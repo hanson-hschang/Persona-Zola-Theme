@@ -1,0 +1,63 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Mixins
+// Shared helpers used across component partials.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Responsive Breakpoints ───────────────────────────────────────────────────
+$grid-breakpoints: (
+  xs:  0,
+  sm:  576px,
+  md:  768px,
+  lg:  992px,
+  xl:  1200px,
+  xxl: 1400px
+);
+
+// 1. Mobile-First: ABOVE [Breakpoint]
+@mixin respond-above($breakpoint) {
+  $value: map-get($grid-breakpoints, $breakpoint);
+
+  @if $value != null {
+    @media (min-width: $value) { @content; }
+  } @else {
+    @warn "Invalid breakpoint: `#{$breakpoint}`. Check your breakpoint name.";
+  }
+}
+
+// 2. Desktop-First: BELOW [Breakpoint]
+@mixin respond-below($breakpoint) {
+  $value: map-get($grid-breakpoints, $breakpoint);
+
+  @if $value != null {
+    @media (max-width: ($value - 0.02px)) { @content; }
+  } @else {
+    @warn "Invalid breakpoint: `#{$breakpoint}`. Check your breakpoint name.";
+  }
+}
+
+// 3. Range: only BETWEEN [Lower] and [Upper]
+@mixin respond-between($lower, $upper) {
+  $min: map-get($grid-breakpoints, $lower);
+  $max: map-get($grid-breakpoints, $upper);
+
+  @if $min != null and $max != null {
+    @media (min-width: $min) and (max-width: ($max - 0.02px)) { @content; }
+  } @else {
+    @warn "Invalid breakpoint range: `#{$lower}` to `#{$upper}`. Check your breakpoint names.";
+  }
+}
+
+// ── Flex centering ───────────────────────────────────────────────────────────
+// Usage:  @include flex-center;
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ── Transitions ──────────────────────────────────────────────────────────────
+// Usage:  @include transition;
+//         @include transition(color, 0.2s, ease-in);
+@mixin transition($properties: all, $duration: 0.3s, $easing: ease-in-out) {
+  transition: $properties $duration $easing;
+}

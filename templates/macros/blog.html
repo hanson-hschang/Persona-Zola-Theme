@@ -1,15 +1,15 @@
 {% import "macros/render.html" as render_macro %}
 
 {% macro post_thumbnail(thumbnail) %}
-  <div class="post-img">
+  <div class="blog-post__img">
     <img src="{{ page.extra.thumbnail }}" alt="" class="img-fluid">
   </div>
 {% endmacro %}
 
 {% macro post_share(link) %}
 
-  <div id="share" class="share-container">
-    <button id="share-button" class="share-button" aria-label="Share post">
+  <div id="share" class="share">
+    <button id="share-button" class="share__button" aria-label="Share post">
       <i class="bi bi-box-arrow-up" aria-hidden="true"></i>
     </button>
     {{ render_macro::share_menu(title=page.title, permalink=page.permalink) }}
@@ -19,10 +19,10 @@
 
 
 {% macro post_tag(tags) %}
-  <div class="post-tags">
+  <div class="blog-post__tags">
     {% if tags %}
       {% for tag in tags %}
-        <span class="tag">{{ tag | lower }}</span>
+        <span class="blog-post__tag">{{ tag | lower }}</span>
       {% endfor %}
     {% endif %}
   </div>
@@ -31,25 +31,25 @@
 
 {% macro post_header(page) %}
 
-  <div class="post-header">
-    <h2 class="post-title">{{ page.title }}</h2>
+  <div class="blog-post__header">
+    <h2 class="blog-post__title">{{ page.title }}</h2>
     {{ blog_macro::post_tag(tags=page.taxonomies.tags) }}
-    <div class="meta-top-divider"></div>
-    <div class="meta-top">
+    <div class="blog-post__meta-divider"></div>
+    <div class="blog-post__meta">
       <div class="d-flex justify-content-between">
         <ul id="info" class="d-flex justify-content-between">
           <li id="date" class="d-flex align-items-center">
             <i class="bi bi-calendar-event" aria-hidden="true"></i>
-            <time class="post-date">{{ page.date | date(format="%B %d, %Y")}}</time>
+            <time class="blog-post__date">{{ page.date | date(format="%B %d, %Y")}}</time>
           </li>
           <li id="read" class="d-flex align-items-center">
             <i class="bi bi-hourglass-split" aria-hidden="true"></i>
-            <time class="post-time">{{ page.reading_time }} min read</time>
+            <time class="blog-post__time">{{ page.reading_time }} min read</time>
           </li>
         </ul>
         <ul id="action" class="d-flex justify-content-between">
           <li class="d-flex align-items-center">
-            <button id="bookmark-button" class="share-button" aria-label="Bookmark post">
+            <button id="bookmark-button" class="share__button" aria-label="Bookmark post">
               <i class="bi bi-bookmark-plus" aria-hidden="true"></i>
             </button>
           </li>
@@ -59,14 +59,14 @@
         </ul>
       </div>
     </div>
-    <div class="meta-top-divider"></div>
+    <div class="blog-post__meta-divider"></div>
   </div>
 
 {% endmacro %}
 
 
 {% macro post_content(content) %}
-  <div class="post-content">{{ content | safe }}</div>
+  <div class="blog-post__content">{{ content | safe }}</div>
 {% endmacro %}
 
 
@@ -75,12 +75,12 @@
   {% set parent_section = page.ancestors | last %}
   {% set blog_section = get_section(path=parent_section, paginate_by=false, include_pages=true) %}
   <aside id="sidebar" class="sidebar col-lg-4">
-    <div class="widgets-container">
-      <div class="recent-posts-widget widget-item">
-        <h3 class="widget-title">Recent Posts</h3>
+    <div class="sidebar__widgets">
+      <div class="recent-posts-widget widget">
+        <h3 class="widget__title">Recent Posts</h3>
         <ul id="post-entries">
           {% for page in blog_section.pages | slice(end=5) %}
-            <li class="post-item">
+            <li class="recent-posts-widget__item">
               <h4><a href="{{ page.permalink | safe }}">{{ page.title }}</a></h4>
               <time>{{ page.date | date(format="%b %d, %Y")}}</time>
             </li>
@@ -98,9 +98,9 @@
   {{ render_macro::breadcrumbs(crumbs=page.components) }}
   <div class="container">
     <div class="row">
-      <section id="blog-post" class="blog-post section col-lg-8">
+      <section id="blog-post" class="blog-post segment col-lg-8">
         <div class="container" data-aos="fade-up">
-          <article class="article">
+          <article class="blog-post__article">
             {% if page.extra.thumbnail %} 
               {{ blog_macro::post_thumbnail(thumbnail=page.extra.thumbnail) }}
             {% endif %}

@@ -1,21 +1,19 @@
 {% extends "base.html" %}
-{% import "macros/section.html" as section_macro %}
+{% import "macros/segment.html" as segment_macro %}
 
 {% block head %}
   {{ super() }}
-  <link rel="stylesheet" href="{{ get_url(path='assets/css/navigation.css') }}">
-  <link rel="stylesheet" href="{{ get_url(path='assets/css/section.css') }}">
-  <link rel="stylesheet" href="{{ get_url(path='assets/css/plain.css') }}">  
+  <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/page-plain.css') }}">
 {% endblock head %}
 
 
 {% block main %}
-  {{ section_macro::plain(pos=page) }}
+  {{ segment_macro::plain(pos=page) }}
 {% endblock main %}
 
 
 {% block scripts %}
   {{ super() }}
   <script src="{{ get_url(path='vendor/aos/aos.js') }}"></script>
-  <script src="{{ get_url(path='assets/js/home.js') }}"></script>
+  <script src="{{ get_url(path='assets/script/home.js') }}"></script>
 {% endblock scripts %}

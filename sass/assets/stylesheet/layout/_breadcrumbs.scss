@@ -1,0 +1,60 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Breadcrumbs / Page Title
+// ─────────────────────────────────────────────────────────────────────────────
+@use '../variables';
+@use '../mixins';
+
+.page-title {
+  color: var(--color-default);
+  background-color: var(--color-background);
+  padding: 15px 0;
+  height: 60px;
+  position: relative;
+  margin-bottom: -60px;
+
+  @include mixins.respond-below(md) {
+    background-color: var(--color-header-background);
+    height: 100px;
+    margin-bottom: -40px;
+  }
+
+  &__state__empty {
+    height: 40px;
+    padding: 0;
+    background-color: var(--color-background);
+    margin-bottom: -40px;
+
+    @include mixins.respond-below(md) {
+      margin-bottom: 20px;
+    }
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .breadcrumbs {
+    ol {
+      display: flex;
+      flex-wrap: wrap;
+      list-style: none;
+      padding: 0 0 10px 0;
+      margin: 0;
+      font-size: var(--font-size-footer);
+      font-weight: 400;
+
+      li + li {
+        padding-left: 10px;
+
+        &::before {
+          content: "/";
+          display: inline-block;
+          padding-right: 10px;
+          color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-heavy);
+        }
+      }
+    }
+  }
+}

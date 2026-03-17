@@ -3,7 +3,7 @@
   These macros are used to render various components of the website.
   The macros include:
   - post_entry: Renders a blog post-entry with title, date, link, and excerpt.
-  - section_title: Renders a section title with an optional subtitle.
+  - section_title: Renders a segment title with an optional subtitle.
   - text_content: Renders a block of text content.
   - share_menu: Renders a share menu with various sharing options.
   - cards: Renders a grid of cards for sections.
@@ -12,11 +12,11 @@
 
 {% macro post_entry(title, date, link, excerpt) %}
 <li class="container post-entry border-bottom">
-  <div class="post-meta d-flex justify-content-between align-items-center">
-    <h4 class="post-title">
+  <div class="post-entry__meta d-flex justify-content-between align-items-center">
+    <h4 class="post-entry__title">
       <a href="{{ link }}">{{ title }}</a>
     </h4>
-    <h5 class="post-date">{{ date }}</h5>
+    <h5 class="post-entry__date">{{ date }}</h5>
   </div>
   <p class="mb-4 d-block">{{ excerpt }}</p>
 </li>
@@ -24,7 +24,7 @@
 
 {% macro section_title(title, subtitle="") %}
 <div class="container" data-aos="fade-up">
-  <div class="section-title">
+  <div class="segment__title">
     <h2>{{ title }}</h2>
     {% if subtitle %}
       <em>{{ subtitle | safe }}</em>
@@ -45,24 +45,24 @@
 
 {% macro share_menu(title, permalink) %}
 <div id="share-menu" class="share-menu">
-  <a id="share-link" class="share-menu-item" href="#" >
+  <a id="share-link" class="share-menu__item" href="#" >
     <i class="bi bi-link-45deg" aria-hidden="true"></i>
     <span>Get link</span>
   </a>
-  <div class="share-menu-divider"></div>
-  <a id="share-linkedin" class="share-menu-item" href="https://www.linkedin.com/sharing/share-offsite/?url={{ permalink }}" target="_blank" rel="noopener noreferrer">
+  <div class="share-menu__divider"></div>
+  <a id="share-linkedin" class="share-menu__item" href="https://www.linkedin.com/sharing/share-offsite/?url={{ permalink }}" target="_blank" rel="noopener noreferrer">
     <i class="bi bi-linkedin" aria-hidden="true"></i>
     <span>Share on LinkedIn</span>
   </a>
-  <a id="share-facebook" class="share-menu-item" href="https://www.facebook.com/sharer/sharer.php?u={{ permalink }}" target="_blank" rel="noopener noreferrer">
+  <a id="share-facebook" class="share-menu__item" href="https://www.facebook.com/sharer/sharer.php?u={{ permalink }}" target="_blank" rel="noopener noreferrer">
     <i class="bi bi-facebook" aria-hidden="true"></i>
     <span>Share on Facebook</span>
   </a>
-  <a id="share-x" class="share-menu-item" href="https://x.com/intent/tweet?url={{ permalink }}" target="_blank" rel="noopener noreferrer">
+  <a id="share-x" class="share-menu__item" href="https://x.com/intent/tweet?url={{ permalink }}" target="_blank" rel="noopener noreferrer">
     <i class="bi bi-twitter-x" aria-hidden="true"></i>
     <span>Share on X</span>
   </a>
-  <a id="share-email" class="share-menu-item" href="mailto:?subject={{ title }}&body={{ permalink }}">
+  <a id="share-email" class="share-menu__item" href="mailto:?subject={{ title }}&body={{ permalink }}">
     <i class="bi bi-envelope-fill" aria-hidden="true"></i>
     <span>Email</span>
   </a>
@@ -76,11 +76,11 @@
       <div class="col-sm-6 col-md-6 mb-4 mb-lg-0 col-lg-4">
         {# The data-aos-delay is now generated dynamically based on the loop's position #}
         <div class="post-entry" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
-          <a href="{{ section.permalink }}" class="thumb d-block">
+          <a href="{{ section.permalink }}" class="post-entry__thumb d-block">
             {# Build the thumbnail URL correctly using the section's path and the thumbnail filename #}
             <img class="img-fluid" src="{{ get_url(path=section.path ~ section.extra.thumbnail) }}" alt="Thumbnail for {{ section.title }}">
           </a>
-          <div class="post-content">
+          <div class="post-entry__content">
             <h3><a href="{{ section.permalink }}">{{ section.title }}</a></h3>
             {# The content div from the original was removed for simplicity, you can add it back if needed #}
             <p> {{ section.description }} </p>

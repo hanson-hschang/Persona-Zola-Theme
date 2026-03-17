@@ -1,0 +1,66 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Segment Container
+// Shared layout for all segment types.
+// ─────────────────────────────────────────────────────────────────────────────
+@use '../variables';
+@use '../mixins';
+
+.segment {
+  color: var(--color-default);
+  background-color: var(--color-background);
+  padding: var(--spacing-xxl) 0 0 0;
+  overflow: clip;
+}
+
+.segment {
+  &__title {
+    text-align: center;
+    padding-bottom: var(--spacing-xxl);
+    position: relative;
+
+    h2 {
+      font-size: var(--font-size-heading);
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      position: relative;
+
+      &::before {
+        content: "";
+        position: absolute;
+        display: block;
+        width: 160px;
+        height: 1px;
+        background: color-mix(in srgb, var(--color-default), transparent variables.$transparency-medium);
+        left: 0;
+        right: 0;
+        bottom: 1px;
+        margin: auto;
+      }
+
+      &::after {
+        content: "";
+        position: absolute;
+        display: block;
+        width: var(--spacing-xxl);
+        height: 3px;
+        background: var(--color-accent);
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+      }
+    }
+
+    p {
+      margin-bottom: 0;
+    }
+
+    em {
+      font-style: normal;
+      font-family: "Courier New", Courier, monospace;
+      font-size: var(--font-size-subtitle);
+      color: var(--color-accent);
+    }
+  }
+}

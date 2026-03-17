@@ -1,0 +1,85 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Hero Section — Home Page
+// ─────────────────────────────────────────────────────────────────────────────
+@use '../variables';
+@use '../mixins';
+
+.hero {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  padding: 80px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: right center;
+    z-index: 0;
+  }
+
+  &::before {
+    content: "";
+    background: color-mix(in srgb, var(--color-background), transparent variables.$transparency-light);
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+  }
+
+  .container {
+    position: relative;
+    z-index: 3;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: var(--font-size-title);
+    font-weight: 700;
+  }
+
+  p {
+    margin: 5px 0 0 0;
+    font-size: 26px;
+    font-family: "Courier New", Courier, monospace;
+
+    span {
+      letter-spacing: 1px;
+      color: var(--color-accent);
+    }
+  }
+
+  &__social-links {
+    margin-top: 25px;
+
+    a {
+      font-size: 20px;
+      display: inline-block;
+      color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-light);
+      line-height: 1;
+      margin-right: 20px;
+      @include mixins.transition;
+
+      &:hover {
+        color: var(--color-accent);
+      }
+    }
+  }
+}
+
+@include mixins.respond-below(lg) {
+  .hero {
+    h2 {
+      font-size: calc(var(--font-size-title) / 2);
+    }
+
+    p {
+      font-size: 20px;
+    }
+  }
+}

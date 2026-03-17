@@ -1,0 +1,72 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Footer
+// ─────────────────────────────────────────────────────────────────────────────
+@use '../variables';
+@use '../mixins';
+
+.footer {
+  color: var(--color-default);
+  background-color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-almost);
+  font-size: var(--font-size-normal);
+  text-align: center;
+  padding: var(--spacing-lg) 0;
+  position: relative;
+  margin: var(--spacing-xxl) 0 0 0;
+
+  &__sitename {
+    font-size: var(--font-size-heading);
+    font-weight: 700;
+    position: relative;
+    padding: 0;
+    margin: 0 0 var(--spacing-sm) 0;
+  }
+
+  &__quote {
+    font-size: var(--font-size-normal);
+    font-style: italic;
+    padding: 0;
+    margin: 0 0 var(--spacing-lg) 0;
+  }
+
+  &__social-links {
+    margin: 0 0 var(--spacing-lg) 0;
+
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--color-accent);
+      color: var(--color-contrast);
+      line-height: 1;
+      margin: 0 var(--spacing-xxs);
+      border-radius: 50%;
+      text-align: center;
+      width: 36px;
+      height: 36px;
+       @include mixins.transition;
+
+      &:hover {
+        background: color-mix(in srgb, var(--color-accent), transparent variables.$transparency-light);
+      }
+    }
+  }
+
+  &__copyright {
+    font-size: var(--font-size-footer);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid color-mix(in srgb, var(--color-default), transparent variables.$transparency-almost);
+
+    p {
+      margin-bottom: 0;
+    }
+  }
+
+  &__credits {
+    font-size: var(--font-size-footer);
+    padding-top: var(--spacing-xxs);
+
+    p {
+      margin-bottom: 0;
+    }
+  }
+}

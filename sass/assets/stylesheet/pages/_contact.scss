@@ -1,0 +1,186 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Contact Section
+// ─────────────────────────────────────────────────────────────────────────────
+@use '../variables';
+@use '../mixins';
+
+.contact {
+  &__info-item {
+    & + & {
+      margin-top: 40px;
+    }
+
+    i {
+      color: var(--color-accent);
+      background: color-mix(in srgb, var(--color-accent), transparent variables.$transparency-almost);
+      font-size: 20px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50px;
+      margin-right: 15px;
+      @include mixins.transition;
+    }
+
+    h3 {
+      font-size: var(--font-size-normal);
+      padding: 0;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    p {
+      padding: 0;
+      margin-bottom: 0;
+      font-size: var(--font-size-footer);
+    }
+
+    &:hover i {
+      background: var(--color-accent);
+      color: var(--color-contrast);
+    }
+  }
+}
+
+.contact-form {
+  height: 100%;
+
+  &__error {
+    display: none;
+    background: #df1529;
+    color: #ffffff;
+    text-align: left;
+    padding: 15px;
+    margin-bottom: 24px;
+    font-weight: 600;
+    border-radius: 4px;
+
+    &.show {
+      display: block;
+    }
+  }
+
+  &__success {
+    display: none;
+    color: #ffffff;
+    background: #059652;
+    text-align: center;
+    padding: 15px;
+    margin-bottom: 24px;
+    font-weight: 600;
+    border-radius: 4px;
+
+    &.show {
+      display: block;
+    }
+  }
+
+  &__loading {
+    display: none;
+    background: var(--color-background);
+    text-align: center;
+    padding: 15px;
+    margin-bottom: 24px;
+
+    &::before {
+      content: "";
+      display: inline-block;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      margin: 0 10px -6px 0;
+      border: 3px solid var(--color-accent);
+      border-top-color: var(--color-background);
+      animation: animate-loading 1s linear infinite;
+    }
+
+    &.show {
+      display: block;
+    }
+  }
+
+  fieldset {
+    margin-bottom: 24px;
+  }
+
+  &__input-box {
+    position: relative;
+
+    input,
+    textarea {
+      font-size: var(--font-size-footer);
+      outline: none;
+      padding: 15px 15px 10px 15px;
+      display: block;
+      width: 100%;
+      border-radius: 4px;
+      border: 2px solid color-mix(in srgb, var(--color-default), transparent variables.$transparency-heavy);
+      background: color-mix(in srgb, var(--color-background), transparent variables.$transparency-medium);
+      color: var(--color-default);
+       @include mixins.transition(border-color);
+
+      &:focus,
+      &:valid {
+        border-color: var(--color-accent);
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    input:user-invalid ~ .contact-form__label {
+      transform: translateY(-25px);
+      font-size: var(--font-size-footer);
+    }
+  }
+
+  &__label {
+    color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-light);
+    font-size: var(--font-size-footer);
+    font-weight: normal;
+    position: absolute;
+    pointer-events: none;
+    left: 24px;
+    top: 15px;
+     @include mixins.transition;
+    background: var(--color-background);
+    padding: 0 4px;
+  }
+
+  &__input-box input:focus ~ &__label,
+  &__input-box input:valid ~ &__label,
+  &__input-box textarea:focus ~ &__label,
+  &__input-box textarea:valid ~ &__label {
+    transform: translateY(-25px);
+    font-size: var(--font-size-footer);
+    color: var(--color-accent);
+  }
+
+  button[type=submit] {
+    color: var(--color-contrast);
+    background: var(--color-accent);
+    border: 0;
+    padding: 10px 30px;
+     @include mixins.transition;
+    border-radius: 50px;
+
+    &:hover {
+      background: color-mix(in srgb, var(--color-accent), transparent variables.$transparency-light);
+    }
+  }
+}
+
+@keyframes animate-loading {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
