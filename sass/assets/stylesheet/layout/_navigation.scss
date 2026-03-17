@@ -12,7 +12,7 @@
     color: var(--color-default);
     background-color: var(--color-background);
     padding: 20px 0;
-    transition: all ease-in-out var(--transition-hover-time);
+    @include mixins.transition;
     z-index: 997;
     align-items: center;
     position: sticky;
@@ -51,12 +51,12 @@
     top: 0;
     bottom: 0;
     padding: 0 var(--nav-menu-border-padding);
-    transition: all ease-in-out var(--transition-hover-time);
+    @include mixins.transition;
     overflow-y: auto;
     z-index: 997;
     width: calc(var(--nav-menu-mobile-width) + var(--nav-menu-mobile-border-width));
     background: var(--color-background);
-    border-right: var(--nav-menu-mobile-border-width) solid color-mix(in srgb, var(--color-default), transparent 90%);
+    border-right: var(--nav-menu-mobile-border-width) solid color-mix(in srgb, var(--color-default), transparent variables.$transparency-almost);
     left: calc(-1 * var(--nav-menu-mobile-width));
     flex-direction: column;
   }
@@ -68,7 +68,7 @@
 
 .scrolled .header {
   @include mixins.respond-above(md) {
-    box-shadow: 0px 0 18px color-mix(in srgb, var(--color-default), transparent 85%);
+    box-shadow: 0px 0 18px color-mix(in srgb, var(--color-default), transparent variables.$transparency-heavy);
   }
 }
 
@@ -100,14 +100,14 @@
       align-items: center;
       justify-content: space-between;
       white-space: nowrap;
-      transition: var(--transition-hover-time);
+      @include mixins.transition;
 
       i {
         display: none;
         font-size: 12px;
         line-height: 0;
         margin-left: 5px;
-        transition: var(--transition-hover-time);
+        @include mixins.transition;
       }
     }
 
@@ -132,10 +132,10 @@
         left: 14px;
         top: 130%;
         opacity: 0;
-        transition: var(--transition-hover-time);
+        @include mixins.transition;
         border-radius: 4px;
         z-index: 99;
-        box-shadow: 0px 0px 30px color-mix(in srgb, var(--color-default), transparent 85%);
+        box-shadow: 0px 0px 30px color-mix(in srgb, var(--color-default), transparent variables.$transparency-heavy);
 
         li {
           min-width: 200px;
@@ -207,11 +207,11 @@
       margin-bottom: 8px;
       font-size: 15px;
       border-radius: 50px;
-      background: color-mix(in srgb, var(--color-default), transparent 92%);
+      background: color-mix(in srgb, var(--color-default), transparent variables.$transparency-almost);
       height: var(--nav-icon-size);
       width: 100%;
       overflow: hidden;
-      transition: var(--transition-hover-time);
+      @include mixins.transition;
 
       i {
         font-size: 20px;
@@ -264,7 +264,7 @@
   top: var(--botton-position-away-from-corner-vertical-distance);
   right: var(--botton-position-away-from-corner-horizontal-distance);
   z-index: 9999;
-  transition: background-color 0.3s;
+  @include mixins.transition(background-color);
 
   &:hover {
     color: var(--color-contrast);

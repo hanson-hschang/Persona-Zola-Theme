@@ -66,15 +66,15 @@ $spacing-xl:  3rem;     // 48px
 $spacing-xxl: 4rem;     // 64px
 
 // ── Animation / Transition ───────────────────────────────────────────────────
-$transition-hover-time: 0.3s;
+$transition-time: 0.3s;
 
 // -- Transparency Levels (for hover effects, etc.) ───────────────────────────────────
 // These can be used with color-mix() to create hover states and other effects.
-$transparency-subtle: 10%;
+$transparency-subtle: 5%;
 $transparency-light: 25%;
 $transparency-medium: 50%;
 $transparency-heavy: 75%;
-$transparency-almost: 97%;
+$transparency-almost: 95%;
 
 // ── Re-export as CSS custom properties ───────────────────────────────────────
 // These properties are referenced at runtime by component stylesheets and JS.
@@ -100,7 +100,6 @@ $transparency-almost: 97%;
   --color-accent:     #{$color-accent};
   --color-surface:    #{$color-surface};
   --color-contrast:   #{$color-contrast};
-  --color-transparency:     #{$transparency-light};
 
   // Navigation Colors
   --color-nav:                     #{$color-nav};
@@ -111,9 +110,7 @@ $transparency-almost: 97%;
   --color-nav-dropdown-hover:      #{$color-nav-dropdown-hover};
 
   // Header Colors
-  // --color-header-background uses color-mix() which references a CSS var,
-  // so it is defined here as a CSS expression rather than an SCSS variable.
-  --color-header-background: color-mix(in srgb, var(--color-default), transparent 96%);
+  --color-header-background: color-mix(in srgb, var(--color-default), transparent #{$transparency-almost});
   --color-header: #{$color-header};
 
   // Transparency Levels
@@ -149,8 +146,7 @@ $transparency-almost: 97%;
   --spacing-xxl: #{$spacing-xxl};
 
   // Transition Variables
-  --transition-hover-time: #{$transition-hover-time};
-  --transition-hover-transparency: var(--color-transparency);
+  --transition-time: #{$transition-time};
 }
 /* stylelint-enable custom-property-pattern */
 

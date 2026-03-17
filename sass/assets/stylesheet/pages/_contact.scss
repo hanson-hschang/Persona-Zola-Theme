@@ -12,7 +12,7 @@
 
     i {
       color: var(--color-accent);
-      background: color-mix(in srgb, var(--color-accent), transparent 92%);
+      background: color-mix(in srgb, var(--color-accent), transparent variables.$transparency-almost);
       font-size: 20px;
       width: 44px;
       height: 44px;
@@ -20,8 +20,8 @@
       justify-content: center;
       align-items: center;
       border-radius: 50px;
-      transition: var(--transition-hover-time) ease-in-out all;
       margin-right: 15px;
+      @include mixins.transition;
     }
 
     h3 {
@@ -117,10 +117,10 @@
       display: block;
       width: 100%;
       border-radius: 4px;
-      border: 2px solid color-mix(in srgb, var(--color-default), transparent 80%);
-      background: color-mix(in srgb, var(--color-background), transparent 50%);
+      border: 2px solid color-mix(in srgb, var(--color-default), transparent variables.$transparency-heavy);
+      background: color-mix(in srgb, var(--color-background), transparent variables.$transparency-medium);
       color: var(--color-default);
-      transition: border-color 0.3s ease;
+       @include mixins.transition(border-color);
 
       &:focus,
       &:valid {
@@ -140,14 +140,14 @@
   }
 
   &__label {
-    color: color-mix(in srgb, var(--color-default), transparent 30%);
+    color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-light);
     font-size: var(--font-size-footer);
     font-weight: normal;
     position: absolute;
     pointer-events: none;
     left: 24px;
     top: 15px;
-    transition: all 0.3s ease;
+     @include mixins.transition;
     background: var(--color-background);
     padding: 0 4px;
   }
@@ -166,11 +166,11 @@
     background: var(--color-accent);
     border: 0;
     padding: 10px 30px;
-    transition: 0.4s;
+     @include mixins.transition;
     border-radius: 50px;
 
     &:hover {
-      background: color-mix(in srgb, var(--color-accent), transparent 25%);
+      background: color-mix(in srgb, var(--color-accent), transparent variables.$transparency-light);
     }
   }
 }

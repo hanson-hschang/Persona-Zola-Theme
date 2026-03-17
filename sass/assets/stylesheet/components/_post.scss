@@ -11,7 +11,7 @@
 
   &__article {
     padding: 30px;
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--color-default), transparent 90%);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--color-default), transparent variables.$transparency-almost);
   }
 
   &__img {
@@ -55,7 +55,7 @@
 
     blockquote {
       overflow: hidden;
-      background-color: color-mix(in srgb, var(--color-default), transparent 95%);
+      background-color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-almost);
       padding: 30px;
       position: relative;
       text-align: center;
@@ -162,7 +162,7 @@
 
   &__meta {
     margin-top: 10px;
-    color: color-mix(in srgb, var(--color-default), transparent 40%);
+    color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-medium);
     margin-bottom: 10px;
 
     ul {
@@ -186,12 +186,12 @@
       font-size: 16px;
       margin-right: 8px;
       line-height: 0;
-      color: color-mix(in srgb, var(--color-default), transparent 40%);
+      color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-medium);
     }
 
     time,
     span {
-      color: color-mix(in srgb, var(--color-default), transparent 40%);
+      color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-medium);
       font-size: 14px;
       display: inline-block;
       line-height: 1;
@@ -200,7 +200,7 @@
 
   &__date,
   &__time {
-    color: color-mix(in srgb, var(--color-default), transparent 40%);
+    color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-medium);
     font-size: 14px;
     display: inline-block;
     line-height: 1;
@@ -209,16 +209,16 @@
   // ── Meta footer ───────────────────────────────────────────────────────────────
   &__meta-footer {
     padding-top: 10px;
-    border-top: 1px solid color-mix(in srgb, var(--color-default), transparent 90%);
+    border-top: 1px solid color-mix(in srgb, var(--color-default), transparent variables.$transparency-almost);
 
     i {
-      color: color-mix(in srgb, var(--color-default), transparent 40%);
+      color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-medium);
       display: inline;
     }
 
     a {
-      color: color-mix(in srgb, var(--color-default), transparent 40%);
-      transition: 0.3s;
+      color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-medium);
+      @include mixins.transition;
 
       &:hover {
         color: var(--color-accent);
@@ -314,7 +314,7 @@
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px);
-  transition: all 0.3s ease;
+   @include mixins.transition;
   z-index: 100;
   overflow: hidden;
 
@@ -330,7 +330,7 @@
     padding: 12px 16px;
     color: #333;
     text-decoration: none;
-    transition: background-color 0.15s;
+     @include mixins.transition(background-color);
 
     &:hover {
       background-color: #f5f5f5;
@@ -341,7 +341,7 @@
     }
 
     &__active {
-      background-color: color-mix(in srgb, var(--color-accent), transparent 80%);
+      background-color: color-mix(in srgb, var(--color-accent), transparent variables.$transparency-heavy);
       color: var(--color-accent);
     }
 
@@ -400,7 +400,7 @@
       a {
         font-weight: bold;
         color: var(--color-default);
-        transition: 0.3s;
+        @include mixins.transition;
 
         &:hover {
           color: var(--color-accent);
@@ -409,7 +409,7 @@
 
       .reply {
         padding-left: 10px;
-        color: color-mix(in srgb, var(--color-default), transparent 20%);
+        color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-light);
 
         i {
           font-size: 20px;
@@ -420,7 +420,7 @@
     time {
       display: block;
       font-size: 14px;
-      color: color-mix(in srgb, var(--color-default), transparent 40%);
+      color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-medium);
       margin-bottom: 5px;
     }
 
@@ -437,7 +437,7 @@
   form {
     margin-top: 30px;
     padding: 30px;
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--color-default), transparent 90%);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--color-default), transparent variables.$transparency-almost);
 
     h4 {
       font-weight: bold;
@@ -451,7 +451,7 @@
     input {
       background-color: var(--color-background);
       color: var(--color-default);
-      border: 1px solid color-mix(in srgb, var(--color-default), transparent 70%);
+      border: 1px solid color-mix(in srgb, var(--color-default), transparent variables.$transparency-heavy);
       font-size: 14px;
       border-radius: 4px;
       padding: 10px 10px;
@@ -465,7 +465,7 @@
     textarea {
       background-color: var(--color-background);
       color: var(--color-default);
-      border: 1px solid color-mix(in srgb, var(--color-default), transparent 70%);
+      border: 1px solid color-mix(in srgb, var(--color-default), transparent variables.$transparency-heavy);
       border-radius: 4px;
       padding: 10px 10px;
       font-size: 14px;
@@ -490,7 +490,7 @@
 
       &:hover {
         color: var(--color-contrast);
-        background-color: color-mix(in srgb, var(--color-accent), transparent 20%);
+        background-color: color-mix(in srgb, var(--color-accent), transparent variables.$transparency-light);
       }
     }
   }

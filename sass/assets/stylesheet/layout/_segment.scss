@@ -31,7 +31,7 @@
         display: block;
         width: 160px;
         height: 1px;
-        background: color-mix(in srgb, var(--color-default), transparent 60%);
+        background: color-mix(in srgb, var(--color-default), transparent variables.$transparency-medium);
         left: 0;
         right: 0;
         bottom: 1px;
