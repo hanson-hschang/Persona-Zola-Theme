@@ -12,8 +12,8 @@
 
 .widget {
   margin-bottom: 30px;
-  background-color: color-mix(in srgb, var(--color-default), transparent 98%);
-  border: 1px solid color-mix(in srgb, var(--color-default), transparent 90%);
+  background-color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-light);
+  border: 1px solid color-mix(in srgb, var(--color-default), transparent variables.$transparency-light);
   padding: 30px;
   border-radius: 5px;
 
@@ -42,14 +42,14 @@
     font-size: 24px;
     margin: 15px 0 0 0;
     padding: 0;
-    color: color-mix(in srgb, var(--color-default), transparent 20%);
+    color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-strong);
   }
 
   &__social-links {
     margin: 5px 0;
 
     a {
-      color: color-mix(in srgb, var(--color-default), transparent 60%);
+      color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-medium);
       margin: 0 3px;
       font-size: 18px;
 
@@ -61,7 +61,7 @@
 
   p {
     font-style: italic;
-    color: color-mix(in srgb, var(--color-default), transparent 30%);
+    color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-strong);
     margin: 10px 0 0 0;
   }
 }
@@ -70,11 +70,11 @@
 .search-widget {
   form {
     background: var(--color-background);
-    border: 1px solid color-mix(in srgb, var(--color-default), transparent 75%);
+    border: 1px solid color-mix(in srgb, var(--color-default), transparent variables.$transparency-soft);
     padding: 3px 10px;
     position: relative;
     border-radius: 50px;
-    transition: 0.3s;
+     @include mixins.transition;
 
     input[type=text] {
       border: 0;
@@ -99,7 +99,7 @@
       border: 0;
       font-size: 16px;
       padding: 0 16px;
-      transition: 0.3s;
+       @include mixins.transition;
       line-height: 0;
 
       i {
@@ -141,7 +141,7 @@
 
       a {
         color: var(--color-default);
-        transition: 0.3s;
+         @include mixins.transition;
 
         &:hover {
           color: var(--color-accent);
@@ -153,7 +153,7 @@
       display: block;
       font-style: italic;
       font-size: 14px;
-      color: color-mix(in srgb, var(--color-default), transparent 50%);
+      color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-medium);
     }
   }
 }
@@ -170,14 +170,14 @@
     }
 
     a {
-      background-color: color-mix(in srgb, var(--color-default), transparent 94%);
-      color: color-mix(in srgb, var(--color-default), transparent 30%);
+      background-color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-light);
+      color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-strong);
       border-radius: 50px;
       font-size: 14px;
       padding: 5px 15px;
       margin: 0 6px 8px 0;
       display: inline-block;
-      transition: 0.3s;
+       @include mixins.transition;
 
       &:hover {
         background: var(--color-accent);
@@ -186,7 +186,7 @@
 
       span {
         padding-left: 5px;
-        color: color-mix(in srgb, var(--color-default), transparent 60%);
+        color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-medium);
         font-size: 14px;
       }
     }
@@ -202,19 +202,19 @@
   .form-control {
     font-size: 14px;
     height: 42px;
-    border: 2px solid color-mix(in srgb, var(--color-default), transparent 40%);
+    border: 2px solid color-mix(in srgb, var(--color-default), transparent variables.$transparency-medium);
     background: none;
     color: var(--color-heading);
     padding-right: 40px;
 
     &:focus {
-      border-color: color-mix(in srgb, var(--color-default), transparent 10%);
+      border-color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-heavy);
     }
 
-    &::-webkit-input-placeholder { color: color-mix(in srgb, var(--color-heading), transparent 70%); }
-    &::-moz-placeholder           { color: color-mix(in srgb, var(--color-heading), transparent 70%); }
-    &:-ms-input-placeholder       { color: color-mix(in srgb, var(--color-heading), transparent 70%); }
-    &:-moz-placeholder            { color: color-mix(in srgb, var(--color-heading), transparent 70%); }
+    &::-webkit-input-placeholder { color: color-mix(in srgb, var(--color-heading), transparent variables.$transparency-soft); }
+    &::-moz-placeholder           { color: color-mix(in srgb, var(--color-heading), transparent variables.$transparency-soft); }
+    &:-ms-input-placeholder       { color: color-mix(in srgb, var(--color-heading), transparent variables.$transparency-soft); }
+    &:-moz-placeholder            { color: color-mix(in srgb, var(--color-heading), transparent variables.$transparency-soft); }
   }
 
   .btn-link {
@@ -225,7 +225,7 @@
     border-color: none;
     position: absolute;
     line-height: 0;
-    color: color-mix(in srgb, var(--color-heading), transparent 20%);
+    color: color-mix(in srgb, var(--color-heading), transparent variables.$transparency-strong);
     top: 20px;
     right: 10px;
     transform: translateY(-50%) rotate(0deg);

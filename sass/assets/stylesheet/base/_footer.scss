@@ -6,7 +6,7 @@
 
 .footer {
   color: var(--color-default);
-  background-color: color-mix(in srgb, var(--color-default), transparent 97%);
+  background-color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-light);
   font-size: var(--font-size-normal);
   text-align: center;
   padding: var(--spacing-lg) 0;
@@ -43,10 +43,10 @@
       text-align: center;
       width: 36px;
       height: 36px;
-      transition: 0.3s;
+       @include mixins.transition;
 
       &:hover {
-        background: color-mix(in srgb, var(--color-accent), transparent var(--transition-hover-transparency));
+        background: color-mix(in srgb, var(--color-accent), transparent variables.$transparency-light);
       }
     }
   }
@@ -54,7 +54,7 @@
   &__copyright {
     font-size: var(--font-size-footer);
     padding-top: var(--spacing-md);
-    border-top: 1px solid color-mix(in srgb, var(--color-default), transparent 90%);
+    border-top: 1px solid color-mix(in srgb, var(--color-default), transparent variables.$transparency-light);
 
     p {
       margin-bottom: 0;

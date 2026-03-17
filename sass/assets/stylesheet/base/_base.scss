@@ -20,10 +20,10 @@ body {
 a {
   color: var(--color-accent);
   text-decoration: none;
-  transition: var(--transition-hover-time);
+   @include mixins.transition;
 
   &:hover {
-    color: color-mix(in srgb, var(--color-accent), transparent var(--transition-hover-transparency));
+    color: color-mix(in srgb, var(--color-accent), transparent variables.$transparency-light);
     text-decoration: none;
   }
 }

@@ -26,7 +26,7 @@
 
   &::before {
     content: "";
-    background: color-mix(in srgb, var(--color-background), transparent var(--color-transparency));
+    background: color-mix(in srgb, var(--color-background), transparent variables.$transparency-light);
     position: absolute;
     inset: 0;
     z-index: 2;
@@ -60,10 +60,10 @@
     a {
       font-size: 20px;
       display: inline-block;
-      color: color-mix(in srgb, var(--color-default), transparent 30%);
+      color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-strong);
       line-height: 1;
       margin-right: 20px;
-      transition: 0.3s;
+       @include mixins.transition;
 
       &:hover {
         color: var(--color-accent);

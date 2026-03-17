@@ -28,7 +28,11 @@ $color-heading:      #45505b;  // Headings and subheadings
 $color-accent:       #0563bb;  // Brand accent — buttons, links, highlights
 $color-surface:      #ffffff;  // Card / boxed element backgrounds
 $color-contrast:     #ffffff;  // Text on accent/heading/default backgrounds
-$color-transparency: 25%;      // Base transparency level for hover effects
+$transparency-heavy: 10%;
+$transparency-strong: 25%;
+$transparency-medium: 40%;
+$transparency-soft: 70%;
+$transparency-light: 90%;
 
 // ── Navigation Colors ────────────────────────────────────────────────────────
 $color-nav:                  #45505b;  // Default nav link color
@@ -66,7 +70,7 @@ $spacing-xl:  3rem;     // 48px
 $spacing-xxl: 4rem;     // 64px
 
 // ── Animation / Transition ───────────────────────────────────────────────────
-$transition-hover-time: 0.3s;
+$transition-time: 0.3s;
 
 // ── Re-export as CSS custom properties ───────────────────────────────────────
 // These properties are referenced at runtime by component stylesheets and JS.
@@ -92,7 +96,11 @@ $transition-hover-time: 0.3s;
   --color-accent:     #{$color-accent};
   --color-surface:    #{$color-surface};
   --color-contrast:   #{$color-contrast};
-  --color-transparency:     #{$color-transparency};
+  --transparency-heavy:  #{$transparency-heavy};
+  --transparency-strong: #{$transparency-strong};
+  --transparency-medium: #{$transparency-medium};
+  --transparency-soft:   #{$transparency-soft};
+  --transparency-light:  #{$transparency-light};
 
   // Navigation Colors
   --color-nav:                     #{$color-nav};
@@ -103,9 +111,7 @@ $transition-hover-time: 0.3s;
   --color-nav-dropdown-hover:      #{$color-nav-dropdown-hover};
 
   // Header Colors
-  // --color-header-background uses color-mix() which references a CSS var,
-  // so it is defined here as a CSS expression rather than an SCSS variable.
-  --color-header-background: color-mix(in srgb, var(--color-default), transparent 96%);
+  --color-header-background: color-mix(in srgb, var(--color-default), transparent #{$transparency-light});
   --color-header: #{$color-header};
 
   // Navigation Dimensions
@@ -135,9 +141,7 @@ $transition-hover-time: 0.3s;
   --spacing-xxl: #{$spacing-xxl};
 
   // Transition Variables
-  --transition-hover-time:         #{$transition-hover-time};
-  // --transition-hover-transparency references --color-transparency, so it is a CSS expression.
-  --transition-hover-transparency: var(--color-transparency);
+  --transition-time: #{$transition-time};
 }
 /* stylelint-enable custom-property-pattern */
 

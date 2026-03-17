@@ -52,7 +52,7 @@
           content: "/";
           display: inline-block;
           padding-right: 10px;
-          color: color-mix(in srgb, var(--color-default), transparent 70%);
+          color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-soft);
         }
       }
     }

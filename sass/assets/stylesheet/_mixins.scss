@@ -57,7 +57,7 @@ $grid-breakpoints: (
 
 // ── Transitions ──────────────────────────────────────────────────────────────
 // Usage:  @include transition;
-//         @include transition(color, 0.2s, ease-in);
-@mixin transition($props: all, $duration: 0.3s, $easing: ease) {
+//         @include transition(color);
+@mixin transition($props: all, $duration: 0.3s, $easing: ease-in-out) {
   transition: $props $duration $easing;
 }

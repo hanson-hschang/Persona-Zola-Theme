@@ -37,7 +37,7 @@
 
     span {
       font-size: 14px;
-      color: color-mix(in srgb, var(--color-default), transparent 25%);
+      color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-strong);
     }
   }
 }
@@ -47,7 +47,7 @@
     margin-bottom: 20px;
 
     img {
-      transition: 0.3s all ease;
+       @include mixins.transition;
       border-radius: var(--img-border-radius);
       opacity: 0.8;
       aspect-ratio: 16/9;
@@ -70,7 +70,7 @@
         color: var(--color-accent);
 
         &:hover {
-          color: color-mix(in srgb, var(--color-accent), transparent 20%);
+          color: color-mix(in srgb, var(--color-accent), transparent variables.$transparency-strong);
         }
       }
     }
