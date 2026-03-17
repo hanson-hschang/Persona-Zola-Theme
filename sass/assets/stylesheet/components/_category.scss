@@ -47,7 +47,7 @@
     margin-bottom: 20px;
 
     img {
-      transition: 0.3s all ease;
+      transition: var(--transition-hover-time) ease-in-out;
       border-radius: var(--img-border-radius);
       opacity: 0.8;
       aspect-ratio: 16/9;

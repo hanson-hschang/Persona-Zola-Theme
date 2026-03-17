@@ -47,7 +47,7 @@ p {
 }
 
 // ── Disable AOS animation delay on mobile devices ────────────────────────────
-@media screen and (max-width: 767px) {
+@include mixins.respond-below(md) {
   [data-aos-delay] {
     transition-delay: 0 !important;
   }

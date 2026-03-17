@@ -20,7 +20,7 @@
       justify-content: center;
       align-items: center;
       border-radius: 50px;
-      transition: all 0.3s ease-in-out;
+      transition: var(--transition-hover-time) ease-in-out all;
       margin-right: 15px;
     }
 

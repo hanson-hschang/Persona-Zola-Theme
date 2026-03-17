@@ -74,7 +74,7 @@
     padding: 3px 10px;
     position: relative;
     border-radius: 50px;
-    transition: 0.3s;
+    transition: var(--transition-hover-time);
 
     input[type=text] {
       border: 0;

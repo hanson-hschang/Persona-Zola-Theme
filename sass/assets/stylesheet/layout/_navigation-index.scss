@@ -70,7 +70,7 @@
     height: var(--nav-icon-size);
     width: 100%;
     overflow: hidden;
-    transition: 0.3s;
+    transition: all ease-in-out var(--transition-hover-time);
 
     i {
       font-size: 20px;
@@ -124,7 +124,7 @@
   top: var(--botton-position-away-from-corner-vertical-distance);
   right: var(--botton-position-away-from-corner-horizontal-distance);
   z-index: 9999;
-  transition: background-color 0.3s;
+  transition: background-color ease-in-out var(--transition-hover-time);
 
   &:hover {
     color: var(--color-contrast);
