@@ -8,7 +8,7 @@
 // ── Header ────────────────────────────────────────────────────────────────────
 .header {
   // ── Desktop ─────────────────────────────────────────────────────────────────
-  @include mixins.respond-above(md) {
+  @include mixins.respond-above(lg) {
     color: var(--color-default);
     background-color: var(--color-background);
     padding: 20px 0;
@@ -45,7 +45,7 @@
   }
 
   // ── Mobile ───────────────────────────────────────────────────────────────────
-  @include mixins.respond-below(md) {
+  @include mixins.respond-below(lg) {
     color: var(--color-default);
     position: fixed;
     top: 0;
@@ -67,14 +67,14 @@
 }
 
 .scrolled .header {
-  @include mixins.respond-above(md) {
+  @include mixins.respond-above(lg) {
     box-shadow: 0px 0 18px color-mix(in srgb, var(--color-default), transparent variables.$transparency-heavy);
   }
 }
 
 // ── Navigation Menu — Desktop ─────────────────────────────────────────────────
 .navmenu {
-  @include mixins.respond-above(md) {
+  @include mixins.respond-above(lg) {
     padding: 0;
 
     ul {
@@ -186,7 +186,7 @@
   }
 
   // ── Mobile ───────────────────────────────────────────────────────────────────
-  @include mixins.respond-below(md) {
+  @include mixins.respond-below(lg) {
     padding: 0;
     z-index: 9997;
 
