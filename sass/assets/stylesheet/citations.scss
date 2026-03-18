@@ -1,0 +1,69 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Citations — Loaded on individual blog post pages with Pandoc-processed content
+// Styles for Pandoc citeproc output: inline citations and bibliography section.
+// Compiled output: public/citations.css
+//
+// HTML structure emitted by Pandoc citeproc:
+//
+//   <!-- Inline citation -->
+//   <a href="#ref-smith2020" class="citation">[1]</a>
+//
+//   <!-- Bibliography section -->
+//   <section id="refs" class="references csl-bib-body">
+//     <div id="ref-smith2020" class="csl-entry">
+//       <div class="csl-left-margin">[1]</div>
+//       <div class="csl-right-inline">Smith, J. ...</div>
+//     </div>
+//   </section>
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Inline citation link ──────────────────────────────────────────────────────
+.citation {
+  font-size: 0.85em;
+  vertical-align: super;
+  color: var(--color-accent);
+
+  a {
+    text-decoration: none;
+    color: inherit;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// ── References / Bibliography section ────────────────────────────────────────
+.references {
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid color-mix(in srgb, var(--color-default), transparent 95%);
+  font-size: 0.9em;
+  line-height: 1.6;
+}
+
+// ── Individual reference entry ────────────────────────────────────────────────
+.csl-entry {
+  display: flex;
+  gap: var(--spacing-xxs);
+  margin-bottom: 0.75rem;
+
+  &:target {
+    background-color: color-mix(in srgb, var(--color-accent), transparent 90%);
+    border-radius: 4px;
+    padding: 2px 4px;
+  }
+}
+
+// ── Left margin (citation number / label) ─────────────────────────────────────
+.csl-left-margin {
+  min-width: 2rem;
+  text-align: right;
+  color: color-mix(in srgb, var(--color-default), transparent 50%);
+  flex-shrink: 0;
+}
+
+// ── Right inline (full reference text) ───────────────────────────────────────
+.csl-right-inline {
+  flex: 1;
+}

@@ -19,6 +19,7 @@ min_version = "0.22.0"
 
 # Refer to provided config.toml; [extra.persona]
 [extra]
+citation_style = "ieee"
 
 # The theme author info
 [author]

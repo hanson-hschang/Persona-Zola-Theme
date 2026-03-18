@@ -6,6 +6,9 @@ title = "Persona - Zola Theme "
 author = "Persona, Zola Theme"
 description = "A modern, responsive and lightweight theme for resume, portfolio, and blog."
 
+# Prevent .src.md, .bib, and .csl files from being rendered as pages
+ignored_content = ["*.src.md", "*.bib", "*.csl"]
+
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
 
@@ -21,6 +24,8 @@ taxonomies = [
 ]
 
 [markdown]
+# Allow raw HTML blocks in Markdown files (required for Pandoc citeproc output)
+render_markdown_unsafe = true
 
 # Whether external links are to be opened in a new tab
 # If this is true, a `rel="noopener"` will always automatically be added for security reasons
@@ -41,6 +46,8 @@ dark_theme = "github-dark"
 light_theme = "github-light" 
 
 [extra]
+# Uncomment to override the theme default citation style (defined in theme.toml):
+# citation_style = "apa"
 
 [extra.persona]
 # Note: landing page title and subtitles are configured in `content/_index.md`
