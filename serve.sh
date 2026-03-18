@@ -11,7 +11,7 @@
 #   - watchexec        (brew install watchexec  /  cargo install watchexec-cli)
 #   - zola    ≥ 0.20.0 (https://www.getzola.org/)
 
-set -euo pipefail
+set -xto pipefail
 
 echo "Initial build..."
 bash build.sh

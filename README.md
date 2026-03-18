@@ -23,7 +23,7 @@
 - 🎨 **Modern Design**: Clean and professional layout easy for customization
 - 📱 **Fully Responsive**: Optimized for desktop, tablet, and mobile devices
 - ⚡️ **Fast Performance**: Lightweight and optimized for speed
-- 📋 **Resume/CV Section**: Dedicated section for your resume or CV *(--upcoming feature--)*
+- 📋 **Resume/CV**: Dedicated page for your resume or CV *(--upcoming feature--)*
 - 🎭 **Portfolio Showcase**: Showcase your work with elegant project sections *(--upcoming feature--)*
 - 📝 **Blog with $\TeX$**: Built-in blog functionality with KaTeX support
 - 📧 **Contact Forms**: Integrated contact form support with Web3Forms

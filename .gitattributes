@@ -1,3 +1,4 @@
 static/assets/img/** filter=lfs diff=lfs merge=lfs -text
 content/**/img/** filter=lfs diff=lfs merge=lfs -text
 screenshot.png filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text

@@ -2,7 +2,7 @@
 title = "About"
 [extra]
 type = "plain"
-icon_class = "bi bi-person-vcard"
+icon_class = "bi bi-geo-alt"
 subtitle = "Public Self & Private Soul"
 order = 10
 +++
@@ -18,9 +18,9 @@ This space is an attempt to lay them side-by-side, offering a look at both the w
 Consider it the legend for both my public self and my private soul.
 
 ## The Outer Space
-My career has been a journey of continuous learning - a nicer way of saying I'm always a work in progress.
-I thrive on turning abstract challenges into tangible results, whether that means shaping an idea from the ground up or guiding a team through uncharted territory.
-The goal is always the same: to craft work that is intelligent in its design, useful in its function, and elegant in its form.
+My career has been a journey of continuous learning - a nicer way of saying a constant work in progress.
+I enjoy turning abstract challenges into tangible results, whether by building ideas from the ground up or guiding teams through the unknown.
+The goal is always the same: to craft work that is intelligent in design, useful in function, and elegant in form.
 
 ## The Inner Compass
 In the parallel world of me is a quiet wanderer of forgotten trails, an avid reader of historical fiction, and a dedicated ideal-world believer.

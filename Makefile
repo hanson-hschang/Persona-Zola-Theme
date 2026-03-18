@@ -1,18 +1,14 @@
 # Makefile — Persona Zola Theme build helpers
 #
 # Targets:
-#   dev    — run the citation preprocessor, start file watcher, then zola serve
+#   serve  — run the citation preprocessor, start file watcher, then zola serve
 #   build  — run the citation preprocessor then build the static site
-#   clean  — remove all generated .md files (keeps .src.md files untouched)
 
-.PHONY: dev build clean
+.PHONY: serve build
 
-dev:
+serve:
 	bash serve.sh
 
 build:
 	bash build.sh
 	zola build
-
-clean:
-	find content/ -name "*.md" ! -name "*.src.md" -delete

@@ -11,7 +11,7 @@
 #   4. theme.toml  [extra].citation_style  →  styles/<value>.csl
 #   5. error: exit 1
 
-set -euo pipefail
+set -xto pipefail
 
 STYLES_DIR="styles"
 

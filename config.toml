@@ -24,8 +24,6 @@ taxonomies = [
 ]
 
 [markdown]
-# Allow raw HTML blocks in Markdown files (required for Pandoc citeproc output)
-render_markdown_unsafe = true
 
 # Whether external links are to be opened in a new tab
 # If this is true, a `rel="noopener"` will always automatically be added for security reasons
@@ -68,7 +66,7 @@ social_links = [
 # Find icon classes from:
 # - Bootstrap Icons: https://icons.getbootstrap.com/
 contact_infos = [
-  { item = "_navigation", content = "Contact", icon_class = "bi bi-chat-text" },
+  { item = "_navigation", content = "Contact", icon_class = "bi bi-postcard" },
   { item = "Name", content = "Persona, Zola Theme", icon_class = "bi bi-person"},
   { item = "Email", content = "persona.zola.theme@gmail.com", icon_class = "bi bi-envelope"}
 ]
