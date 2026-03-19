@@ -18,12 +18,13 @@ set -euo pipefail
 # Usage function to display help message
 # ---------------------------------------------------------------------------
 usage() {
+    local exit_code="${1:-0}"
     echo "Usage: $0 <input_file> <default_csl> [csl_directories]" >&2
-    exit 0
+    exit "$exit_code"
 }
 
-# Allow a manual help check
-[[ "$1" == "-h" || "$1" == "--help" ]] && usage
+# Allow a manual help check (safe even when no arguments are provided)
+[[ "${1-}" == "-h" || "${1-}" == "--help" ]] && usage 0
 
 # ---------------------------------------------------------------------------
 # Argument Parsing
@@ -35,7 +36,7 @@ CSL_DIRS_STR="${3:-}"
 # Check if the input file exists before proceeding
 if [[ ! -f "$INPUT_FILE" ]]; then
     echo "Error: File not found: $INPUT_FILE" >&2
-    usage
+    usage 1
 fi
 
 # Source utilities for helper functions
