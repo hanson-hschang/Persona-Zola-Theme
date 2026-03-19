@@ -47,5 +47,4 @@ watchexec \
     --filter "**/*.bib" \
     --clear \
     --shell bash \
-    --postpone \
     "$BUILD_SCRIPT"
