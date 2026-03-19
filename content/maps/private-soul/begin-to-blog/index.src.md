@@ -9,7 +9,7 @@ categories = ['blogs', 'private-soul']
 excerpt = """
 This is a sample tutorial on how to start a blog using the Persona theme. It covers the basics of setting up your blog, creating content, and customizing the appearance to make it your own.
 """
-citation_style = "apa"
+citation_style = "ieee"
 bibliography = "references.bib"
 +++
 

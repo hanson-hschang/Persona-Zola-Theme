@@ -9,11 +9,11 @@ categories = ['blogs', 'private-soul']
 excerpt = """
 This is a sample tutorial on how to start a blog using the Persona theme. It covers the basics of setting up your blog, creating content, and customizing the appearance to make it your own.
 """
-citation_style = "apa"
+citation_style = "ieee"
 bibliography = "references.bib"
 +++
 
-This is a sample tutorial on how to start a blog using the Persona, a Zola theme(Zola themes). It covers the basics of setting up your blog, creating content, and customizing the appearance to make it your own.
+This is a sample tutorial on how to start a blog using the Persona, a Zola theme\[1\]. It covers the basics of setting up your blog, creating content, and customizing the appearance to make it your own.
 
 ## Setting Up Your Blog
 
@@ -31,8 +31,8 @@ The Persona theme is highly customizable, allowing you to change colors, fonts, 
 
 Starting a blog with the Persona theme is a great way to share your thoughts and ideas with the world. With its user-friendly setup and extensive customization options, you can create a unique and engaging blog that reflects your personality and style.
 
-:::: {#refs .references .csl-bib-body .hanging-indent entry-spacing="0" line-spacing="2"}
+:::: {#refs .references .csl-bib-body entry-spacing="0"}
 ::: {#ref-zolathemes .csl-entry}
-Zola themes. <https://www.getzola.org/themes/>
+[\[1\] ]{.csl-left-margin}[[Zola themes](https://www.getzola.org/themes/), ]{.csl-right-inline}
 :::
 ::::
