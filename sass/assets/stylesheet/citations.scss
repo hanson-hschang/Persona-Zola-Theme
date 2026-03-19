@@ -1,23 +1,29 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // Citations — Loaded on individual blog post pages with Pandoc-processed content
-// Styles for Pandoc citeproc output: inline citations and bibliography section.
-// Compiled output: public/citations.css
+// Styles for Pandoc citeproc HTML output (pandoc -t html --metadata link-citations=true).
+// Compiled output: public/assets/stylesheet/citations.css
 //
-// HTML structure emitted by Pandoc citeproc:
+// HTML structure emitted by Pandoc citeproc (-t html):
 //
-//   <!-- Inline citation -->
-//   <a href="#ref-smith2020" class="citation">[1]</a>
+//   <!-- Inline citation: span wraps the linked label -->
+//   <span class="citation" data-cites="smith2020">
+//     [<a href="#ref-smith2020" role="doc-biblioref">1</a>]
+//   </span>
 //
-//   <!-- Bibliography section -->
-//   <section id="refs" class="references csl-bib-body">
-//     <div id="ref-smith2020" class="csl-entry">
-//       <div class="csl-left-margin">[1]</div>
+//   <!-- Bibliography section title (auto-generated, normalized to h2) -->
+//   <h2 class="unnumbered" id="bibliography">Bibliography</h2>
+//
+//   <!-- Bibliography list -->
+//   <div id="refs" class="references csl-bib-body" role="list">
+//     <div id="ref-smith2020" class="csl-entry" role="listitem">
+//       <div class="csl-left-margin">[1] </div>
 //       <div class="csl-right-inline">Smith, J. ...</div>
 //     </div>
-//   </section>
+//   </div>
 // ─────────────────────────────────────────────────────────────────────────────
 
-// ── Inline citation link ──────────────────────────────────────────────────────
+// ── Inline citation ───────────────────────────────────────────────────────────
+// The <span class="citation"> wraps the formatted label and its anchor link.
 .citation {
   font-size: 0.85em;
   vertical-align: super;
@@ -33,7 +39,7 @@
   }
 }
 
-// ── References / Bibliography section ────────────────────────────────────────
+// ── Bibliography section container ───────────────────────────────────────────
 .references {
   margin-top: var(--spacing-lg);
   padding-top: var(--spacing-sm);
@@ -48,6 +54,7 @@
   gap: var(--spacing-xxs);
   margin-bottom: 0.75rem;
 
+  // Highlight the targeted entry when the user clicks a citation link
   &:target {
     background-color: color-mix(in srgb, var(--color-accent), transparent 90%);
     border-radius: 4px;

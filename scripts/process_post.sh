@@ -102,17 +102,31 @@ fi
 
 # --- 4. Pandoc Rendering ---
 # If a bibliography is found, use --citeproc with the specified CSL and bibliography.
+# link-citations=true:            wraps each inline citation in <a href="#ref-key">.
+# reference-section-title=...:   titles the auto-appended bibliography section.
 # If no bibliography is found, render without citation processing.
 cite_args=()
 if [[ -n "$final_bib" ]]; then
-    cite_args=(--citeproc --bibliography="$final_bib" --csl="$final_csl")
+    cite_args=(
+        --citeproc
+        --bibliography="$final_bib"
+        --csl="$final_csl"
+        --metadata link-citations=true
+        --metadata reference-section-title=Bibliography
+    )
 fi
-pandoc_args=(--wrap=none -t commonmark_x -f markdown "$BODY_TMP" -o "$RENDERED_TMP")
+pandoc_args=(--wrap=none -t html -f markdown "$BODY_TMP" -o "$RENDERED_TMP")
 if ! pandoc "${cite_args[@]}" "${pandoc_args[@]}"; then
     echo "  [ERROR] Pandoc failed to process: $INPUT_FILE" >&2
     echo "  [ERROR] Please check the bibliography and CSL files for issues." >&2
     exit 1
 fi
+
+# Normalize auto-generated bibliography heading from <h1> to <h2> so it sits
+# at the same level as other section headings in the post body.
+# Only targets <h1 class="unnumbered"> (Pandoc's auto-generated heading);
+# user-written <h1> tags without that class are left untouched.
+sed -i 's|<h1 class="unnumbered"\([^>]*\)>\([^<]*\)</h1>|<h2 class="unnumbered"\1>\2</h2>|g' "$RENDERED_TMP"
 
 # --- 5. Reassemble ---
 # Combine the original frontmatter with the rendered body and write to the output file.
