@@ -39,22 +39,23 @@ bibliography = "references.bib"
 <li><code>bibliography = "references.bib"</code></li>
 </ul>
 <h2 id="build-and-serve">Build and serve</h2>
-<p>Generate <code>*.md</code> from all <code>*.src.md</code> files:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/build.sh</span></code></pre></div>
-<p>Live rebuild + local server:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/watch.sh</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">zola</span> serve</span></code></pre></div>
-<p>Or run everything in one command:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/serve.sh</span></code></pre></div>
+<ul>
+<li><p>Generate <code>*.md</code> from all <code>*.src.md</code> files:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/build.sh</span></code></pre></div></li>
+<li><p>Live rebuild + local server:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># In one terminal, watch for changes and rebuild:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/watch.sh</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># In a separate terminal, serve with Zola:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">zola</span> serve</span></code></pre></div></li>
+</ul>
 <h2 id="citation-style-resolution-order">Citation style resolution order</h2>
 <p>Priority from highest to lowest:</p>
 <ol type="1">
 <li>Post frontmatter: <code>[extra] citation_style = "..."</code></li>
-<li>Local <code>style.csl</code> in the same directory as the post</li>
-<li>Site-level <code>config.toml</code> <code>[extra].citation_style</code></li>
-<li>Theme-level <code>theme.toml</code> <code>[extra].citation_style</code></li>
+<li>Site-level <code>config.toml</code> <code>[extra.persona].citation_style</code></li>
+<li>Theme config <code>themes/persona/config.toml</code> <code>[extra.persona].citation_style</code></li>
 </ol>
-<p>Bundled styles in <code>citation-style/</code>: <code>ieee</code>, <code>apa</code>, <code>chicago-author-date</code>, <code>mla</code>, <code>vancouver</code>.</p>
+<p>Bundled styles in <code>citation-style/</code>: <code>ieee</code>, <code>apa</code>. Custom styles can be added by placing <code>.csl</code> files in <code>citation-style/</code> and referencing them in frontmatter.</p>
 <h2 id="output-and-styling">Output and styling</h2>
 <p>The pipeline emits HTML citations and bibliography blocks so SCSS can style stable classes:</p>
 <ul>
@@ -65,7 +66,7 @@ bibliography = "references.bib"
 <li><code>.csl-right-inline</code></li>
 </ul>
 <p>Inline citations anchor to bibliography entries, and the bibliography heading is rendered inside the refs container as “Bibliography”.</p>
-<div id="refs" class="references csl-bib-body hanging-indent" data-line-spacing="2" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
 <h2 class="unnumbered" id="bibliography">Bibliography</h2>
 <div id="ref-zolathemes" class="csl-entry" role="listitem">
 Zola themes. <a href="https://www.getzola.org/themes/">https://www.getzola.org/themes/</a>

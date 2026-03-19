@@ -53,24 +53,22 @@ Set optional citation config in frontmatter under `[extra]`:
 
 ## Build and serve
 
-Generate `*.md` from all `*.src.md` files:
+- Generate `*.md` from all `*.src.md` files:
 
-```bash
-bash scripts/build.sh
-```
+    ```bash
+    bash scripts/build.sh
+    ```
 
-Live rebuild + local server:
+- Live rebuild + local server:
 
-```bash
-bash scripts/watch.sh
-zola serve
-```
-
-Or run everything in one command:
-
-```bash
-bash scripts/serve.sh
-```
+    ```bash
+    # In one terminal, watch for changes and rebuild:
+    bash scripts/watch.sh
+    ```
+    ```bash
+    # In a separate terminal, serve with Zola:
+    zola serve
+    ```
 
 ## Citation style resolution order
 
@@ -80,7 +78,8 @@ Priority from highest to lowest:
 2. Site-level `config.toml` `[extra.persona].citation_style`
 3. Theme config `themes/persona/config.toml` `[extra.persona].citation_style`
 
-Bundled styles in `citation-style/`: `ieee`, `apa`, `chicago-author-date`, `mla`, `vancouver`.
+Bundled styles in `citation-style/`: `ieee`, `apa`. 
+Custom styles can be added by placing `.csl` files in `citation-style/` and referencing them in frontmatter.
 
 ## Output and styling
 

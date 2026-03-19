@@ -128,8 +128,8 @@ git submodule update --init --recursive
     +++
     title = "Presented Site Name"
     template = "index.html"
-    
     [extra]
+    icon_class = "bi bi-house"
     subtitles = "Item 1, Item 2, Item 3"
     +++
     ```
