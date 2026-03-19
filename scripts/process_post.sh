@@ -29,8 +29,8 @@ usage() {
 # ---------------------------------------------------------------------------
 # Argument Parsing
 # ---------------------------------------------------------------------------
-INPUT_FILE="${1:?Error: <input_file> is required.}"
-DEFAULT_CSL="${2:?Error: <default_csl> is required.}"
+INPUT_FILE="${1:?$(usage 1)}"
+DEFAULT_CSL="${2:?$(usage 1)}"
 CSL_DIRS_STR="${3:-}" 
 
 # Check if the input file exists before proceeding
