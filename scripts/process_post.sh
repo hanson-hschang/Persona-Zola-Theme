@@ -122,11 +122,28 @@ if ! pandoc "${cite_args[@]}" "${pandoc_args[@]}"; then
     exit 1
 fi
 
-# Normalize auto-generated bibliography heading from <h1> to <h2> so it sits
-# at the same level as other section headings in the post body.
-# Only targets <h1 class="unnumbered"> (Pandoc's auto-generated heading);
-# user-written <h1> tags without that class are left untouched.
-perl -pi -e 's|<h1 class="unnumbered"([^>]*)>([^<]*)</h1>|<h2 class="unnumbered"$1>$2</h2>|g' "$RENDERED_TMP"
+# Restructure the auto-generated bibliography section so the heading sits
+# inside <div id="refs"> as its first child, enabling the entire section
+# (title + entries) to be styled as a single unit via .references in SCSS.
+#
+# Pandoc emits:
+#   <h1 class="unnumbered" id="bibliography">Bibliography</h1>
+#   <div id="refs" class="references ...">
+#     ...entries...
+#   </div>
+#
+# We transform it to:
+#   <div id="refs" class="references ...">
+#   <h2 class="unnumbered" id="bibliography">Bibliography</h2>
+#     ...entries...
+#   </div>
+#
+# -0777 slurps the whole file so the \n between the two tags is matchable.
+# Only the Pandoc-generated <h1 class="unnumbered"> is targeted; any
+# user-written <h1> tags (no unnumbered class) are left untouched.
+perl -0777 -pi -e \
+    's|<h1 class="unnumbered"([^>]*)>(.*?)</h1>\n(<div id="refs"[^>]*>)|$3\n<h2 class="unnumbered"$1>$2</h2>|g' \
+    "$RENDERED_TMP"
 
 # --- 5. Reassemble ---
 # Combine the original frontmatter with the rendered body and write to the output file.

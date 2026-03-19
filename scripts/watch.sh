@@ -28,18 +28,22 @@ echo "  [MONITORING] $WATCH_DIR/"
 echo "  [TRIGGER]    $BUILD_SCRIPT"
 
 # watchexec flags:
-#   -w: Watch the content directory
-#   -r: Restart the command if it's already running (not strictly needed for build.sh)
-#   -e: Extensions to filter (src.md and bib)
-#   --ignore: Specifically ignore the generated .md files to prevent loops
-#   --postpone: Wait for the first change before running (optional)
-#   --shell: Run the command in a shell
-#   --clear: Clear the screen on each rebuild (optional, keeps things tidy)
+#   --watch:  Watch the content directory
+#   --filter: Glob patterns for files that trigger a rebuild.
+#             "**/*.src.md" and "**/*.bib" are used so only source and
+#             bibliography changes fire the build.  Generated *.md output files
+#             never match these patterns, preventing an infinite rebuild loop.
+#             NOTE: --exts cannot be used here because watchexec treats only the
+#             last segment after the final dot as the "extension", so a file like
+#             post.src.md has extension "md", not "src.md". Using --filter with
+#             a glob pattern is the correct approach.
+#   --clear:  Clear the screen on each rebuild (keeps things tidy)
+#   --shell:  Run the command inside a bash shell
 
 watchexec \
     --watch "$WATCH_DIR" \
-    --exts src.md,bib \
-    --ignore "**/*.md" \
+    --filter "**/*.src.md" \
+    --filter "**/*.bib" \
     --clear \
     --shell bash \
     "$BUILD_SCRIPT"

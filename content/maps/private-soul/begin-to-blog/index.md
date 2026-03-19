@@ -22,8 +22,8 @@ bibliography = "references.bib"
 <p>The Persona theme is highly customizable, allowing you to change colors, fonts, and layout options through the <code>config.toml</code> file. You can also add custom CSS to further personalize your blog’s appearance.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>Starting a blog with the Persona theme is a great way to share your thoughts and ideas with the world. With its user-friendly setup and extensive customization options, you can create a unique and engaging blog that reflects your personality and style.</p>
-<h2 class="unnumbered" id="bibliography">Bibliography</h2>
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<h2 class="unnumbered" id="bibliography">Bibliography</h2>
 <div id="ref-zolathemes" class="csl-entry" role="listitem">
 Zola themes. <a href="https://www.getzola.org/themes/">https://www.getzola.org/themes/</a>
 </div>

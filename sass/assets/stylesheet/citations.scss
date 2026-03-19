@@ -3,18 +3,19 @@
 // Styles for Pandoc citeproc HTML output (pandoc -t html --metadata link-citations=true).
 // Compiled output: public/assets/stylesheet/citations.css
 //
-// HTML structure emitted by Pandoc citeproc (-t html):
+// HTML structure emitted by Pandoc citeproc (-t html), post-processed by
+// scripts/process_post.sh so the bibliography heading is the first child of
+// the <div id="refs"> container, enabling the whole section to be styled as
+// one unit via .references:
 //
 //   <!-- Inline citation: span wraps the linked label -->
 //   <span class="citation" data-cites="smith2020">
 //     [<a href="#ref-smith2020" role="doc-biblioref">1</a>]
 //   </span>
 //
-//   <!-- Bibliography section title (auto-generated, normalized to h2) -->
-//   <h2 class="unnumbered" id="bibliography">Bibliography</h2>
-//
-//   <!-- Bibliography list -->
+//   <!-- Bibliography section: heading is first child of the list container -->
 //   <div id="refs" class="references csl-bib-body" role="list">
+//     <h2 class="unnumbered" id="bibliography">Bibliography</h2>
 //     <div id="ref-smith2020" class="csl-entry" role="listitem">
 //       <div class="csl-left-margin">[1] </div>
 //       <div class="csl-right-inline">Smith, J. ...</div>
