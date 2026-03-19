@@ -14,7 +14,7 @@ bibliography = "references.bib"
 +++
 
 
-This is a sample tutorial on how to start a blog using the Persona, a Zola theme[@zolathemes]. 
+This is a sample tutorial on how to start a blog using the Persona, a Zola theme [@zolathemes]. 
 It covers the basics of setting up your blog, creating content, and customizing the appearance to make it your own.
 
 ## Setting Up Your Blog
