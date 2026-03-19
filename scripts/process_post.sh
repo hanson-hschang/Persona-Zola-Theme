@@ -148,10 +148,10 @@ perl -0777 -pi -e \
 # --- 5. Reassemble ---
 # Combine the original frontmatter with the rendered body and write to the output file.
 {
-    echo "+++"
-    echo "$frontmatter"
-    echo "+++"
-    echo ""
+    printf '%s\n' '+++'
+    printf '%s\n' "$frontmatter"
+    printf '%s\n' '+++'
+    printf '\n'
     cat "$RENDERED_TMP"
 } > "$OUT_FILE"
 
