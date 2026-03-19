@@ -9,11 +9,11 @@ categories = ['blogs', 'private-soul']
 excerpt = """
 This is a sample tutorial on how to start a blog using the Persona theme. It covers the basics of setting up your blog, creating content, and customizing the appearance to make it your own.
 """
-citation_style = "ieee"
+citation_style = "apa"
 bibliography = "references.bib"
 +++
 
-<p>This is a sample tutorial on how to start a blog using the Persona, a Zola theme <span class="citation" data-cites="zolathemes">[<a href="#ref-zolathemes" role="doc-biblioref">1</a>]</span>. It covers the basics of setting up your blog, creating content, and customizing the appearance to make it your own.</p>
+<p>This is a sample tutorial on how to start a blog using the Persona, a Zola theme <span class="citation" data-cites="zolathemes">(<a href="#ref-zolathemes" role="doc-biblioref">Zola themes</a>)</span>. It covers the basics of setting up your blog, creating content, and customizing the appearance to make it your own.</p>
 <h2 id="setting-up-your-blog">Setting Up Your Blog</h2>
 <p>To get started, you can follow the instructions in the Persona documentation, which provides a step-by-step guide on how to install Zola, set up the theme, and configure your site.</p>
 <h2 id="creating-content">Creating Content</h2>
@@ -23,8 +23,8 @@ bibliography = "references.bib"
 <h2 id="conclusion">Conclusion</h2>
 <p>Starting a blog with the Persona theme is a great way to share your thoughts and ideas with the world. With its user-friendly setup and extensive customization options, you can create a unique and engaging blog that reflects your personality and style.</p>
 <h2 class="unnumbered" id="bibliography">Bibliography</h2>
-<div id="refs" class="references csl-bib-body" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
 <div id="ref-zolathemes" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[1] </div><div class="csl-right-inline"><a href="https://www.getzola.org/themes/">Zola themes</a>, </div>
+Zola themes. <a href="https://www.getzola.org/themes/">https://www.getzola.org/themes/</a>
 </div>
 </div>

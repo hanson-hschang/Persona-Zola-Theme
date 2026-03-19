@@ -25,8 +25,8 @@
 // ── Inline citation ───────────────────────────────────────────────────────────
 // The <span class="citation"> wraps the formatted label and its anchor link.
 .citation {
-  font-size: 0.85em;
-  vertical-align: super;
+  // font-size: 0.85em;
+  // vertical-align: super;
   color: var(--color-accent);
 
   a {
@@ -44,8 +44,8 @@
   margin-top: var(--spacing-lg);
   padding-top: var(--spacing-sm);
   border-top: 1px solid color-mix(in srgb, var(--color-default), transparent 95%);
-  font-size: 0.9em;
-  line-height: 1.6;
+  // font-size: 0.9em;
+  // line-height: 1.6;
 }
 
 // ── Individual reference entry ────────────────────────────────────────────────
