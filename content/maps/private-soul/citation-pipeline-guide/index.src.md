@@ -77,9 +77,8 @@ bash scripts/serve.sh
 Priority from highest to lowest:
 
 1. Post frontmatter: `[extra] citation_style = "..."`
-2. Local `style.csl` in the same directory as the post
-3. Site-level `config.toml` `[extra].citation_style`
-4. Theme-level `theme.toml` `[extra].citation_style`
+2. Site-level `config.toml` `[extra.persona].citation_style`
+3. Theme config `themes/persona/config.toml` `[extra.persona].citation_style`
 
 Bundled styles in `citation-style/`: `ieee`, `apa`, `chicago-author-date`, `mla`, `vancouver`.
 
