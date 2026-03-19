@@ -45,14 +45,15 @@ parse_config_from_extra() {
 
     # 3. Handle Missing Keys
     if [[ -z "$result" ]]; then
-        # If no result and no default value provided, return an error
-        if [[ -z "$default_value" ]]; then
+        # If a default value is provided, return it; otherwise, return an error
+        if [[ $# -ge 4 ]]; then
+            echo "  [WARN] Key '$key' not found in [$table]. Using default value: $default_value" >&2
+            echo "$default_value"
+            return 0
+        else
             echo "  [ERROR] Key '$key' not found in [$table] and no default provided." >&2
             return 1
         fi
-        # If no result but default value is provided, use the default
-        echo "  [WARN] Key '$key' not found in [$table]. Using default value: $default_value" >&2
-        result="$default_value"
     fi
 
     echo "$result"

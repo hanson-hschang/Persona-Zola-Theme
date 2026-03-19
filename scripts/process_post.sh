@@ -75,7 +75,7 @@ fi
 # The citation style is determined by checking, in order of priority:
 #   (1) A style specified in the post's frontmatter ([extra].citation_style)
 #   (2) The default CSL provided as an argument to this script
-post_style=$(parse_config_from_extra "$frontmatter" "citation_style")
+post_style=$(parse_config_from_extra "$frontmatter" "citation_style" "" "")
 final_csl=""
 # Try to find the user-specified style first (if it exists)
 if [[ -n "$post_style" ]]; then
