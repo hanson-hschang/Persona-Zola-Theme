@@ -7,6 +7,10 @@
   <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/post.css') }}">
 {% endblock head %}
 
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/citations.css') }}">
+{% endblock extra_css %}
+
 {% block main %}
 
   {{ blog_macro::post(page=page) }}

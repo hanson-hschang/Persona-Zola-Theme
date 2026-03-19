@@ -12,7 +12,7 @@
   <header id="header" class="header d-flex flex-column justify-content-center">
     <nav id="navmenu" class="navmenu">
       <ul>
-        <li><a href="#hero" class="active" aria-label="Link to Home"><i class="bi bi-house"></i><span>Home</span></a></li> 
+        <li><a href="#hero" class="active" aria-label="Link to Home"><i class="{{ home_section.extra.icon_class }}"></i><span>Home</span></a></li> 
         {% for subsection in subsections | sort(attribute="extra.order") %}
           {% if subsection.extra.landing_page is not defined or subsection.extra.landing_page == true %}
             <li><a href="#{{ subsection.title | lower }}" aria-label="Link to {{ subsection.title }}"><i class="{{ subsection.extra.icon_class }}"></i><span>{{ subsection.title }}</span></a></li>
@@ -38,12 +38,16 @@
   <header id="header" class="header d-flex justify-content-center">
     <nav id="navmenu" class="navmenu">
       <ul>
-        <li><a href="/" aria-label="Link to Home"><i class="bi bi-house"></i><span>Home</span></a></li>
+        <li><a href="/" aria-label="Link to Home"><i class="{{ home_section.extra.icon_class }}"></i><span>Home</span></a></li>
         {% for subsection in subsections | sort(attribute="extra.order") %}
           <li><a href="{{ subsection.path }}" {% if subsection.title | lower == navigation_title %}class="active"{% endif %} aria-label="Link to {{ subsection.title }}"><i class="{{ subsection.extra.icon_class }}"></i><span>{{ subsection.title }}</span></a></li>
         {% endfor %}
         {% if config.extra.persona.contact_infos is defined %}
-          <li><a href="/#contact" aria-label="Link to Contact"><i class="bi bi-chat-text"></i><span>Contact</span></a></li>
+          {% for info in config.extra.persona.contact_infos %}
+            {% if info.item == "_navigation" %}
+              <li><a href="/#{{ info.content | lower }}" aria-label="Link to Contact"><i class="{{ info.icon_class }}"></i><span>{{ info.content }}</span></a></li>
+            {% endif %}
+          {% endfor %}
         {% endif %}
       </ul>
     </nav>

@@ -14,7 +14,7 @@
 <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fhanson-hschang.github.io%2FPersona-Zola-Theme">
 <img alt="GitHub Release" src="https://img.shields.io/github/v/release/hanson-hschang/Persona-Zola-Theme">
 
-[Demo](https://hanson-hschang.github.io/Persona-Zola-Theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Structure](STRUCTURE.md) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
+[Demo](https://hanson-hschang.github.io/Persona-Zola-Theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Citations](#-citation-pipeline) • [Structure](STRUCTURE.md) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
 
 </div>
 
@@ -23,10 +23,10 @@
 - 🎨 **Modern Design**: Clean and professional layout easy for customization
 - 📱 **Fully Responsive**: Optimized for desktop, tablet, and mobile devices
 - ⚡️ **Fast Performance**: Lightweight and optimized for speed
-- 📋 **Resume/CV Section**: Dedicated section for your resume or CV *(--upcoming feature--)*
+- 📋 **Resume/CV**: Dedicated page for your resume or CV *(--upcoming feature--)*
 - 🎭 **Portfolio Showcase**: Showcase your work with elegant project sections *(--upcoming feature--)*
-- 📝 **Blog with $\TeX$**: Built-in blog functionality with KaTeX support
-- 📧 **Contact Forms**: Integrated contact form support with Web3Forms
+- 📝 **Blog with $\TeX$ and Citations**: Built-in blog functionality with equation and bibliography support
+- 📧 **Contact Forms**: Integrated contact form email support
 - 🔍 **Search Ready**: Built-in search index generation *(--upcoming feature--)*
 
 
@@ -34,7 +34,7 @@
 
 Using `Persona` for your site? 
 We'd love to see it! 
-Submit a PR to add your site to our showcase.
+Submit a Pull Request to add your site to our showcase.
 
 - [Show Your Site](#-showcase) - Add your site with us!
 - [Hanson.HSChang](https://hanson-hschang.github.io/) - Personal website of Heng-Sheng Chang
@@ -128,8 +128,8 @@ git submodule update --init --recursive
     +++
     title = "Presented Site Name"
     template = "index.html"
-    
     [extra]
+    icon_class = "bi bi-house"
     subtitles = "Item 1, Item 2, Item 3"
     +++
     ```
@@ -205,6 +205,60 @@ See `static/assets/css/theme.css` for the complete list of customizable variable
 
 </details>
 
+## 📚 Citation Pipeline
+
+This theme includes a built-in citation pipeline, designed to streamline academic-style writing in `.src.md` source files.
+
+### Overview
+
+The pipeline allows you to write naturally using citation keys (e.g., `[@cite-key]`) while automatically generating properly formatted citations and bibliographies during the build process. It integrates seamlessly with the site workflow, so you can focus on content rather than formatting.
+
+### How It Works
+
+- Write your content in `.src.md` files using Pandoc citation syntax  
+- Store your references in a local `references.bib` file  
+- A build script processes the source files and converts them into final Markdown with formatted citations  
+- The output is ready for rendering by the static site generator  
+
+### Setup
+
+1. Install dependencies:
+    ```bash
+    # macOS
+    brew install pandoc watchexec
+
+    # Ubuntu / Debian
+    sudo apt install pandoc
+    cargo install watchexec-cli
+    ```
+2.	Copy the scripts folder to your website root:
+    ```bash
+    cp -r themes/persona/scripts ./scripts
+    ```
+3. Create your post using:
+    ```markdown
+    This is a citation example [@key].
+    ```
+4. Add a `references.bib` file in the same directory.
+
+### Build & Development
+Use the provided script to build or watch for changes:
+- Run a one-time build:
+  ```bash 
+  bash scripts/build.sh
+  ```
+- For live development:
+  ```bash
+  bash scripts/watch.sh
+  ```
+  In a separate terminal:
+  ```bash
+  zola serve
+  ```
+
+For a complete, real example (source + generated output + bibliography), see the [`Citation Pipeline Guide` post](https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/) with the [source directory](https://github.com/hanson-hschang/Persona-Zola-Theme/tree/main/content/maps/private-soul/citation-pipeline-guide/).
+This pipeline is ideal for writing technical, research-oriented, or reference-heavy content with minimal friction.
+
 ## 🆘 Troubleshooting
 
 ### Common Issues
@@ -235,6 +289,7 @@ See `static/assets/css/theme.css` for the complete list of customizable variable
 - [**Bootstrap**](https://getbootstrap.com/) - CSS framework for responsive design
 - [**Web3Forms**](https://web3forms.com/) - Contact form service
 - [**KaTeX**](https://katex.org/) - Fast math typesetting library
+- [**Pandoc**](https://pandoc.org/) - Universal document converter for citation processing
 - [**Bootstrap Icons**](https://icons.getbootstrap.com/) - Icon library
 - [**Academicons**](https://jpswalsh.github.io/academicons/) - Academic icons
 - [**AOS (Animate On Scroll)**](https://michalsnik.github.io/aos/) - Animation library
@@ -242,6 +297,9 @@ See `static/assets/css/theme.css` for the complete list of customizable variable
 - [**Dynamic Badges**](https://shields.io/) - Customizable badges
 - [**PageSpeed Insights**](https://github.com/lowlighter/metrics/tree/master/source/plugins/pagespeed) - Automated performance reporting
 - [**GitHub**](https://github.com/features) - [Actions (CI/CD)](https://github.com/features/actions) • [Pages (Hosting Website)](https://docs.github.com/en/pages/getting-started-with-github-pages) • [Copilot (AI Agent)](https://docs.github.com/en/copilot/get-started/what-is-github-copilot)
+- [**Anthropic**](https://www.anthropic.com/) - [Claude](https://claude.ai/) • [Claude Code](https://code.claude.com/docs/en/overview)
+- [**Google**](https://cloud.google.com/ai/gemini) - [Gemini](https://gemini.google.com/) • [Gemini CLI](https://geminicli.com/)
+- [**OpenAI**](https://openai.com/) - [ChatGPT](https://chat.openai.com/) • [Codex](https://openai.com/codex/)
 - [**BootstrapMade Templates**](https://bootstrapmade.com/) - [Active](https://bootstrapmade.com/demo/Active) • [MyResume](https://bootstrapmade.com/demo/MyResume) • [UpConstruction](https://bootstrapmade.com/demo/UpConstruction)
 - [**Zola Themes**](https://www.getzola.org/themes/) - [Mabuya](https://mabuya.vercel.app/) • [Vonge](https://pascal-berrang.de/vonge-zola-theme/) • [Zluinav](https://harrymkt.github.io/zluinav/)
 

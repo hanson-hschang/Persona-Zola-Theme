@@ -6,6 +6,9 @@ title = "Persona - Zola Theme "
 author = "Persona, Zola Theme"
 description = "A modern, responsive and lightweight theme for resume, portfolio, and blog."
 
+# Prevent .src.md, .bib, and .csl files from being rendered as pages
+ignored_content = ["*.src.md", "*.bib", "*.csl"]
+
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
 
@@ -43,7 +46,15 @@ light_theme = "github-light"
 [extra]
 
 [extra.persona]
-# Note: landing page title and subtitles are configured in `content/_index.md`
+# Note: landing page title, subtitles, and icon are configured in `content/_index.md`
+
+# Citation style
+# This configuration controls how references are formatted and displayed throughout the site.
+#
+# Available options include:
+# - "apa":
+# - "ieee": 
+citation_style = "ieee"
 
 # Social links
 # A list of your social media profiles to display.
@@ -61,7 +72,7 @@ social_links = [
 # Find icon classes from:
 # - Bootstrap Icons: https://icons.getbootstrap.com/
 contact_infos = [
-  { item = "_navigation", content = "Contact", icon_class = "bi bi-chat-text" },
+  { item = "_navigation", content = "Contact", icon_class = "bi bi-postcard" },
   { item = "Name", content = "Persona, Zola Theme", icon_class = "bi bi-person"},
   { item = "Email", content = "persona.zola.theme@gmail.com", icon_class = "bi bi-envelope"}
 ]
