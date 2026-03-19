@@ -39,6 +39,7 @@ echo "  [TRIGGER]    $BUILD_SCRIPT"
 #             a glob pattern is the correct approach.
 #   --clear:  Clear the screen on each rebuild (keeps things tidy)
 #   --shell:  Run the command inside a bash shell
+#   --postpone: Skips the initial run and waits for the first file event.
 
 watchexec \
     --watch "$WATCH_DIR" \
@@ -46,4 +47,5 @@ watchexec \
     --filter "**/*.bib" \
     --clear \
     --shell bash \
+    --postpone \
     "$BUILD_SCRIPT"
