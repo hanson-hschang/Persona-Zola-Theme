@@ -14,7 +14,7 @@
 <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fhanson-hschang.github.io%2FPersona-Zola-Theme">
 <img alt="GitHub Release" src="https://img.shields.io/github/v/release/hanson-hschang/Persona-Zola-Theme">
 
-[Demo](https://hanson-hschang.github.io/Persona-Zola-Theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Citations](#-citation-pipeline) • [Structure](STRUCTURE.md) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
+[Demo](https://hanson-hschang.github.io/Persona-Zola-Theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Citation](#-citation-pipeline) • [Structure](STRUCTURE.md) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
 
 </div>
 
@@ -24,7 +24,7 @@
 - 📱 **Fully Responsive**: Optimized for desktop, tablet, and mobile devices
 - ⚡️ **Fast Performance**: Lightweight and optimized for speed
 - 📋 **Resume/CV**: Dedicated page for your resume or CV *(--upcoming feature--)*
-- 🎭 **Portfolio Showcase**: Showcase your work with elegant project sections *(--upcoming feature--)*
+- 🎭 **Portfolio Showcase**: Showcase your work with elegant project cards *(--upcoming feature--)*
 - 📝 **Blog with $\TeX$ and Citations**: Built-in blog functionality with equation and bibliography support
 - 📧 **Contact Forms**: Integrated contact form email support
 - 🔍 **Search Ready**: Built-in search index generation *(--upcoming feature--)*
@@ -65,7 +65,7 @@ git submodule update --init --recursive
 
 <div align="center">
 
-[Basic Setup](#basic-setup) • [Section Configuration](#section-configuration) • [Theme Customization](#theme-customization)
+[Basic Setup](#basic-setup) • [Segment Configuration](#segment-configuration) • [Theme Customization](#theme-customization)
 
 </div>
 
@@ -139,27 +139,28 @@ git submodule update --init --recursive
     - [favicon](https://en.wikipedia.org/wiki/Favicon): `favicon.ico`
     - [apple touch icon](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html): `apple-touch-icon.png`
 
-### Section Configuration
+### Segment Configuration
 
-Each section can be configured with front matter. 
-The theme supports three main section types:
-- **Plain sections** (for static text content like about)
-- **Category sections** (for portfolios, projects, showcases)
-- **Blog sections** (for blog posts and articles)
+Each segment can be configured with front matter. 
+The theme supports three main segment types:
+- **Plain segments** (for static text content like about)
+- **Category segments** (for portfolios, projects, showcases)
+- **Blog segments** (for blog posts and articles)
 
 Here is how to set them up:
 
 ```toml
 +++
-title = "Title of the Section"
+title = "Title of the Segment"
 
 [extra]
-# Section-specific icon for navigation (Bootstrap Icons)
-icon_class = "bi bi-person"
+# Segment-specific icon for navigation (Bootstrap Icons)
+icon_class = "bi bi-file-earmark-text"
 # Display order (lower numbers appear first)
 order = 1
-# Section type determines rendering approach
-type = "type"  # "plain", "category", or "blog"
+# Segment type determines rendering approach
+# options include "plain", "category", or "blog"
+type = "plain"  
 +++
 ```
 
@@ -217,8 +218,8 @@ The pipeline allows you to write naturally using citation keys (e.g., `[@cite-ke
 
 - Write your content in `.src.md` files using Pandoc citation syntax  
 - Store your references in a local `references.bib` file  
-- A build script processes the source files and converts them into final Markdown with formatted citations  
-- The output is ready for rendering by the static site generator  
+- A build script processes the source files and converts them into final Markdown file `.md` with formatted citations  
+- The output is ready for rendering by Zola without any additional steps  
 
 ### Setup
 
@@ -235,7 +236,7 @@ The pipeline allows you to write naturally using citation keys (e.g., `[@cite-ke
     ```bash
     cp -r themes/persona/scripts ./scripts
     ```
-3. Create your post using:
+3. Create your post using with `.src.md` extension and use citation keys in the content:
     ```markdown
     This is a citation example [@key].
     ```
@@ -256,7 +257,7 @@ Use the provided script to build or watch for changes:
   zola serve
   ```
 
-For a complete, real example (source + generated output + bibliography), see the [`Citation Pipeline Guide` post](https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/) with the [source directory](https://github.com/hanson-hschang/Persona-Zola-Theme/tree/main/content/maps/private-soul/citation-pipeline-guide/).
+For a complete, real example (source + generated output + bibliography), see the [`Citation Pipeline Guide` post](https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/) with the [example source directory](https://github.com/hanson-hschang/Persona-Zola-Theme/tree/main/content/maps/private-soul/citation-pipeline-guide/).
 This pipeline is ideal for writing technical, research-oriented, or reference-heavy content with minimal friction.
 
 ## 🆘 Troubleshooting
@@ -268,8 +269,8 @@ This pipeline is ideal for writing technical, research-oriented, or reference-he
   - Check that the theme is in the correct directory: `themes/persona/`
 
 - **Navigation not working:**
-  - Ensure sections have proper front matter with `order` field
-  - Check that section metadata `extra.type` is correctly specified
+  - Ensure `[extra].order` field is set correctly in the front matter
+  - Check `[extra].type` is correctly specified in the front matter
 
 - **Contact form not working:**
   - Verify `web3form_public_key` is set in configuration
