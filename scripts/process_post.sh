@@ -126,7 +126,7 @@ fi
 # at the same level as other section headings in the post body.
 # Only targets <h1 class="unnumbered"> (Pandoc's auto-generated heading);
 # user-written <h1> tags without that class are left untouched.
-sed -i '' 's|<h1 class="unnumbered"\([^>]*\)>\([^<]*\)</h1>|<h2 class="unnumbered"\1>\2</h2>|g' "$RENDERED_TMP"
+perl -pi -e 's|<h1 class="unnumbered"([^>]*)>([^<]*)</h1>|<h2 class="unnumbered"$1>$2</h2>|g' "$RENDERED_TMP"
 
 # --- 5. Reassemble ---
 # Combine the original frontmatter with the rendered body and write to the output file.
