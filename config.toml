@@ -44,11 +44,17 @@ dark_theme = "github-dark"
 light_theme = "github-light" 
 
 [extra]
-# Uncomment to override the theme default citation style (defined in theme.toml):
-# citation_style = "apa"
 
 [extra.persona]
-# Note: landing page title and subtitles are configured in `content/_index.md`
+# Note: landing page title, subtitles, and icon are configured in `content/_index.md`
+
+# Citation style
+# This configuration controls how references are formatted and displayed throughout the site.
+#
+# Available options include:
+# - "apa":
+# - "ieee": 
+citation_style = "ieee"
 
 # Social links
 # A list of your social media profiles to display.

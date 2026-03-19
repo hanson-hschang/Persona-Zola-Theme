@@ -147,7 +147,7 @@ type(scope): short description
 - `config`: Configuration changes
 - `template`: HTML template changes
 - `stylesheet`: SCSS changes
-- `script`: JavaScript changes
+- `script`: JavaScript / Bash changes
 - `docs`: Documentation changes
 
 ### Examples

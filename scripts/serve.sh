@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # serve.sh — Development server with live rebuild on .src.md / .bib changes
 #
 # Flow:

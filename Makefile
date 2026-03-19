@@ -7,8 +7,8 @@
 .PHONY: serve build
 
 serve:
-	bash serve.sh
+	bash scripts/serve.sh
 
 build:
-	bash build.sh
+	bash scripts/build.sh
 	zola build
