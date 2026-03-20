@@ -76,15 +76,15 @@ Each file represents a page or blog post, and you can use frontmatter to specify
 
 ## Customizing Appearance
 
-The Persona theme provides extensive options to customize colors and fonts through overriding CSS variables in `static/assets/css/custom.css` without modifying the core theme files.
+The Persona theme provides extensive options to customize colors and fonts by overriding CSS variables in `sass/assets/stylesheet/_custom.scss` without modifying the core theme files.
 For example, to change the accent color, heading color, and title font size, you can use the following CSS:
 
 ```css
-/* static/assets/css/custom.css */
+/* sass/assets/stylesheet/_custom.scss */
 :root {
-  --accent-color: #FF5F05;   /* Override accent color to vibrant orange */
-  --heading-color: #13294B;  /* Override heading color to dark blue */
-  --title-font-size: 72px;   /* Increase title font size for more impact */
+  --color-accent: #FF5F05;   /* Override accent color to vibrant orange */
+  --color-heading: #13294B;  /* Override heading color to dark blue */
+  --font-size-title: 72px;   /* Increase title font size for more impact */
 }
 ```
 
@@ -118,4 +118,3 @@ See `sass/assets/stylesheet/_variables.scss` for the complete list of customizab
 
 Starting a website with the Persona theme is a great way to share your thoughts and ideas with the world.
 With its user-friendly setup and extensive customization options, you can create a unique and engaging site that reflects your personality and style.
-
