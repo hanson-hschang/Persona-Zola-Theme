@@ -65,9 +65,11 @@ git submodule update --init --recursive
 
 <div align="center">
 
-[Basic Setup](#basic-setup) • [Segment Configuration](#segment-configuration) • [Build & Serve](#build--serve)
+[Basic Setup](#basic-setup) • [Segment Front Matter](#segment-front-matter) • [Build & Serve](#build--serve)
 
 </div>
+
+
 
 ### Basic Setup
 
@@ -87,15 +89,18 @@ git submodule update --init --recursive
     theme = "persona"
     ```
 
-### Segment Configuration
+### Segment Front Matter
 
-Each segment can be configured with front matter. 
 The theme supports three main segment types:
 - **Plain segments** (for static text content like about)
 - **Category segments** (for portfolios, projects, showcases)
 - **Blog segments** (for blog posts and articles)
 
-Here is how to set them up:
+<details>
+<summary>
+Each segment can be configured with front matter. 
+Expand to see the details. 
+</summary>
 
 ```toml
 +++
@@ -112,38 +117,42 @@ type = "plain"
 +++
 ```
 
-For a complete walkthrough of configuration and customization, see the [`Begin with Persona` blog post](https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/begin-with-persona/).
+</details>
+
+
+> For a complete walkthrough of configuration and customization, see the [Begin with Persona](https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/begin-with-persona/) blog post.
+
+
 
 ### Build & Serve
 
-After completing the configuration, build and serve your site with Zola:
+After completing the setup, build and serve your site with Zola:
 
-- Build the site:
-  ```bash
-  zola build
-  ```
+| |terminal command| note|
+|---|---|---|
+|Build the site|```zola build```|site build under `public/`|
+|Serve the site|```zola serve```|locally with live reload|
 
-- Serve the site locally with live reload:
-  ```bash
-  zola serve
-  ```
 
 > If you are using the [Citation Pipeline](./README.md#-citation-pipeline), use `make build` and `make serve` instead to also process `.src.md` files.
 
 ## 📚 Citation Pipeline
 
-This theme includes a built-in citation pipeline, designed to streamline academic-style writing in `.src.md` source files.
+<div align="center">
 
-### Overview
+[How It Works](#how-it-works) • [Setup](#setup) • [Build & Serve](#build--serve)
 
-The pipeline allows you to write naturally using citation keys (e.g., `[@cite-key]`) while automatically generating properly formatted citations and bibliographies during the build process. It integrates seamlessly with the site workflow, so you can focus on content rather than formatting.
+</div>
+
+The pipeline allows you to write naturally using citation keys from the bibliography file while automatically generating properly formatted references during the build process. 
+It integrates seamlessly with the site workflow, so you can focus on content rather than formatting.
 
 ### How It Works
 
-- Write your content in `.src.md` files using Pandoc citation syntax  
-- Store your references in a local `references.bib` file  
+- Write your post content in `.src.md` files using [Pandoc citation syntax](https://pandoc.org/demo/example33/8.20-citation-syntax.html)  
+- Store your references in the `references.bib` file in the same directory as your post
 - A build script processes the source files and converts them into final Markdown file `.md` with formatted citations  
-- The output is ready for rendering by Zola without any additional steps  
+- The output is ready for rendering without any additional steps  
 
 ### Setup
 
@@ -162,26 +171,20 @@ The pipeline allows you to write naturally using citation keys (e.g., `[@cite-ke
     ```
 3. Create your post using with `.src.md` extension and use citation keys in the content:
     ```markdown
-    This is a citation example [@key].
+    This is a citation example [@cite-key].
     ```
 4. Add a `references.bib` file in the same directory.
 
-### Build & Development
-Use the provided script to build or watch for changes:
-- Run a one-time build:
-  ```bash 
-  bash scripts/build.sh
-  ```
-- For live development:
-  ```bash
-  bash scripts/watch.sh
-  ```
-  In a separate terminal:
-  ```bash
-  zola serve
-  ```
+### Build & Serve
+Use the provided `Makefile` to build or serve your site locally with the citation processing:
 
-For a complete, real example (source + generated output + bibliography), see the [`Citation Pipeline Guide` post](https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/) with the [example source directory](https://github.com/hanson-hschang/Persona-Zola-Theme/tree/main/content/maps/private-soul/citation-pipeline-guide/).
+| |terminal command| note|
+|---|---|---|
+|Build the site|```make build```|site build under `public/`|
+|Serve the site|```make serve```|locally with live reload|
+
+
+> For a complete example (source + bibliography + generated output), see the [Citation Pipeline Guide](https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/) blog post with the [example source directory](https://github.com/hanson-hschang/Persona-Zola-Theme/tree/main/content/maps/private-soul/citation-pipeline-guide/).
 This pipeline is ideal for writing technical, research-oriented, or reference-heavy content with minimal friction.
 
 ## 🆘 Troubleshooting
