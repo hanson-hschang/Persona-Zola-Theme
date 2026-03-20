@@ -68,12 +68,12 @@ bibliography = "references.bib"
 <p><strong>Available Customization Variables:</strong></p>
 <p>Colors:</p>
 <ul>
-<li><code>--background-color</code>: Background color for the entire website</li>
-<li><code>--default-color</code>: Default text color</li>
-<li><code>--heading-color</code>: Color for headings and titles</li>
-<li><code>--accent-color</code>: Brand color for buttons, links, and highlights</li>
-<li><code>--surface-color</code>: Background for cards and boxed elements</li>
-<li><code>--contrast-color</code>: Text color for use against accent colors</li>
+<li><code>--color-background</code>: Background color for the entire website</li>
+<li><code>--color-default</code>: Default text color</li>
+<li><code>--color-heading</code>: Color for headings and titles</li>
+<li><code>--color-accent</code>: Brand color for buttons, links, and highlights</li>
+<li><code>--color-surface</code>: Background for cards and boxed elements</li>
+<li><code>--color-contrast</code>: Text color for use against accent colors</li>
 </ul>
 <p>Typography:</p>
 <ul>

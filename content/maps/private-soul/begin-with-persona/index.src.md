@@ -92,12 +92,12 @@ For example, to change the accent color, heading color, and title font size, you
 
 Colors:
 
-- `--background-color`: Background color for the entire website
-- `--default-color`: Default text color
-- `--heading-color`: Color for headings and titles
-- `--accent-color`: Brand color for buttons, links, and highlights
-- `--surface-color`: Background for cards and boxed elements
-- `--contrast-color`: Text color for use against accent colors
+- `--color-background`: Background color for the entire website
+- `--color-default`: Default text color
+- `--color-heading`: Color for headings and titles
+- `--color-accent`: Brand color for buttons, links, and highlights
+- `--color-surface`: Background for cards and boxed elements
+- `--color-contrast`: Text color for use against accent colors
 
 Typography:
 
