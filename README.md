@@ -165,7 +165,7 @@ It integrates seamlessly with the site workflow, so you can focus on content rat
     sudo apt install pandoc
     cargo install watchexec-cli
     ```
-2.	Change directory the your website root and copy the `scripts` folder and `Makefile` from the theme:
+2.	Change directory to your website root and copy the `scripts` folder and `Makefile` from the theme:
     ```bash
     cp -r themes/persona/{scripts,Makefile} .
     ```
