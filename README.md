@@ -65,13 +65,15 @@ git submodule update --init --recursive
 
 <div align="center">
 
-[Basic Setup](#basic-setup) • [Segment Configuration](#segment-configuration) • [Theme Customization](#theme-customization)
+[Basic Setup](#basic-setup) • [Segment Front Matter](#segment-front-matter) • [Build & Serve](#build--serve)
 
 </div>
 
+
+
 ### Basic Setup
 
-1. **Copy the configuration and the landing page content** from the theme to get started quickly:
+1. **Copy the configuration and the landing page content** from the theme to your website root to get started quickly:
 
     ```bash
     # Copy the configuration
@@ -87,67 +89,18 @@ git submodule update --init --recursive
     theme = "persona"
     ```
 
-3. **Customization**:
+### Segment Front Matter
 
-  - Configure site settings in your `config.toml`:
-
-    ```toml
-    # The URL this site will be built for
-    base_url = "https://yourdomain.com"
-
-    # The basic site information
-    title = "Your Site Name"
-    author = "Your Name"
-    description = "Your personal resume, portfolio and blog"
-
-    [extra]
-
-    [extra.persona]
-    # Note: landing page title and subtitles are configured in `content/_index.md`
-
-    # Social links
-    social_links = [
-      { name = "GitHub", url = "https://github.com/yourusername", icon_class = "bi bi-github" },
-      { name = "LinkedIn", url = "https://linkedin.com/in/yourprofile", icon_class = "bi bi-linkedin" },
-      { name = "Twitter-X", url = "https://x.com/yourusername", icon_class = "bi bi-twitter-x" },
-    ]
-
-    # Contact information
-    contact_infos = [
-      { item = "_navigation", content = "Contact", icon_class = "bi bi-chat-text" }, # Special item for header navigation (REQUIRED)
-      { item = "Name", content = "Your Name", icon_class = "bi bi-person" },
-      { item = "Location", content = "Your City, Country", icon_class = "bi bi-geo-alt" },
-      { item = "Email", content = "your.email@example.com", icon_class = "bi bi-envelope" },
-      { item = "Phone", content = "+0 (123) 456-7890", icon_class = "bi bi-phone" },
-    ]
-    ```
-
-  - Modify landing page content in `content/_index.md`:
-
-    ```toml
-    +++
-    title = "Presented Site Name"
-    template = "index.html"
-    [extra]
-    icon_class = "bi bi-house"
-    subtitles = "Item 1, Item 2, Item 3"
-    +++
-    ```
-
-  - Update your assets in `static/assets/img/`:
-    - [hero image](https://en.wiktionary.org/wiki/hero_image): `background.jpg`
-    - [favicon](https://en.wikipedia.org/wiki/Favicon): `favicon.ico`
-    - [apple touch icon](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html): `apple-touch-icon.png`
-
-### Segment Configuration
-
-Each segment can be configured with front matter. 
 The theme supports three main segment types:
 - **Plain segments** (for static text content like about)
 - **Category segments** (for portfolios, projects, showcases)
 - **Blog segments** (for blog posts and articles)
 
-Here is how to set them up:
+<details>
+<summary>
+Each segment is configured with front matter. 
+Expand to see the details. 
+</summary>
 
 ```toml
 +++
@@ -164,62 +117,42 @@ type = "plain"
 +++
 ```
 
-### Theme Customization
-
-The theme provides extensive options to customize colors and fonts through overriding CSS variables in `static/assets/css/custom.css` without modifying the core theme files.
-For example, to change the accent color, heading color, and title font size, you can use the following CSS:
-
-```css
-/* static/assets/css/custom.css */
-:root {
-  --accent-color: #FF5F05;   /* Override accent color to vibrant orange */
-  --heading-color: #13294B;  /* Override heading color to dark blue */
-  --title-font-size: 72px;   /* Increase title font size for more impact */
-}
-```
-
-<details>
-<summary>Available Customization Variables</summary>
-
-**Colors:**
-- `--background-color`: Background color for the entire website
-- `--default-color`: Default text color
-- `--heading-color`: Color for headings and titles
-- `--accent-color`: Brand color for buttons, links, and highlights
-- `--surface-color`: Background for cards and boxed elements
-- `--contrast-color`: Text color for use against accent colors
-
-
-**Typography:**
-- Font Families
-  - `--default-font`: Main font family for body text
-  - `--heading-font`: Font family for headings
-  - `--nav-font`: Font family for navigation
-- Font Sizes
-  - `--footer-font-size`: Footer text size (default: 14px)
-  - `--normal-font-size`: Base font size (default: 16px)
-  - `--subtitle-font-size`: Subtitle font size (default: 24px)
-  - `--heading-font-size`: Base font size for heading (default: 32px)
-  - `--title-font-size`: Base font size for title (default: 64px)
-
-See `static/assets/css/theme.css` for the complete list of customizable variables with detailed descriptions.
-
 </details>
+
+> [!TIP]
+> For a complete walkthrough of configuration and customization, see the [Begin with Persona](https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/begin-with-persona/) blog post.
+
+
+
+### Build & Serve
+
+After completing the setup, build and serve your site with Zola:
+
+| |terminal command| note|
+|---|---|---|
+|Build the site|```zola build```|site build under `public/`|
+|Serve the site|```zola serve```|locally with live reload|
+
+> [!NOTE]
+> If you are using the [Citation Pipeline](#-citation-pipeline), use `make build` and `make serve` instead to also process `.src.md` files.
 
 ## 📚 Citation Pipeline
 
-This theme includes a built-in citation pipeline, designed to streamline academic-style writing in `.src.md` source files.
+<div align="center">
 
-### Overview
+[How It Works](#how-it-works) • [Setup](#setup) • [Build & Write](#build--write)
 
-The pipeline allows you to write naturally using citation keys (e.g., `[@cite-key]`) while automatically generating properly formatted citations and bibliographies during the build process. It integrates seamlessly with the site workflow, so you can focus on content rather than formatting.
+</div>
+
+The pipeline allows you to write naturally using citation keys from the bibliography file while automatically generating properly formatted references during the build process. 
+It integrates seamlessly with the site workflow, so you can focus on content rather than formatting.
 
 ### How It Works
 
-- Write your content in `.src.md` files using Pandoc citation syntax  
-- Store your references in a local `references.bib` file  
+- Write your post content in `.src.md` files using [Pandoc citation syntax](https://pandoc.org/demo/example33/8.20-citation-syntax.html)  
+- Store your references in the `references.bib` file in the same directory as your post
 - A build script processes the source files and converts them into final Markdown file `.md` with formatted citations  
-- The output is ready for rendering by Zola without any additional steps  
+- The output is ready for rendering without any additional steps  
 
 ### Setup
 
@@ -232,32 +165,27 @@ The pipeline allows you to write naturally using citation keys (e.g., `[@cite-ke
     sudo apt install pandoc
     cargo install watchexec-cli
     ```
-2.	Copy the scripts folder to your website root:
+2.	Change directory to your website root and copy the `scripts` folder and `Makefile` from the theme:
     ```bash
-    cp -r themes/persona/scripts ./scripts
+    cp -r themes/persona/{scripts,Makefile} .
     ```
-3. Create your post using with `.src.md` extension and use citation keys in the content:
+3. Create your post with a `.src.md` extension and use citation keys in the content:
     ```markdown
-    This is a citation example [@key].
+    This is a citation example [@cite-key].
     ```
 4. Add a `references.bib` file in the same directory.
 
-### Build & Development
-Use the provided script to build or watch for changes:
-- Run a one-time build:
-  ```bash 
-  bash scripts/build.sh
-  ```
-- For live development:
-  ```bash
-  bash scripts/watch.sh
-  ```
-  In a separate terminal:
-  ```bash
-  zola serve
-  ```
+### Build & Write
+Use the provided `Makefile` to build or serve your site locally with automatic processing of `.src.md` files:
 
-For a complete, real example (source + generated output + bibliography), see the [`Citation Pipeline Guide` post](https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/) with the [example source directory](https://github.com/hanson-hschang/Persona-Zola-Theme/tree/main/content/maps/private-soul/citation-pipeline-guide/).
+| |terminal command| note|
+|---|---|---|
+|Build the site|`make build`|site build under `public/`|
+|Serve the site|`make serve`|locally with live reload|
+
+
+> [!TIP]
+> For a complete example (source + bibliography + generated output), see the [Citation Pipeline Guide](https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/) blog post with the [example source directory](https://github.com/hanson-hschang/Persona-Zola-Theme/tree/main/content/maps/private-soul/citation-pipeline-guide/).
 This pipeline is ideal for writing technical, research-oriented, or reference-heavy content with minimal friction.
 
 ## 🆘 Troubleshooting
