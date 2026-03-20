@@ -66,7 +66,7 @@ bibliography = "references.bib"
 <li><code>.csl-right-inline</code></li>
 </ul>
 <p>Inline citations anchor to bibliography entries, and the bibliography heading is rendered inside the refs container as “Bibliography”.</p>
-<div id="refs" class="references csl-bib-body hanging-indent" data-line-spacing="2" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
 <h2 class="unnumbered" id="bibliography">Bibliography</h2>
 <div id="ref-zolathemes" class="csl-entry" role="listitem">
 Zola themes. <a href="https://www.getzola.org/themes/">https://www.getzola.org/themes/</a>
