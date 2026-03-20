@@ -112,7 +112,7 @@ Typography:
   - `--heading-font-size`: Base font size for heading (default: 32px)
   - `--title-font-size`: Base font size for title (default: 64px)
 
-See `static/assets/css/theme.css` for the complete list of customizable variables with detailed descriptions.
+See `sass/assets/stylesheet/_variables.scss` for the complete list of customizable variables with detailed descriptions (the compiled CSS is emitted under `public/assets/stylesheet/` at build time).
 
 ## Conclusion
 
