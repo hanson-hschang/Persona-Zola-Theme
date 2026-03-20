@@ -92,7 +92,7 @@ bibliography = "references.bib"
 <li><code>--title-font-size</code>: Base font size for title (default: 64px)</li>
 </ul></li>
 </ul>
-<p>See <code>static/assets/css/theme.css</code> for the complete list of customizable variables with detailed descriptions.</p>
+<p>See <code>sass/assets/stylesheet/_variables.scss</code> for the complete list of customizable variables with detailed descriptions.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>Starting a website with the Persona theme is a great way to share your thoughts and ideas with the world. With its user-friendly setup and extensive customization options, you can create a unique and engaging site that reflects your personality and style.</p>
 <div id="refs" class="references csl-bib-body" role="list">
