@@ -140,7 +140,7 @@ After completing the setup, build and serve your site with Zola:
 
 <div align="center">
 
-[How It Works](#how-it-works) • [Setup](#setup) • [Build & Serve](#build--serve)
+[How It Works](#how-it-works) • [Setup](#setup) • [Build & Write](#build--write)
 
 </div>
 
@@ -169,14 +169,14 @@ It integrates seamlessly with the site workflow, so you can focus on content rat
     ```bash
     cp -r themes/persona/{scripts,Makefile} .
     ```
-3. Create your post using with `.src.md` extension and use citation keys in the content:
+3. Create your post with a `.src.md` extension and use citation keys in the content:
     ```markdown
     This is a citation example [@cite-key].
     ```
 4. Add a `references.bib` file in the same directory.
 
-### Build & Serve
-Use the provided `Makefile` to build or serve your site locally with the citation processing:
+### Build & Write
+Use the provided `Makefile` to build or serve your site locally with automatic processing of `.src.md` files:
 
 | |terminal command| note|
 |---|---|---|
