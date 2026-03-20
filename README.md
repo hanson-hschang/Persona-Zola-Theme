@@ -73,7 +73,7 @@ git submodule update --init --recursive
 
 ### Basic Setup
 
-1. **Copy the configuration and the landing page content** from the theme to get started quickly:
+1. **Copy the configuration and the landing page content** from the theme to your website root to get started quickly:
 
     ```bash
     # Copy the configuration
@@ -98,7 +98,7 @@ The theme supports three main segment types:
 
 <details>
 <summary>
-Each segment can be configured with front matter. 
+Each segment is configured with front matter. 
 Expand to see the details. 
 </summary>
 
@@ -119,7 +119,7 @@ type = "plain"
 
 </details>
 
-
+> [!TIP]
 > For a complete walkthrough of configuration and customization, see the [Begin with Persona](https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/begin-with-persona/) blog post.
 
 
@@ -133,7 +133,7 @@ After completing the setup, build and serve your site with Zola:
 |Build the site|```zola build```|site build under `public/`|
 |Serve the site|```zola serve```|locally with live reload|
 
-
+> [!NOTE]
 > If you are using the [Citation Pipeline](./README.md#-citation-pipeline), use `make build` and `make serve` instead to also process `.src.md` files.
 
 ## 📚 Citation Pipeline
@@ -165,9 +165,9 @@ It integrates seamlessly with the site workflow, so you can focus on content rat
     sudo apt install pandoc
     cargo install watchexec-cli
     ```
-2.	Copy the scripts folder to your website root:
+2.	Change directory the your website root and copy the `scripts` folder and `Makefile` from the theme:
     ```bash
-    cp -r themes/persona/scripts ./scripts
+    cp -r themes/persona/{scripts,Makefile} .
     ```
 3. Create your post using with `.src.md` extension and use citation keys in the content:
     ```markdown
@@ -184,6 +184,7 @@ Use the provided `Makefile` to build or serve your site locally with the citatio
 |Serve the site|```make serve```|locally with live reload|
 
 
+> [!TIP]
 > For a complete example (source + bibliography + generated output), see the [Citation Pipeline Guide](https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/) blog post with the [example source directory](https://github.com/hanson-hschang/Persona-Zola-Theme/tree/main/content/maps/private-soul/citation-pipeline-guide/).
 This pipeline is ideal for writing technical, research-oriented, or reference-heavy content with minimal friction.
 
