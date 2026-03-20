@@ -180,8 +180,8 @@ Use the provided `Makefile` to build or serve your site locally with the citatio
 
 | |terminal command| note|
 |---|---|---|
-|Build the site|```make build```|site build under `public/`|
-|Serve the site|```make serve```|locally with live reload|
+|Build the site|`make build`|site build under `public/`|
+|Serve the site|`make serve`|locally with live reload|
 
 
 > [!TIP]
