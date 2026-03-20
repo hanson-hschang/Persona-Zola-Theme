@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Persona - Zola Theme  - citation</title>
+    <subtitle>A modern, responsive and lightweight theme for resume, portfolio, and blog.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://hanson-hschang.github.io/Persona-Zola-Theme/tags/citation/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://hanson-hschang.github.io/Persona-Zola-Theme/"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-03-19T00:00:00+00:00</updated>
+    <id>https://hanson-hschang.github.io/Persona-Zola-Theme/tags/citation/atom.xml</id>
+    <entry xml:lang="en">
+        <title>How to Use Citation in Persona</title>
+        <published>2025-03-19T00:00:00+00:00</published>
+        <updated>2025-03-19T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Persona, Zola Theme
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/"/>
+        <id>https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/</id>
+        
+        <content type="html" xml:base="https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/">&lt;p&gt;Persona supports &lt;code&gt;[@cite]&lt;&#x2F;code&gt; through a Pandoc preprocessing pipeline. This post is the working example for authoring and building citation-enabled content &lt;span class=&quot;citation&quot; data-cites=&quot;zolathemes&quot;&gt;(&lt;a href=&quot;#ref-zolathemes&quot; role=&quot;doc-biblioref&quot;&gt;Zola themes&lt;&#x2F;a&gt;)&lt;&#x2F;span&gt;.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;prerequisites&quot;&gt;Prerequisites&lt;&#x2F;h2&gt;
+&lt;p&gt;Install Pandoc and watchexec:&lt;&#x2F;p&gt;
+&lt;div class=&quot;sourceCode&quot; id=&quot;cb1&quot;&gt;&lt;pre class=&quot;sourceCode bash&quot;&gt;&lt;code class=&quot;sourceCode bash&quot;&gt;&lt;span id=&quot;cb1-1&quot;&gt;&lt;a href=&quot;#cb1-1&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;&#x2F;a&gt;&lt;span class=&quot;co&quot;&gt;# macOS&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span id=&quot;cb1-2&quot;&gt;&lt;a href=&quot;#cb1-2&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;&#x2F;a&gt;&lt;span class=&quot;ex&quot;&gt;brew&lt;&#x2F;span&gt; install pandoc watchexec&lt;&#x2F;span&gt;
+&lt;span id=&quot;cb1-3&quot;&gt;&lt;a href=&quot;#cb1-3&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;&#x2F;a&gt;&lt;&#x2F;span&gt;
+&lt;span id=&quot;cb1-4&quot;&gt;&lt;a href=&quot;#cb1-4&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;&#x2F;a&gt;&lt;span class=&quot;co&quot;&gt;# Ubuntu &#x2F; Debian&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span id=&quot;cb1-5&quot;&gt;&lt;a href=&quot;#cb1-5&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;&#x2F;a&gt;&lt;span class=&quot;fu&quot;&gt;sudo&lt;&#x2F;span&gt; apt install pandoc&lt;&#x2F;span&gt;
+&lt;span id=&quot;cb1-6&quot;&gt;&lt;a href=&quot;#cb1-6&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;&#x2F;a&gt;&lt;span class=&quot;ex&quot;&gt;cargo&lt;&#x2F;span&gt; install watchexec-cli&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;&#x2F;div&gt;
+&lt;h2 id=&quot;file-structure&quot;&gt;File structure&lt;&#x2F;h2&gt;
+&lt;p&gt;Keep these files in the same folder:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;index.src.md&lt;&#x2F;code&gt; (authoring source)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;references.bib&lt;&#x2F;code&gt; (BibTeX database)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;index.md&lt;&#x2F;code&gt; (generated output, do not edit manually)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;write-citations-in-.src.md&quot;&gt;Write citations in &lt;code&gt;.src.md&lt;&#x2F;code&gt;&lt;&#x2F;h2&gt;
+&lt;p&gt;Use Pandoc citation syntax in Markdown:&lt;&#x2F;p&gt;
+&lt;div class=&quot;sourceCode&quot; id=&quot;cb2&quot;&gt;&lt;pre class=&quot;sourceCode markdown&quot;&gt;&lt;code class=&quot;sourceCode markdown&quot;&gt;&lt;span id=&quot;cb2-1&quot;&gt;&lt;a href=&quot;#cb2-1&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;&#x2F;a&gt;Climate change is accelerating&lt;span class=&quot;co&quot;&gt;[&lt;&#x2F;span&gt;&lt;span class=&quot;ot&quot;&gt;@ipcc2021&lt;&#x2F;span&gt;&lt;span class=&quot;co&quot;&gt;]&lt;&#x2F;span&gt;.&lt;&#x2F;span&gt;
+&lt;span id=&quot;cb2-2&quot;&gt;&lt;a href=&quot;#cb2-2&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;&#x2F;a&gt;Multiple studies confirm this&lt;span class=&quot;co&quot;&gt;[&lt;&#x2F;span&gt;&lt;span class=&quot;ot&quot;&gt;@ipcc2021; @nasa2023&lt;&#x2F;span&gt;&lt;span class=&quot;co&quot;&gt;]&lt;&#x2F;span&gt;.&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;&#x2F;div&gt;
+&lt;p&gt;Set optional citation config in frontmatter under &lt;code&gt;[extra]&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;citation_style = &quot;apa&quot;&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;bibliography = &quot;references.bib&quot;&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;build-and-serve&quot;&gt;Build and serve&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Generate &lt;code&gt;*.md&lt;&#x2F;code&gt; from all &lt;code&gt;*.src.md&lt;&#x2F;code&gt; files:&lt;&#x2F;p&gt;
+&lt;div class=&quot;sourceCode&quot; id=&quot;cb3&quot;&gt;&lt;pre class=&quot;sourceCode bash&quot;&gt;&lt;code class=&quot;sourceCode bash&quot;&gt;&lt;span id=&quot;cb3-1&quot;&gt;&lt;a href=&quot;#cb3-1&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;&#x2F;a&gt;&lt;span class=&quot;fu&quot;&gt;bash&lt;&#x2F;span&gt; scripts&#x2F;build.sh&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;&#x2F;div&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;p&gt;Live rebuild + local server:&lt;&#x2F;p&gt;
+&lt;div class=&quot;sourceCode&quot; id=&quot;cb4&quot;&gt;&lt;pre class=&quot;sourceCode bash&quot;&gt;&lt;code class=&quot;sourceCode bash&quot;&gt;&lt;span id=&quot;cb4-1&quot;&gt;&lt;a href=&quot;#cb4-1&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;&#x2F;a&gt;&lt;span class=&quot;co&quot;&gt;# In one terminal, watch for changes and rebuild:&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span id=&quot;cb4-2&quot;&gt;&lt;a href=&quot;#cb4-2&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;&#x2F;a&gt;&lt;span class=&quot;fu&quot;&gt;bash&lt;&#x2F;span&gt; scripts&#x2F;watch.sh&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;&#x2F;div&gt;
+&lt;div class=&quot;sourceCode&quot; id=&quot;cb5&quot;&gt;&lt;pre class=&quot;sourceCode bash&quot;&gt;&lt;code class=&quot;sourceCode bash&quot;&gt;&lt;span id=&quot;cb5-1&quot;&gt;&lt;a href=&quot;#cb5-1&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;&#x2F;a&gt;&lt;span class=&quot;co&quot;&gt;# In a separate terminal, serve with Zola:&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span id=&quot;cb5-2&quot;&gt;&lt;a href=&quot;#cb5-2&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;&#x2F;a&gt;&lt;span class=&quot;ex&quot;&gt;zola&lt;&#x2F;span&gt; serve&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;&#x2F;div&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;citation-style-resolution-order&quot;&gt;Citation style resolution order&lt;&#x2F;h2&gt;
+&lt;p&gt;Priority from highest to lowest:&lt;&#x2F;p&gt;
+&lt;ol type=&quot;1&quot;&gt;
+&lt;li&gt;Post frontmatter: &lt;code&gt;[extra] citation_style = &quot;...&quot;&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Site-level &lt;code&gt;config.toml&lt;&#x2F;code&gt; &lt;code&gt;[extra.persona].citation_style&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;Theme config &lt;code&gt;themes&#x2F;persona&#x2F;config.toml&lt;&#x2F;code&gt; &lt;code&gt;[extra.persona].citation_style&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;Bundled styles in &lt;code&gt;citation-style&#x2F;&lt;&#x2F;code&gt;: &lt;code&gt;ieee&lt;&#x2F;code&gt;, &lt;code&gt;apa&lt;&#x2F;code&gt;. Custom styles can be added by placing &lt;code&gt;.csl&lt;&#x2F;code&gt; files in &lt;code&gt;citation-style&#x2F;&lt;&#x2F;code&gt; and referencing them in frontmatter.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;output-and-styling&quot;&gt;Output and styling&lt;&#x2F;h2&gt;
+&lt;p&gt;The pipeline emits HTML citations and bibliography blocks so SCSS can style stable classes:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;.citation&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;.references&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;.csl-entry&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;.csl-left-margin&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;.csl-right-inline&lt;&#x2F;code&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Inline citations anchor to bibliography entries, and the bibliography heading is rendered inside the refs container as “Bibliography”.&lt;&#x2F;p&gt;
+&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot; data-entry-spacing=&quot;0&quot; data-line-spacing=&quot;2&quot; role=&quot;list&quot;&gt;
+&lt;h2 class=&quot;unnumbered&quot; id=&quot;bibliography&quot;&gt;Bibliography&lt;&#x2F;h2&gt;
+&lt;div id=&quot;ref-zolathemes&quot; class=&quot;csl-entry&quot; role=&quot;listitem&quot;&gt;
+Zola themes. &lt;a href=&quot;https:&#x2F;&#x2F;www.getzola.org&#x2F;themes&#x2F;&quot;&gt;https:&#x2F;&#x2F;www.getzola.org&#x2F;themes&#x2F;&lt;&#x2F;a&gt;
+&lt;&#x2F;div&gt;
+&lt;&#x2F;div&gt;
+</content>
+        
+    </entry>
+</feed>
