@@ -134,7 +134,7 @@ After completing the setup, build and serve your site with Zola:
 |Serve the site|```zola serve```|locally with live reload|
 
 > [!NOTE]
-> If you are using the [Citation Pipeline](./README.md#-citation-pipeline), use `make build` and `make serve` instead to also process `.src.md` files.
+> If you are using the [Citation Pipeline](#-citation-pipeline), use `make build` and `make serve` instead to also process `.src.md` files.
 
 ## 📚 Citation Pipeline
 
