@@ -209,7 +209,7 @@ We especially welcome contributions in these areas:
 
 - **Visual enhancements**
 - **Animation improvements**
-- **Additional shortcodes**
+- **Additional content components**
 - **Theme variants**
 - **Integration examples**
 

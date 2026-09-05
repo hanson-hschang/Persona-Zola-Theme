@@ -1,11 +1,10 @@
 {% extends "base.html" %}
-{% import "macros/segment.html" as segment_macro %}
 
 {% block head %}
   {{ super() }}
 
   {% set section_type = section.extra.type %}
-  
+
   {% if section_type == "plain" %}
     <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/page-plain.css') }}">
   {% elif section_type == "category" %}
@@ -15,7 +14,7 @@
   {% else %}
     {# Return to 404 #}
   {% endif %}
-  
+
 {% endblock head %}
 
 
@@ -24,11 +23,11 @@
   {% set section_type = section.extra.type %}
 
   {% if section_type == "plain" %}
-    {{ segment_macro::plain(pos=section) }}
+    {{ <segment.plain pos={section} /> }}
   {% elif section_type == "category" %}
-    {{ segment_macro::category(pos=section) }}
+    {{ <segment.category pos={section} /> }}
   {% elif section_type == "blog" %}
-    {{ segment_macro::blog(pos=section) }}
+    {{ <segment.blog pos={section} /> }}
   {% else %}
     {# Return to 404 #}
   {% endif %}

@@ -1,0 +1,33 @@
+{% component taxonomy.list(title, terms) %}
+  <section class="plain segment">
+    {{ <render.section_title title={title} /> }}
+    <div class="container" data-aos="fade-up">
+      <ul id="post-entries">
+        {% for term in terms %}
+          <li class="post-entry border-bottom">
+            <div class="post-entry__meta d-flex justify-content-between align-items-center">
+              <h4 class="post-entry__title">
+                <a href="{{ term.permalink }}">{{ term.name }}</a>
+              </h4>
+              <h5 class="post-entry__date">{{ term.pages | length }} item{% if term.pages | length != 1 %}s{% endif %}</h5>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+{% endcomponent taxonomy.list %}
+
+{% component taxonomy.term(title, pages) %}
+  <section class="plain segment">
+    {{ <render.section_title title={title} /> }}
+  </section>
+
+  {% if pages %}
+    <ol id="post-entries" class="container" data-aos="fade-up">
+      {% for page in pages %}
+        {{ <render.post_entry title={page.title} date={page.date | date(format="%b %d, %Y")} link={page.permalink} excerpt={page.extra.excerpt | default(value="")} /> }}
+      {% endfor %}
+    </ol>
+  {% endif %}
+{% endcomponent taxonomy.term %}

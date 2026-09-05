@@ -15,7 +15,7 @@ homepage = "https://github.com/hanson-hschang/Persona-Zola-Theme"
 demo = "https://hanson-hschang.github.io/Persona-Zola-Theme"
 
 # The minimum version of Zola required
-min_version = "0.22.0"
+min_version = "0.23.0"
 
 # Refer to the table [extra.persona] in the provided config.toml; 
 [extra]

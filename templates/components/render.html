@@ -1,16 +1,9 @@
 {#
-  Render Macros
-  These macros are used to render various components of the website.
-  The macros include:
-  - post_entry: Renders a blog post-entry with title, date, link, and excerpt.
-  - section_title: Renders a segment title with an optional subtitle.
-  - text_content: Renders a block of text content.
-  - share_menu: Renders a share menu with various sharing options.
-  - cards: Renders a grid of cards for sections.
-  - breadcrumbs: Renders a breadcrumb navigation based on a list of crumbs.
+  Render Components
+  Shared presentation components used by page, segment, and blog templates.
 #}
 
-{% macro post_entry(title, date, link, excerpt) %}
+{% component render.post_entry(title, date, link, excerpt) %}
 <li class="container post-entry border-bottom">
   <div class="post-entry__meta d-flex justify-content-between align-items-center">
     <h4 class="post-entry__title">
@@ -20,9 +13,9 @@
   </div>
   <p class="mb-4 d-block">{{ excerpt }}</p>
 </li>
-{% endmacro %}
+{% endcomponent render.post_entry %}
 
-{% macro section_title(title, subtitle="") %}
+{% component render.section_title(title, subtitle="") %}
 <div class="container" data-aos="fade-up">
   <div class="segment__title">
     <h2>{{ title }}</h2>
@@ -31,9 +24,9 @@
     {% endif %}
   </div>
 </div>
-{% endmacro %}
+{% endcomponent render.section_title %}
 
-{% macro text_content(content) %}
+{% component render.text_content(content) %}
 <div class="container" data-aos="fade-up" data-aos-delay="200">
   <div class="row gy-4 justify-content-center">
     <div class="col-lg-9 content fst-italic">
@@ -41,9 +34,9 @@
     </div>
   </div>
 </div>
-{% endmacro %}
+{% endcomponent render.text_content %}
 
-{% macro share_menu(title, permalink) %}
+{% component render.share_menu(title, permalink) %}
 <div id="share-menu" class="share-menu">
   <a id="share-link" class="share-menu__item" href="#" >
     <i class="bi bi-link-45deg" aria-hidden="true"></i>
@@ -67,22 +60,19 @@
     <span>Email</span>
   </a>
 </div>
-{% endmacro %}
+{% endcomponent render.share_menu %}
 
-{% macro cards(sections) %}
+{% component render.cards(sections) %}
 <div class="container" data-aos="fade-up" data-aos-delay="200">
   <div class="row m-0 justify-content-center">
     {% for section in sections | sort(attribute="extra.order") %}
       <div class="col-sm-6 col-md-6 mb-4 mb-lg-0 col-lg-4">
-        {# The data-aos-delay is now generated dynamically based on the loop's position #}
         <div class="post-entry" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
           <a href="{{ section.permalink }}" class="post-entry__thumb d-block">
-            {# Build the thumbnail URL correctly using the section's path and the thumbnail filename #}
             <img class="img-fluid" src="{{ get_url(path=section.path ~ section.extra.thumbnail) }}" alt="Thumbnail for {{ section.title }}">
           </a>
           <div class="post-entry__content">
             <h3><a href="{{ section.permalink }}">{{ section.title }}</a></h3>
-            {# The content div from the original was removed for simplicity, you can add it back if needed #}
             <p> {{ section.description }} </p>
           </div>
         </div>
@@ -90,9 +80,9 @@
     {% endfor %}
   </div>
 </div>
-{% endmacro %}
+{% endcomponent render.cards %}
 
-{% macro breadcrumbs(crumbs) %}
+{% component render.breadcrumbs(crumbs) %}
 <div class="page-title d-flex align-items-center">
   <div class="container" data-aos="fade">
     <nav class="breadcrumbs">
@@ -103,7 +93,7 @@
           {% set_global url = url ~ crumb ~ "/" %}
           {% if loop.last %}
             <li class="current"></li>
-            {% else %}
+          {% else %}
             <li><a href="{{ url }}">{{ crumb | capitalize }}</a></li>
           {% endif %}
         {% endfor %}
@@ -111,4 +101,4 @@
     </nav>
   </div>
 </div>
-{% endmacro %}
+{% endcomponent render.breadcrumbs %}

@@ -1,6 +1,6 @@
 # Codebase Architecture
 
-This document describes the architecture and organization of the Zola theme codebase, including templates, Sass, JavaScript, and development workflow. 
+This document describes the architecture and organization of the Zola 0.23+ theme codebase, including Tera 2 templates, Sass, JavaScript, and development workflow.
 It serves as a guide for contributors to understand how the theme is structured and how to add new features or make changes.
 
 ## Directory Structure
@@ -31,13 +31,14 @@ It serves as a guide for contributors to understand how the theme is structured 
 │           │   ├── _blog.scss        # Blog listing styles
 │           │   ├── _post.scss        # Blog post content styles
 │           │   └── _widgets.scss     # Sidebar widget styles
-│           ├── main.scss             # Entry point: all pages (→ main.css)
-│           ├── home.scss             # Entry point: home page (→ home.css)
-│           ├── page-plain.scss       # Entry point: plain sections (→ page-plain.css)
-│           ├── page-category.scss    # Entry point: category sections (→ page-category.css)
-│           ├── page-blog.scss        # Entry point: blog sections (→ page-blog.css)
-│           ├── post.scss             # Entry point: blog posts (→ post.css)
-│           └── page-404.scss         # Entry point: 404 error page (→ page-404.css)
+│           ├── main.scss             # Entry point: all pages -> main.css
+│           ├── home.scss             # Entry point: home page -> home.css
+│           ├── page-plain.scss       # Entry point: plain sections -> page-plain.css
+│           ├── page-category.scss    # Entry point: category sections -> page-category.css
+│           ├── page-blog.scss        # Entry point: blog sections -> page-blog.css
+│           ├── post.scss             # Entry point: blog posts -> post.css
+│           ├── citations.scss        # Entry point: Pandoc citation output -> citations.css
+│           └── page-404.scss         # Entry point: 404 error page -> page-404.css
 ├── static/                           # Static assets
 │   ├── assets/                       # Theme-specific assets
 │   │   ├── script/                   # JavaScript files
@@ -46,21 +47,17 @@ It serves as a guide for contributors to understand how the theme is structured 
 │       ├── bootstrap/                # Bootstrap framework
 │       ├── bootstrap-icons/          # Icon library
 │       ├── aos/                      # Animate On Scroll
-│       ├── glightbox/                # Lightbox library
-│       ├── swiper/                   # Slider library
 │       ├── academicons/              # Academic icons
 │       └── typed.js/                 # Text typing animation
 ├── templates/                        # Zola templates
 │   ├── base.html                     # Base layout template
 │   ├── index.html                    # Home page template
-│   ├── segment.html                  # Segment page template
-│   ├── section.html                  # Backward-compatible wrapper to segment.html
+│   ├── section.html                  # Section page template
 │   ├── page.html                     # Single page template
 │   ├── post.html                     # Blog post template
 │   ├── 404.html                      # Error page template
-│   ├── macros/                       # Reusable template macros
-│   ├── partials/                     # Reusable template components
-│   ├── shortcodes/                   # Content shortcodes
+│   ├── components/                   # Tera 2 reusable components
+│   ├── partials/                     # Reusable template partials
 │   ├── categories/                   # Category taxonomy templates
 │   └── tags/                         # Tag taxonomy templates
 ├── content/                          # Site content (user-created)
@@ -78,6 +75,7 @@ Located in `templates/` root:
 - **base.html**: Base layout inherited by all pages
   - Defines HTML structure, head section, navigation, footer
   - Includes CSS/JS dependencies
+  - Loads KaTeX CSS/JS through `partials/katex-css.html` and `partials/katex-js.html` when `page.extra.tex` is present
   - Contains blocks for extending
 
 - **index.html**: Home/landing page template
@@ -86,13 +84,10 @@ Located in `templates/` root:
   - Renders all sections with `order > 0` from front matter
   - Shows contact section
 
-- **segment.html**: Segment page template
+- **section.html**: Section page template
   - Handles three section types: plain, category, blog
-  - Conditionally loads type-specific CSS and macros
-
-- **section.html**: Backward-compatible wrapper
-  - Delegates rendering to `segment.html` / segment macros
-  - Kept to avoid conflict with Zola's built-in "section" meaning
+  - Conditionally loads type-specific CSS and components
+  - Contains the logic that previously lived in the root `segment.html` page template
 
 - **page.html**: Single page template
   - For standalone pages
@@ -102,32 +97,44 @@ Located in `templates/` root:
   - Dedicated template for blog and portfolio posts
   - Includes breadcrumbs, widgets, metadata
   - Supports KaTeX for mathematical expressions
+  - Loads `citations.css` for Pandoc citeproc output
 
 - **404.html**: Error page template
   - Custom 404 not found page
 
-### Template Macros
+### Template Components
 
-Located in `templates/macros/`:
+Located in `templates/components/`:
+
+Tera 2 components are globally registered by component name. They do not need imports. Call them with syntax such as `{{ <render.section_title title={title} /> }}`.
 
 - **render.html**: Core rendering utilities
-  - `post_entry()`: Renders blog post entries
-  - `section_title()`: Renders section titles
-  - `text_content()`: Renders text content
-  - `cards()`: Renders card layouts
+  - `render.post_entry`: Renders blog post entries
+  - `render.section_title`: Renders section titles
+  - `render.text_content`: Renders text content
+  - `render.cards`: Renders card layouts
   - And more...
 
 - **segment.html**: Segment rendering logic
-  - `populate()`: Populates section content
-  - `plain()`: Renders plain sections
-  - `category()`: Renders category sections
-  - `blog()`: Renders blog sections
+  - `segment.populate`: Populates section content
+  - `segment.plain`: Renders plain sections
+  - `segment.category`: Renders category sections
+  - `segment.blog`: Renders blog sections
 
-- **blog.html**: Blog-specific macros
+- **blog.html**: Blog-specific components
   - Blog listing and pagination logic
+
+- **media.html**: Content media components
+  - `media.image`: Resizes and renders colocated images
+  - `media.block`: Renders image/text media rows
+  - Content usage example: `{{ <media.image page={page} path="img/example.png" width={700} alt="Example" /> }}`
 
 - **debug.html**: Debug utilities
   - Development helpers
+
+- **taxonomy.html**: Taxonomy page components
+  - `taxonomy.list`: Renders category and tag index pages
+  - `taxonomy.term`: Renders a single category or tag page
 
 ### Template Partials
 
@@ -141,25 +148,21 @@ Reusable UI components:
 - **contact-form.html**: Contact form component
 - **contact-info.html**: Contact information display
 - **head-title.html**: Dynamic page title generation
+- **katex-css.html**: Conditional KaTeX stylesheet
+- **katex-js.html**: Conditional KaTeX scripts and macro initialization
 - **social-icon.html**: Social media icon rendering
-
-### Shortcodes
-
-Located in `templates/shortcodes/`:
-
-Content shortcodes for use in markdown:
-- **image.html**: Enhanced image rendering with captions
-- **media.html**: Embedded media content
 
 ### Taxonomy Templates
 
 **Categories** (`templates/categories/`):
 - **list.html**: Category listing page
 - **single.html**: Single category page
+- Both templates use `taxonomy.*` components for shared rendering
 
 **Tags** (`templates/tags/`):
 - **list.html**: Tag listing page  
 - **single.html**: Single tag page
+- Both templates use `taxonomy.*` components for shared rendering
 
 ## Sass / CSS Organization
 
@@ -212,6 +215,7 @@ stylesheet/
     ├── page-category.scss        # Category section pages
     ├── page-blog.scss            # Blog listing section pages
     ├── post.scss                 # Individual blog post pages
+    ├── citations.scss            # Citation styling for post pages
     └── page-404.scss             # 404 error page
 ```
 
@@ -223,10 +227,11 @@ Each template loads only the CSS it needs:
 |---|---|---|
 | `base.html` (all pages) | `main.css` | variables, base, footer, preloader, custom |
 | `index.html` | `home.css` | nav-index, hero, segment, plain, category, contact |
-| `segment.html` (plain) | `page-plain.css` | navigation, segment, plain |
-| `segment.html` (category) | `page-category.css` | navigation, segment, category |
-| `segment.html` (blog) | `page-blog.css` | navigation, segment, blog, breadcrumbs |
+| `section.html` (plain) | `page-plain.css` | navigation, segment, plain |
+| `section.html` (category) | `page-category.css` | navigation, segment, category |
+| `section.html` (blog) | `page-blog.css` | navigation, segment, blog, breadcrumbs |
 | `post.html` | `post.css` | navigation, breadcrumbs, post, widgets |
+| `post.html` | `citations.css` | Pandoc citation and bibliography styles |
 | `page.html` | `page-plain.css` | navigation, segment, plain |
 | `404.html` | `page-404.css` | navigation, segment, plain, contact |
 
@@ -276,11 +281,11 @@ JavaScript files in `static/assets/script/`:
 
 1. Create SCSS partial: `sass/assets/stylesheet/components/_new-type.scss`
 2. Create a new entry point (e.g. `sass/assets/stylesheet/page-new-type.scss`) that `@use`s the partial
-3. Add rendering macro in `templates/macros/segment.html`
-4. Update `segment.html` to load `page-new-type.css` for the new type
+3. Add rendering component in `templates/components/segment.html`
+4. Update `section.html` to load `page-new-type.css` for the new type
 5. Document in README.md
 
-### Adding a New Component
+### Adding a New Partial
 
 1. Create partial: `templates/partials/component-name.html`
 2. Create SCSS partial: `sass/assets/stylesheet/components/_component-name.scss`
@@ -288,16 +293,16 @@ JavaScript files in `static/assets/script/`:
 4. Include the HTML partial in the appropriate template
 5. Document usage
 
-### Adding a New Macro
+### Adding a New Tera Component
 
-1. Add to appropriate macro file in `templates/macros/`
+1. Add to the appropriate component file in `templates/components/`
 2. Document parameters and usage
-3. Import in templates where needed
+3. Call it by its global component name, for example `{{ <render.section_title title={title} /> }}`
 
 ## Best Practices
 
-1. **Separation of Concerns**: Keep logic in macros, styling in SCSS, structure in templates
-2. **Reusability**: Use macros and partials for repeated patterns
+1. **Separation of Concerns**: Keep reusable rendering in components, styling in SCSS, structure in templates
+2. **Reusability**: Use components and partials for repeated patterns
 3. **Conditional Loading**: Only load SCSS/JS needed for specific pages
 4. **Documentation**: Update this file when adding new components or changing structure
 5. **Testing**: Test on multiple devices and browsers after changes
@@ -308,8 +313,6 @@ JavaScript files in `static/assets/script/`:
 - Bootstrap 5.3.x
 - Bootstrap Icons
 - AOS (Animate On Scroll)
-- GLightbox
-- Swiper
 - Academicons
 - Typed.js
 - KaTeX (loaded conditionally for math content)

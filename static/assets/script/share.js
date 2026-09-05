@@ -20,8 +20,6 @@
           // Cache the share link
           this.elements.link = document.getElementById('share-link')
 
-          console.log('Share button component initialized.');
-
           this.bindEvents();
       },
       

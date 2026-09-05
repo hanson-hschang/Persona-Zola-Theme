@@ -1,7 +1,7 @@
-{% macro print(object) %}
+{% component debug.print(object) %}
 <pre style="background-color: #f5f5f5; border: 1px solid #ccc; padding: 15px; margin: 20px; white-space: pre-wrap; word-wrap: break-word; font-size: 14px;">
   <code>
     {{ object | json_encode(pretty=true) }}
   </code>
 </pre>
-{% endmacro %}
+{% endcomponent debug.print %}

@@ -14,7 +14,7 @@
 <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fhanson-hschang.github.io%2FPersona-Zola-Theme">
 <img alt="GitHub Release" src="https://img.shields.io/github/v/release/hanson-hschang/Persona-Zola-Theme">
 
-[Demo](https://hanson-hschang.github.io/Persona-Zola-Theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Citation](#-citation-pipeline) • [Structure](STRUCTURE.md) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
+[Demo](https://hanson-hschang.github.io/Persona-Zola-Theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Citation](#-citation-pipeline) • [Architecture](ARCHITECTURE.md) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
 
 </div>
 
@@ -42,7 +42,7 @@ Submit a Pull Request to add your site to our showcase.
 ## 🚀 Installation
 
 This is a Zola theme.
-Make sure you have [Zola installed](https://www.getzola.org/documentation/getting-started/installation/) before proceeding.
+Make sure you have [Zola 0.23 or newer installed](https://www.getzola.org/documentation/getting-started/installation/) before proceeding.
 
 After [initializing your Zola site](https://www.getzola.org/documentation/getting-started/overview/#initialize-site), the easiest way to install the theme is to add it as a git submodule to your `themes` directory:
 
@@ -87,6 +87,13 @@ git submodule update --init --recursive
 
     ```toml
     theme = "persona"
+    ```
+
+3. **Use Persona media components** inside Markdown content when you need theme-provided image handling.
+   Persona targets Zola 0.23+ and uses Tera 2 components, so component calls use angle-bracket syntax:
+
+    ```tera
+    {{ <media.image page={page} path="img/example.png" width={700} alt="Example image" /> }}
     ```
 
 ### Segment Front Matter
@@ -169,11 +176,15 @@ It integrates seamlessly with the site workflow, so you can focus on content rat
     ```bash
     cp -r themes/persona/{scripts,Makefile} .
     ```
-3. Create your post with a `.src.md` extension and use citation keys in the content:
+3. Ensure source and bibliography files are ignored by Zola in `config.toml` to prevent them from being processed as regular content:
+    ```toml
+    ignored_content = ["*.src.md", "*.bib", "*.csl"]
+    ```
+4. Create your post with a `.src.md` extension and use citation keys in the content:
     ```markdown
     This is a citation example [@cite-key].
     ```
-4. Add a `references.bib` file in the same directory.
+5. Add a `references.bib` file in the same directory.
 
 ### Build & Write
 Use the provided `Makefile` to build or serve your site locally with automatic processing of `.src.md` files:
@@ -206,7 +217,7 @@ This pipeline is ideal for writing technical, research-oriented, or reference-he
 
 ### Getting Help
 - Read the [Zola documentation](https://www.getzola.org/documentation/)
-- Check [STRUCTURE.md](STRUCTURE.md) for detailed theme architecture and organization
+- Check [ARCHITECTURE.md](ARCHITECTURE.md) for detailed theme architecture and organization
 - Report issues or request features by [contributing](CONTRIBUTING.md) on GitHub
 
 

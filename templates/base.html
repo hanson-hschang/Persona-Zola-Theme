@@ -1,5 +1,3 @@
-{% import "macros/debug.html" as debug_macro %}
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,12 +23,10 @@
     <link rel="stylesheet" href="{{ get_url(path='vendor/bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ get_url(path='vendor/bootstrap-icons/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ get_url(path='vendor/aos/aos.css') }}">
-    <link rel="stylesheet" href="{{ get_url(path='vendor/glightbox/css/glightbox.min.css') }}">
-    <link rel="stylesheet" href="{{ get_url(path='vendor/swiper/swiper-bundle.min.css') }}">
     <link rel="stylesheet" href="{{ get_url(path='vendor/academicons/css/academicons.min.css') }}"/>
 
-    {% if page.extra.tex %}
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
+    {% if page is defined and page.extra.tex is defined %}
+      {% include "partials/katex-css.html" %}
     {% endif %}
 
     <!-- CSS Files -->
@@ -63,21 +59,8 @@
 
     <!-- Java Scripts -->
     {% block scripts %}
-      {% if page.extra.tex %}
-        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
-        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"></script>
-        <script>
-          document.addEventListener("DOMContentLoaded", function() {
-            const katexMacros = {{ page.extra.tex.macros | json_encode | default(value="{}") | safe }};
-            renderMathInElement(document.body, {
-              delimiters: [
-                {left: '$$', right: '$$', display: true},
-                {left: '$', right: '$', display: false},
-              ],
-              macros: katexMacros
-            });
-          });
-        </script>
+      {% if page is defined and page.extra.tex is defined %}
+        {% include "partials/katex-js.html" %}
       {% endif %}
     {% endblock scripts %}
      

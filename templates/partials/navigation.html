@@ -4,7 +4,7 @@
 {% for subsection_path in home_section.subsections %}
   {% set subsection = get_section(path=subsection_path) %}
   {% if subsection.extra.order and subsection.extra.order > 0 %}
-    {% set_global subsections = subsections | concat(with=[subsection]) %}
+    {% set_global subsections = [...subsections, subsection] %}
   {% endif %}
 {% endfor %}
 

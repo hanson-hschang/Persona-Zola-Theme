@@ -1,6 +1,4 @@
 {% extends "base.html" %}
-{% import "macros/blog.html" as blog_macro %}
-
 
 {% block head %}
   {{ super() }}
@@ -13,7 +11,7 @@
 
 {% block main %}
 
-  {{ blog_macro::post(page=page) }}
+  {{ <blog.post page={page} /> }}
 
 {% endblock main %}
 

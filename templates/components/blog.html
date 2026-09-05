@@ -1,24 +1,19 @@
-{% import "macros/render.html" as render_macro %}
-
-{% macro post_thumbnail(thumbnail) %}
+{% component blog.post_thumbnail(thumbnail) %}
   <div class="blog-post__img">
-    <img src="{{ page.extra.thumbnail }}" alt="" class="img-fluid">
+    <img src="{{ thumbnail }}" alt="" class="img-fluid">
   </div>
-{% endmacro %}
+{% endcomponent blog.post_thumbnail %}
 
-{% macro post_share(link) %}
-
+{% component blog.post_share(page) %}
   <div id="share" class="share">
     <button id="share-button" class="share__button" aria-label="Share post">
       <i class="bi bi-box-arrow-up" aria-hidden="true"></i>
     </button>
-    {{ render_macro::share_menu(title=page.title, permalink=page.permalink) }}
+    {{ <render.share_menu title={page.title} permalink={page.permalink} /> }}
   </div>
+{% endcomponent blog.post_share %}
 
-{% endmacro %}
-
-
-{% macro post_tag(tags) %}
+{% component blog.post_tag(tags) %}
   <div class="blog-post__tags">
     {% if tags %}
       {% for tag in tags %}
@@ -26,21 +21,19 @@
       {% endfor %}
     {% endif %}
   </div>
-{% endmacro %}
+{% endcomponent blog.post_tag %}
 
-
-{% macro post_header(page) %}
-
+{% component blog.post_header(page) %}
   <div class="blog-post__header">
     <h2 class="blog-post__title">{{ page.title }}</h2>
-    {{ blog_macro::post_tag(tags=page.taxonomies.tags) }}
+    {{ <blog.post_tag tags={page.taxonomies.tags} /> }}
     <div class="blog-post__meta-divider"></div>
     <div class="blog-post__meta">
       <div class="d-flex justify-content-between">
         <ul id="info" class="d-flex justify-content-between">
           <li id="date" class="d-flex align-items-center">
             <i class="bi bi-calendar-event" aria-hidden="true"></i>
-            <time class="blog-post__date">{{ page.date | date(format="%B %d, %Y")}}</time>
+            <time class="blog-post__date">{{ page.date | date(format="%B %d, %Y") }}</time>
           </li>
           <li id="read" class="d-flex align-items-center">
             <i class="bi bi-hourglass-split" aria-hidden="true"></i>
@@ -54,24 +47,20 @@
             </button>
           </li>
           <li class="d-flex align-items-center">
-            {{ blog_macro::post_share(link=page.permalink) }} 
+            {{ <blog.post_share page={page} /> }}
           </li>
         </ul>
       </div>
     </div>
     <div class="blog-post__meta-divider"></div>
   </div>
+{% endcomponent blog.post_header %}
 
-{% endmacro %}
-
-
-{% macro post_content(content) %}
+{% component blog.post_content(content) %}
   <div class="blog-post__content">{{ content | safe }}</div>
-{% endmacro %}
+{% endcomponent blog.post_content %}
 
-
-{% macro side_bar(page) %}
-
+{% component blog.side_bar(page) %}
   {% set parent_section = page.ancestors | last %}
   {% set blog_section = get_section(path=parent_section, paginate_by=false, include_pages=true) %}
   <aside id="sidebar" class="sidebar col-lg-4">
@@ -79,38 +68,34 @@
       <div class="recent-posts-widget widget">
         <h3 class="widget__title">Recent Posts</h3>
         <ul id="post-entries">
-          {% for page in blog_section.pages | slice(end=5) %}
+          {% for page in blog_section.pages[:5] %}
             <li class="recent-posts-widget__item">
               <h4><a href="{{ page.permalink | safe }}">{{ page.title }}</a></h4>
-              <time>{{ page.date | date(format="%b %d, %Y")}}</time>
+              <time>{{ page.date | date(format="%b %d, %Y") }}</time>
             </li>
           {% endfor %}
         </ul>
       </div>
     </div>
   </aside>
+{% endcomponent blog.side_bar %}
 
-{% endmacro %}
-
-
-{% macro post(page) %}
-
-  {{ render_macro::breadcrumbs(crumbs=page.components) }}
+{% component blog.post(page) %}
+  {{ <render.breadcrumbs crumbs={page.components} /> }}
   <div class="container">
     <div class="row">
       <section id="blog-post" class="blog-post segment col-lg-8">
         <div class="container" data-aos="fade-up">
           <article class="blog-post__article">
-            {% if page.extra.thumbnail %} 
-              {{ blog_macro::post_thumbnail(thumbnail=page.extra.thumbnail) }}
+            {% if page.extra.thumbnail %}
+              {{ <blog.post_thumbnail thumbnail={page.extra.thumbnail} /> }}
             {% endif %}
-            {{ blog_macro::post_header(page=page) }}
-            {{ blog_macro::post_content(content=page.content) }}
+            {{ <blog.post_header page={page} /> }}
+            {{ <blog.post_content content={page.content} /> }}
           </article>
         </div>
       </section>
-      {{ blog_macro::side_bar(page=page) }}
+      {{ <blog.side_bar page={page} /> }}
     </div>
   </div>
-
-{% endmacro %}
+{% endcomponent blog.post %}

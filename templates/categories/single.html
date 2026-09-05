@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/page-blog.css') }}">
+{% endblock head %}
+
+{% block main %}
+  {{ <taxonomy.term title={term.name} pages={term.pages} /> }}
+{% endblock main %}
+
+{% block scripts %}
+  {{ super() }}
+  <script src="{{ get_url(path='vendor/aos/aos.js') }}"></script>
+  <script src="{{ get_url(path='assets/script/home.js') }}"></script>
+{% endblock scripts %}

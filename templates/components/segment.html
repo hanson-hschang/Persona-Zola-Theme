@@ -1,0 +1,73 @@
+{#
+  Segment Components
+  Render page or section objects as landing page segments or listing pages.
+#}
+
+{% component segment.populate(poss) %}
+  {% for pos in poss | sort(attribute="extra.order") %}
+    {% if pos.extra and pos.extra.type %}
+      {% set section_type = pos.extra.type %}
+      {% if section_type == "plain" %}
+        {{ <segment.plain pos={pos} /> }}
+      {% elif section_type == "category" %}
+        {{ <segment.category pos={pos} /> }}
+      {% else %}
+        {{ <debug.print object={"Unknown section type: " ~ pos.extra.type} /> }}
+        {{ <debug.print object={pos} /> }}
+      {% endif %}
+    {% elif pos.slug %}
+      {{ <debug.print object={"Falling back to plain type section for: " ~ pos.title ~ " (slug: " ~ pos.slug ~ ") due to missing type."} /> }}
+      {{ <debug.print object={"To remove the fallback, please define the `extra.type` in the front matter of '" ~ pos.relative_path ~ "' explicitly."} /> }}
+      {{ <segment.plain pos={pos} /> }}
+    {% else %}
+      {{ <debug.print object={"Section type not defined for section: " ~ pos.title} /> }}
+      {{ <debug.print object={pos} /> }}
+    {% endif %}
+  {% endfor %}
+{% endcomponent segment.populate %}
+
+{% component segment.plain(pos) %}
+  {% set title = pos.title %}
+  {% if pos.extra and pos.extra.subtitle %}
+    {% set subtitle = pos.extra.subtitle %}
+  {% else %}
+    {% set subtitle = "" %}
+  {% endif %}
+
+  <section id="{{ title | slugify }}" class="plain segment">
+    {{ <render.section_title title={title} subtitle={subtitle} /> }}
+    {{ <render.text_content content={pos.content} /> }}
+  </section>
+{% endcomponent segment.plain %}
+
+{% component segment.category(pos) %}
+  <section id="{{ pos.title | slugify }}" class="category segment">
+    {{ <render.section_title title={pos.title} /> }}
+
+    {% set_global subsections = [] %}
+    {% for subsection_path in pos.subsections %}
+      {% set subsection = get_section(path=subsection_path) %}
+      {% if subsection.extra.order and subsection.extra.order > 0 %}
+        {% set_global subsections = [...subsections, subsection] %}
+      {% endif %}
+    {% endfor %}
+
+    {{ <render.cards sections={subsections} /> }}
+  </section>
+{% endcomponent segment.category %}
+
+{% component segment.blog(pos) %}
+  {{ <render.breadcrumbs crumbs={pos.components} /> }}
+
+  <section id="{{ pos.title | slugify }}" class="category segment">
+    {{ <render.section_title title={pos.title} /> }}
+  </section>
+
+  {% if pos.pages %}
+    <ol id="post-entries" class="container" data-aos="fade-up">
+      {% for page in pos.pages %}
+        {{ <render.post_entry title={page.title} date={page.date | date(format="%b %d, %Y")} link={page.permalink} excerpt={page.extra.excerpt} /> }}
+      {% endfor %}
+    </ol>
+  {% endif %}
+{% endcomponent segment.blog %}

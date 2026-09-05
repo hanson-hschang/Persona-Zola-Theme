@@ -1,0 +1,32 @@
+{% component media.image(page, path, width, alt) %}
+  {% set resized = resize_image(path=page.colocated_path ~ path, width=width, op="fit_width") %}
+  <img alt="{{ alt }}" src="{{ resized.url | safe }}" />
+{% endcomponent media.image %}
+
+{% component media.block(page="", section="", path, title="", portion=2, alt="") %}
+  {% if page %}
+    {% set image_path = page.colocated_path ~ path %}
+  {% elif section %}
+    {% set image_path = section.path ~ path %}
+  {% else %}
+    {% set image_path = path %}
+  {% endif %}
+
+  {% if portion < 1 %}
+    {% set portion = 1 %}
+  {% elif portion > 11 %}
+    {% set portion = 11 %}
+  {% endif %}
+
+  <div class="row gy-4 justify-content-center">
+    <div class="col-lg-{{ portion }}">
+      <img alt="{{ alt }}" src="{{ image_path }}" class="img-fluid">
+    </div>
+    <div class="col-lg-{{ 12 - portion }}">
+      {% if title != "" %}
+        <h2> {{ title }} </h2>
+      {% endif %}
+      {{ body | markdown | safe }}
+    </div>
+  </div>
+{% endcomponent media.block %}

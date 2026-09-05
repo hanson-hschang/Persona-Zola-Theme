@@ -8,9 +8,9 @@ Always reference these instructions first and fallback to search or bash command
 ## Working Effectively
 
 ### Prerequisites and Setup
-- Install Zola static site generator (minimum version 0.20.0):
+- Install Zola static site generator (minimum version 0.23.0):
   ```bash
-  wget https://github.com/getzola/zola/releases/download/v0.20.0/zola-v0.20.0-x86_64-unknown-linux-gnu.tar.gz -O /tmp/zola.tar.gz
+  wget https://github.com/getzola/zola/releases/download/v0.23.4/zola-v0.23.4-x86_64-unknown-linux-gnu.tar.gz -O /tmp/zola.tar.gz
   tar -xzf /tmp/zola.tar.gz -C /tmp
   sudo mv /tmp/zola /usr/local/bin/
   ```
@@ -69,15 +69,17 @@ This is a **theme repository**, not a complete site. To test functionality:
 
 ### Theme Architecture
 - `templates/`: Zola templates (base.html, index.html, etc.)
-- `templates/macros/`: Reusable template components
-  - `render.html`: Core rendering macros (post_entry, section_title, text_content, cards, etc.)
-  - `section.html`: Section population macros (populate, plain, category, blog)
-  - `blog.html`: Blog-specific macros
-  - `debug.html`: Debug utility macros
+- `templates/components/`: Tera 2 reusable components
+  - `render.html`: Core rendering components (`render.post_entry`, `render.section_title`, `render.text_content`, cards, etc.)
+  - `segment.html`: Segment population components (`segment.populate`, `segment.plain`, `segment.category`, `segment.blog`)
+  - `blog.html`: Blog-specific components
+  - `media.html`: Content media components
+  - `taxonomy.html`: Category and tag listing components
+  - `debug.html`: Debug utility components
 - `templates/partials/`: Page sections (navigation, hero, contact, etc.)
+  - `katex-css.html` and `katex-js.html`: Conditional math rendering assets for pages with `page.extra.tex`
 - `templates/categories/`: Category page templates
 - `templates/tags/`: Tag page templates
-- `templates/shortcodes/`: Custom shortcode templates
 - `static/assets/`: Theme CSS, JavaScript, and images
 - `static/vendor/`: Third-party libraries (Bootstrap, AOS, etc.)
 - `config.toml`: Theme configuration and settings
@@ -98,7 +100,7 @@ This is a **theme repository**, not a complete site. To test functionality:
     ├── base.html                   # Base template
     ├── index.html                  # Home page template
     ├── 404.html                    # 404 error page
-    ├── section.html                # Section template
+    ├── section.html                # Section/segment template
     ├── page.html                   # Page template
     ├── post.html                   # Blog post template
     ├── categories/                 # Category templates
@@ -107,13 +109,13 @@ This is a **theme repository**, not a complete site. To test functionality:
     ├── tags/                       # Tag templates
     │   ├── list.html               # Tag list template
     │   └── single.html             # Single tag template
-    ├── shortcodes/                 # Shortcode templates
-    │   └── image.html              # Image shortcode
-    ├── macros/                     # Template macros
-    │   ├── render.html             # Core rendering macros
-    │   ├── section.html            # Section macros
-    │   ├── blog.html               # Blog macros
-    │   └── debug.html              # Debug macros
+    ├── components/                 # Tera 2 components
+    │   ├── render.html             # Core rendering components
+    │   ├── segment.html            # Segment components
+    │   ├── blog.html               # Blog components
+    │   ├── media.html              # Media components
+    │   ├── taxonomy.html           # Taxonomy components
+    │   └── debug.html              # Debug components
     └── partials/                   # Template partials
         ├── navigation.html         # Navigation component
         ├── hero.html               # Hero section
@@ -122,6 +124,8 @@ This is a **theme repository**, not a complete site. To test functionality:
         ├── contact-form.html       # Contact form
         ├── contact-info.html       # Contact info
         ├── head-title.html         # Head title component
+        ├── katex-css.html          # Conditional KaTeX stylesheet
+        ├── katex-js.html           # Conditional KaTeX scripts
         └── social-icon.html        # Social icon component
 ```
 
@@ -163,7 +167,7 @@ After making template or style changes, always validate by:
    - Check contact form display (if configured)
 
 3. **Template validation:**
-   - Ensure all macros render without errors
+  - Ensure all Tera components render without errors
    - Test both single-page and multi-section layouts
    - Verify CSS and JavaScript assets load correctly
    - Test blog template with sample posts:
@@ -177,7 +181,7 @@ After making template or style changes, always validate by:
 ### Deployment
 The theme includes automated GitHub Pages deployment via `.github/workflows/deploy.yml`:
 - Triggers on pushes to main branch
-- Uses `shalzz/zola-deploy-action@master`
+- Uses `shalzz/zola-deploy-action@v0.23.4`
 - Deploys to `gh-pages` branch
 - **DO NOT** modify deployment workflow without testing
 
@@ -185,4 +189,5 @@ The theme includes automated GitHub Pages deployment via `.github/workflows/depl
 - Builds are extremely fast (~50ms for typical content)
 - Theme includes optimized vendor libraries
 - Static assets are properly organized for caching
-- No build process required for CSS/JS (pre-built)
+- No external JavaScript bundler is required
+- Zola compiles Sass entry points in `sass/` directly during `zola build` and `zola serve`

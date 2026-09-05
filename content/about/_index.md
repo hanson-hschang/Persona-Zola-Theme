@@ -7,12 +7,6 @@ subtitle = "Public Self & Private Soul"
 order = 10
 +++
 
-<!-- {{ media(
-  title="", 
-  path="bird.png", alt="site image", portion=2,
-  content=""
-) }} -->
-
 We all navigate the world with two maps: the public one we share, and the private one we keep. 
 This space is an attempt to lay them side-by-side, offering a look at both the work I build and the life I enjoy. 
 Consider it the legend for both my public self and my private soul.
