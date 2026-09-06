@@ -87,14 +87,14 @@
   <div class="container" data-aos="fade">
     <nav class="breadcrumbs">
       <ol>
-        {% set_global url = "/" %}
-        <li><a href="{{ url }}">Home</a></li>
+        {% set_global path = "" %}
+        <li><a href="{{ get_url(path='/') }}">Home</a></li>
         {% for crumb in crumbs %}
-          {% set_global url = url ~ crumb ~ "/" %}
+          {% set_global path = path ~ crumb ~ "/" %}
           {% if loop.last %}
-            <li class="current"></li>
+            <li class="current">{{ crumb | capitalize }}</li>
           {% else %}
-            <li><a href="{{ url }}">{{ crumb | capitalize }}</a></li>
+            <li><a href="{{ get_url(path=path) }}">{{ crumb | capitalize }}</a></li>
           {% endif %}
         {% endfor %}
       </ol>

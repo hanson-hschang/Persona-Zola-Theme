@@ -8,7 +8,7 @@
   {% endif %}
 {% endfor %}
 
-{% if (page and page.path == "/") or (section and section.path == "/") %}  
+{% if (page is defined and page.path == "/") or (section is defined and section.path == "/") %}  
   <header id="header" class="header d-flex flex-column justify-content-center">
     <nav id="navmenu" class="navmenu">
       <ul>
@@ -30,22 +30,22 @@
   </header>
 {% else %}
   {% set_global navigation_title = "" %}
-  {% if page %}
+  {% if page is defined %}
     {% set_global navigation_title = page.components[0] %}
-  {% elif section %}
+  {% elif section is defined %}
     {% set_global navigation_title = section.components[0] %}
   {% endif %}
   <header id="header" class="header d-flex justify-content-center">
     <nav id="navmenu" class="navmenu">
       <ul>
-        <li><a href="/" aria-label="Link to Home"><i class="{{ home_section.extra.icon_class }}"></i><span>Home</span></a></li>
+        <li><a href="{{ get_url(path='/') }}" aria-label="Link to Home"><i class="{{ home_section.extra.icon_class }}"></i><span>Home</span></a></li>
         {% for subsection in subsections | sort(attribute="extra.order") %}
-          <li><a href="{{ subsection.path }}" {% if subsection.title | lower == navigation_title %}class="active"{% endif %} aria-label="Link to {{ subsection.title }}"><i class="{{ subsection.extra.icon_class }}"></i><span>{{ subsection.title }}</span></a></li>
+          <li><a href="{{ subsection.permalink }}" {% if subsection.title | lower == navigation_title %}class="active"{% endif %} aria-label="Link to {{ subsection.title }}"><i class="{{ subsection.extra.icon_class }}"></i><span>{{ subsection.title }}</span></a></li>
         {% endfor %}
         {% if config.extra.persona.contact_infos is defined %}
           {% for info in config.extra.persona.contact_infos %}
             {% if info.item == "_navigation" %}
-              <li><a href="/#{{ info.content | lower }}" aria-label="Link to Contact"><i class="{{ info.icon_class }}"></i><span>{{ info.content }}</span></a></li>
+              <li><a href="{{ get_url(path='/') }}#{{ info.content | lower }}" aria-label="Link to Contact"><i class="{{ info.icon_class }}"></i><span>{{ info.content }}</span></a></li>
             {% endif %}
           {% endfor %}
         {% endif %}
