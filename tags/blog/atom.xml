@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Persona - Zola Theme  - blog</title>
+    <subtitle>A modern, responsive and lightweight theme for resume, portfolio, and blog.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://hanson-hschang.github.io/Persona-Zola-Theme/tags/blog/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://hanson-hschang.github.io/Persona-Zola-Theme/"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-03-17T00:00:00+00:00</updated>
+    <id>https://hanson-hschang.github.io/Persona-Zola-Theme/tags/blog/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Begin with Persona</title>
+        <published>2025-03-17T00:00:00+00:00</published>
+        <updated>2025-03-17T00:00:00+00:00</updated>
+        
+        <author>
+          <name>Persona, Zola Theme</name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/begin-with-persona/"/>
+        <id>https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/begin-with-persona/</id>
+        
+        <content type="html" xml:base="https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/begin-with-persona/">&lt;p&gt;This is a step-by-step tutorial on how to start a website using the Persona, a Zola theme &lt;span class=&quot;citation&quot; data-cites=&quot;zolathemes&quot;&gt;[&lt;a href=&quot;#ref-zolathemes&quot; role=&quot;doc-biblioref&quot;&gt;1&lt;/a&gt;]&lt;/span&gt;. It covers the basics of setting up your site, creating content, and customizing the appearance to make it your own.&lt;/p&gt;
+&lt;h2 id=&quot;setting-up-your-site&quot;&gt;Setting Up Your Site&lt;/h2&gt;
+&lt;p&gt;After &lt;a href=&quot;https://github.com/hanson-hschang/Persona-Zola-Theme#-installation&quot;&gt;installing Persona&lt;/a&gt;, configure your &lt;code&gt;config.toml&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&quot;sourceCode&quot; id=&quot;cb1&quot;&gt;&lt;pre class=&quot;sourceCode toml&quot;&gt;&lt;code class=&quot;sourceCode toml&quot;&gt;&lt;span id=&quot;cb1-1&quot;&gt;&lt;a href=&quot;#cb1-1&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;co&quot;&gt;# The URL this site will be built for&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-2&quot;&gt;&lt;a href=&quot;#cb1-2&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;dt&quot;&gt;base_url&lt;/span&gt; &lt;span class=&quot;op&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;https://yourdomain.com&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-3&quot;&gt;&lt;a href=&quot;#cb1-3&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-4&quot;&gt;&lt;a href=&quot;#cb1-4&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;co&quot;&gt;# The basic site information&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-5&quot;&gt;&lt;a href=&quot;#cb1-5&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;dt&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;op&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;Your Site Name&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-6&quot;&gt;&lt;a href=&quot;#cb1-6&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;dt&quot;&gt;author&lt;/span&gt; &lt;span class=&quot;op&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;Your Name&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-7&quot;&gt;&lt;a href=&quot;#cb1-7&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;dt&quot;&gt;description&lt;/span&gt; &lt;span class=&quot;op&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;Your personal resume, portfolio and blog&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-8&quot;&gt;&lt;a href=&quot;#cb1-8&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-9&quot;&gt;&lt;a href=&quot;#cb1-9&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;kw&quot;&gt;[extra]&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-10&quot;&gt;&lt;a href=&quot;#cb1-10&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-11&quot;&gt;&lt;a href=&quot;#cb1-11&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;kw&quot;&gt;[extra.persona]&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-12&quot;&gt;&lt;a href=&quot;#cb1-12&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;co&quot;&gt;# Note: landing page title and subtitles are configured in `content/_index.md`&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-13&quot;&gt;&lt;a href=&quot;#cb1-13&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-14&quot;&gt;&lt;a href=&quot;#cb1-14&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;co&quot;&gt;# Social links&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-15&quot;&gt;&lt;a href=&quot;#cb1-15&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;dt&quot;&gt;social_links&lt;/span&gt; &lt;span class=&quot;op&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;op&quot;&gt;[&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-16&quot;&gt;&lt;a href=&quot;#cb1-16&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;  &lt;span class=&quot;op&quot;&gt;{ &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;GitHub&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;, &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;https://github.com/yourusername&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;, &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;icon_class&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;bi bi-github&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; },&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-17&quot;&gt;&lt;a href=&quot;#cb1-17&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;  &lt;span class=&quot;op&quot;&gt;{ &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;LinkedIn&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;, &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;https://linkedin.com/in/yourprofile&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;, &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;icon_class&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;bi bi-linkedin&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; },&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-18&quot;&gt;&lt;a href=&quot;#cb1-18&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;  &lt;span class=&quot;op&quot;&gt;{ &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;Twitter-X&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;, &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;https://x.com/yourusername&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;, &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;icon_class&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;bi bi-twitter-x&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; },&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-19&quot;&gt;&lt;a href=&quot;#cb1-19&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;op&quot;&gt;]&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-20&quot;&gt;&lt;a href=&quot;#cb1-20&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-21&quot;&gt;&lt;a href=&quot;#cb1-21&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;co&quot;&gt;# Contact information&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-22&quot;&gt;&lt;a href=&quot;#cb1-22&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;dt&quot;&gt;contact_infos&lt;/span&gt; &lt;span class=&quot;op&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;op&quot;&gt;[&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-23&quot;&gt;&lt;a href=&quot;#cb1-23&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;  &lt;span class=&quot;op&quot;&gt;{ &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;_navigation&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;, &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;content&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;Contact&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;, &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;icon_class&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;bi bi-chat-text&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; },&lt;/span&gt; &lt;span class=&quot;co&quot;&gt;# Special item for header navigation (REQUIRED)&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-24&quot;&gt;&lt;a href=&quot;#cb1-24&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;  &lt;span class=&quot;op&quot;&gt;{ &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;Name&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;, &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;content&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;Your Name&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;, &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;icon_class&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;bi bi-person&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; },&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-25&quot;&gt;&lt;a href=&quot;#cb1-25&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;  &lt;span class=&quot;op&quot;&gt;{ &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;Location&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;, &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;content&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;Your City, Country&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;, &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;icon_class&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;bi bi-geo-alt&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; },&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-26&quot;&gt;&lt;a href=&quot;#cb1-26&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;  &lt;span class=&quot;op&quot;&gt;{ &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;Email&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;, &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;content&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;your.email@example.com&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;, &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;icon_class&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;bi bi-envelope&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; },&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-27&quot;&gt;&lt;a href=&quot;#cb1-27&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;  &lt;span class=&quot;op&quot;&gt;{ &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;Phone&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;, &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;content&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;+0 (123) 456-7890&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;, &lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;icon_class&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; =&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;bi bi-phone&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt; },&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-28&quot;&gt;&lt;a href=&quot;#cb1-28&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;op&quot;&gt;]&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Modify the landing page content in &lt;code&gt;content/_index.md&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&quot;sourceCode&quot; id=&quot;cb2&quot;&gt;&lt;pre class=&quot;sourceCode toml&quot;&gt;&lt;code class=&quot;sourceCode toml&quot;&gt;&lt;span id=&quot;cb2-1&quot;&gt;&lt;a href=&quot;#cb2-1&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;dt&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;op&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;Presented Site Name&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb2-2&quot;&gt;&lt;a href=&quot;#cb2-2&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;dt&quot;&gt;template&lt;/span&gt; &lt;span class=&quot;op&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;index.html&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb2-3&quot;&gt;&lt;a href=&quot;#cb2-3&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;kw&quot;&gt;[extra]&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb2-4&quot;&gt;&lt;a href=&quot;#cb2-4&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;dt&quot;&gt;icon_class&lt;/span&gt; &lt;span class=&quot;op&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;bi bi-house&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb2-5&quot;&gt;&lt;a href=&quot;#cb2-5&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;dt&quot;&gt;subtitles&lt;/span&gt; &lt;span class=&quot;op&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;Item 1, Item 2, Item 3&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Also update your assets in &lt;code&gt;static/assets/img/&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://en.wiktionary.org/wiki/hero_image&quot;&gt;hero image&lt;/a&gt;: &lt;code&gt;background.jpg&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Favicon&quot;&gt;favicon&lt;/a&gt;: &lt;code&gt;favicon.ico&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html&quot;&gt;apple touch icon&lt;/a&gt;: &lt;code&gt;apple-touch-icon.png&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;creating-content&quot;&gt;Creating Content&lt;/h2&gt;
+&lt;p&gt;Once your site is configured, you can start creating content by adding Markdown files to the &lt;code&gt;content&lt;/code&gt; directory. Each file represents a page or blog post, and you can use frontmatter to specify metadata such as the title, date, tags, and categories.&lt;/p&gt;
+&lt;h2 id=&quot;customizing-appearance&quot;&gt;Customizing Appearance&lt;/h2&gt;
+&lt;p&gt;The Persona theme provides extensive options to customize colors and fonts by overriding CSS variables in &lt;code&gt;sass/assets/stylesheet/_custom.scss&lt;/code&gt; without modifying the core theme files. For example, to change the accent color, heading color, and title font size, you can use the following CSS:&lt;/p&gt;
+&lt;div class=&quot;sourceCode&quot; id=&quot;cb3&quot;&gt;&lt;pre class=&quot;sourceCode css&quot;&gt;&lt;code class=&quot;sourceCode css&quot;&gt;&lt;span id=&quot;cb3-1&quot;&gt;&lt;a href=&quot;#cb3-1&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;co&quot;&gt;/* sass/assets/stylesheet/_custom.scss */&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb3-2&quot;&gt;&lt;a href=&quot;#cb3-2&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;in&quot;&gt;:root&lt;/span&gt; {&lt;/span&gt;
+&lt;span id=&quot;cb3-3&quot;&gt;&lt;a href=&quot;#cb3-3&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;  &lt;span class=&quot;va&quot;&gt;--color-accent&lt;/span&gt;: &lt;span class=&quot;cn&quot;&gt;#FF5F05&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;;&lt;/span&gt;   &lt;span class=&quot;co&quot;&gt;/* Override accent color to vibrant orange */&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb3-4&quot;&gt;&lt;a href=&quot;#cb3-4&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;  &lt;span class=&quot;va&quot;&gt;--color-heading&lt;/span&gt;: &lt;span class=&quot;cn&quot;&gt;#13294B&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;;&lt;/span&gt;  &lt;span class=&quot;co&quot;&gt;/* Override heading color to dark blue */&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb3-5&quot;&gt;&lt;a href=&quot;#cb3-5&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;  &lt;span class=&quot;va&quot;&gt;--font-size-title&lt;/span&gt;: &lt;span class=&quot;dv&quot;&gt;72&lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;px&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;;&lt;/span&gt;   &lt;span class=&quot;co&quot;&gt;/* Increase title font size for more impact */&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb3-6&quot;&gt;&lt;a href=&quot;#cb3-6&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Available Customization Variables:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Colors:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--color-background&lt;/code&gt;: Background color for the entire website&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--color-default&lt;/code&gt;: Default text color&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--color-heading&lt;/code&gt;: Color for headings and titles&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--color-accent&lt;/code&gt;: Brand color for buttons, links, and highlights&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--color-surface&lt;/code&gt;: Background for cards and boxed elements&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--color-contrast&lt;/code&gt;: Text color for use against accent colors&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Typography:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Font Families
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--default-font&lt;/code&gt;: Main font family for body text&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--heading-font&lt;/code&gt;: Font family for headings&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--nav-font&lt;/code&gt;: Font family for navigation&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Font Sizes
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--footer-font-size&lt;/code&gt;: Footer text size (default: 14px)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--normal-font-size&lt;/code&gt;: Base font size (default: 16px)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--subtitle-font-size&lt;/code&gt;: Subtitle font size (default: 24px)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--heading-font-size&lt;/code&gt;: Base font size for heading (default: 32px)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--title-font-size&lt;/code&gt;: Base font size for title (default: 64px)&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;See &lt;code&gt;sass/assets/stylesheet/_variables.scss&lt;/code&gt; for the complete list of customizable variables with detailed descriptions (the compiled CSS is emitted under &lt;code&gt;public/assets/stylesheet/&lt;/code&gt; at build time).&lt;/p&gt;
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;Starting a website with the Persona theme is a great way to share your thoughts and ideas with the world. With its user-friendly setup and extensive customization options, you can create a unique and engaging site that reflects your personality and style.&lt;/p&gt;
+&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body&quot; role=&quot;list&quot;&gt;
+&lt;h2 class=&quot;unnumbered&quot; id=&quot;bibliography&quot;&gt;Bibliography&lt;/h2&gt;
+&lt;div id=&quot;ref-zolathemes&quot; class=&quot;csl-entry&quot; role=&quot;listitem&quot;&gt;
+&lt;div class=&quot;csl-left-margin&quot;&gt;[1] &lt;/div&gt;&lt;div class=&quot;csl-right-inline&quot;&gt;&lt;a href=&quot;https://www.getzola.org/themes/&quot;&gt;Zola themes&lt;/a&gt;, &lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</content>
+        
+    </entry>
+</feed>
