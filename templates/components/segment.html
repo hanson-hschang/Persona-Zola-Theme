@@ -66,7 +66,7 @@
   {% if pos.pages %}
     <ol id="post-entries" class="container" data-aos="fade-up">
       {% for page in pos.pages %}
-        {{ <render.post_entry title={page.title} date={page.date | date(format="%b %d, %Y")} link={page.permalink} excerpt={page.extra.excerpt} /> }}
+        {{ <render.post_entry title={page.title} date={page.date | date(format="%b %d, %Y")} datetime={page.date | date(format="%Y-%m-%d")} link={page.permalink} excerpt={page.extra.excerpt} /> }}
       {% endfor %}
     </ol>
   {% endif %}

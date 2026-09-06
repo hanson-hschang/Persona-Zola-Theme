@@ -6,6 +6,8 @@
 
 .contact {
   &__info-item {
+    font-style: normal;
+
     & + & {
       margin-top: 40px;
     }

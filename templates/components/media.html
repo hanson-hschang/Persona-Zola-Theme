@@ -19,9 +19,9 @@
   {% endif %}
 
   <div class="row gy-4 justify-content-center">
-    <div class="col-lg-{{ portion }}">
+    <figure class="col-lg-{{ portion }} mb-0">
       <img alt="{{ alt }}" src="{{ image_path }}" class="img-fluid">
-    </div>
+    </figure>
     <div class="col-lg-{{ 12 - portion }}">
       {% if title != "" %}
         <h2> {{ title }} </h2>

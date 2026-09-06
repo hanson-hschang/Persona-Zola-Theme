@@ -1,30 +1,30 @@
-{% component blog.post_thumbnail(thumbnail) %}
-  <div class="blog-post__img">
-    <img src="{{ thumbnail }}" alt="" class="img-fluid">
-  </div>
+{% component blog.post_thumbnail(thumbnail, title) %}
+  <figure class="blog-post__img">
+    <img src="{{ thumbnail }}" alt="Thumbnail for {{ title }}" class="img-fluid">
+  </figure>
 {% endcomponent blog.post_thumbnail %}
 
 {% component blog.post_share(page) %}
-  <div id="share" class="share">
+  <aside id="share" class="share" aria-label="Post sharing">
     <button id="share-button" class="share__button" aria-label="Share post">
       <i class="bi bi-box-arrow-up" aria-hidden="true"></i>
     </button>
     {{ <render.share_menu title={page.title} permalink={page.permalink} /> }}
-  </div>
+  </aside>
 {% endcomponent blog.post_share %}
 
 {% component blog.post_tag(tags) %}
-  <div class="blog-post__tags">
+  <ul class="blog-post__tags" aria-label="Post tags">
     {% if tags %}
       {% for tag in tags %}
-        <span class="blog-post__tag">{{ tag | lower }}</span>
+        <li class="blog-post__tag">{{ tag | lower }}</li>
       {% endfor %}
     {% endif %}
-  </div>
+  </ul>
 {% endcomponent blog.post_tag %}
 
 {% component blog.post_header(page) %}
-  <div class="blog-post__header">
+  <header class="blog-post__header">
     <h2 class="blog-post__title">{{ page.title }}</h2>
     {{ <blog.post_tag tags={page.taxonomies.tags} /> }}
     <div class="blog-post__meta-divider"></div>
@@ -33,11 +33,11 @@
         <ul id="info" class="d-flex justify-content-between">
           <li id="date" class="d-flex align-items-center">
             <i class="bi bi-calendar-event" aria-hidden="true"></i>
-            <time class="blog-post__date">{{ page.date | date(format="%B %d, %Y") }}</time>
+            <time class="blog-post__date" datetime="{{ page.date | date(format='%Y-%m-%d') }}">{{ page.date | date(format="%B %d, %Y") }}</time>
           </li>
           <li id="read" class="d-flex align-items-center">
             <i class="bi bi-hourglass-split" aria-hidden="true"></i>
-            <time class="blog-post__time">{{ page.reading_time }} min read</time>
+            <span class="blog-post__time">{{ page.reading_time }} min read</span>
           </li>
         </ul>
         <ul id="action" class="d-flex justify-content-between">
@@ -53,30 +53,30 @@
       </div>
     </div>
     <div class="blog-post__meta-divider"></div>
-  </div>
+  </header>
 {% endcomponent blog.post_header %}
 
 {% component blog.post_content(content) %}
-  <div class="blog-post__content">{{ content | safe }}</div>
+  <section class="blog-post__content">{{ content | safe }}</section>
 {% endcomponent blog.post_content %}
 
 {% component blog.side_bar(page) %}
   {% set parent_section = page.ancestors | last %}
   {% set blog_section = get_section(path=parent_section, paginate_by=false, include_pages=true) %}
   <aside id="sidebar" class="sidebar col-lg-4">
-    <div class="sidebar__widgets">
-      <div class="recent-posts-widget widget">
-        <h3 class="widget__title">Recent Posts</h3>
+    <section class="sidebar__widgets" aria-label="Sidebar widgets">
+      <section class="recent-posts-widget widget" aria-labelledby="recent-posts-title">
+        <h3 id="recent-posts-title" class="widget__title">Recent Posts</h3>
         <ul id="post-entries">
           {% for page in blog_section.pages[:5] %}
             <li class="recent-posts-widget__item">
               <h4><a href="{{ page.permalink | safe }}">{{ page.title }}</a></h4>
-              <time>{{ page.date | date(format="%b %d, %Y") }}</time>
+              <time datetime="{{ page.date | date(format='%Y-%m-%d') }}">{{ page.date | date(format="%b %d, %Y") }}</time>
             </li>
           {% endfor %}
         </ul>
-      </div>
-    </div>
+      </section>
+    </section>
   </aside>
 {% endcomponent blog.side_bar %}
 
@@ -88,7 +88,7 @@
         <div class="container" data-aos="fade-up">
           <article class="blog-post__article">
             {% if page.extra.thumbnail %}
-              {{ <blog.post_thumbnail thumbnail={page.extra.thumbnail} /> }}
+              {{ <blog.post_thumbnail thumbnail={page.extra.thumbnail} title={page.title} /> }}
             {% endif %}
             {{ <blog.post_header page={page} /> }}
             {{ <blog.post_content content={page.content} /> }}
