@@ -3,13 +3,13 @@
   Shared presentation components used by page, segment, and blog templates.
 #}
 
-{% component render.post_entry(title, date, link, excerpt) %}
+{% component render.post_entry(title, date, link, excerpt, datetime="") %}
 <li class="container post-entry border-bottom">
   <div class="post-entry__meta d-flex justify-content-between align-items-center">
     <h4 class="post-entry__title">
       <a href="{{ link }}">{{ title }}</a>
     </h4>
-    <h5 class="post-entry__date">{{ date }}</h5>
+    <time class="post-entry__date"{% if datetime %} datetime="{{ datetime }}"{% endif %}>{{ date }}</time>
   </div>
   <p class="mb-4 d-block">{{ excerpt }}</p>
 </li>
@@ -17,12 +17,12 @@
 
 {% component render.section_title(title, subtitle="") %}
 <div class="container" data-aos="fade-up">
-  <div class="segment__title">
+  <header class="segment__title">
     <h2>{{ title }}</h2>
     {% if subtitle %}
       <em>{{ subtitle | safe }}</em>
     {% endif %}
-  </div>
+  </header>
 </div>
 {% endcomponent render.section_title %}
 
@@ -37,7 +37,7 @@
 {% endcomponent render.text_content %}
 
 {% component render.share_menu(title, permalink) %}
-<div id="share-menu" class="share-menu">
+<nav id="share-menu" class="share-menu" aria-label="Share this post">
   <a id="share-link" class="share-menu__item" href="#" >
     <i class="bi bi-link-45deg" aria-hidden="true"></i>
     <span>Get link</span>
@@ -59,7 +59,7 @@
     <i class="bi bi-envelope-fill" aria-hidden="true"></i>
     <span>Email</span>
   </a>
-</div>
+</nav>
 {% endcomponent render.share_menu %}
 
 {% component render.cards(sections) %}
@@ -83,9 +83,9 @@
 {% endcomponent render.cards %}
 
 {% component render.breadcrumbs(crumbs) %}
-<div class="page-title d-flex align-items-center">
+<header class="page-title d-flex align-items-center">
   <div class="container" data-aos="fade">
-    <nav class="breadcrumbs">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
       <ol>
         {% set_global path = "" %}
         <li><a href="{{ get_url(path='/') }}">Home</a></li>
@@ -100,5 +100,5 @@
       </ol>
     </nav>
   </div>
-</div>
+</header>
 {% endcomponent render.breadcrumbs %}

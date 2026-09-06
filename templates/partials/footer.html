@@ -1,10 +1,10 @@
 <footer id="footer" class="footer position-relative">
   <div class="container">
-    <h3 class="footer__sitename">{{ config.title }}</h3>
+    <p class="footer__sitename">{{ config.title }}</p>
     <p class="footer__quote">{{ config.extra.persona.quote }}</p>
-    <div class="footer__social-links d-flex justify-content-center">
+    <nav class="footer__social-links d-flex justify-content-center" aria-label="Social links">
       {% include "partials/social-icon.html" %}
-    </div>
+    </nav>
     <div class="container">
       <div class="footer__copyright">{{ config.extra.persona.copyright | markdown | safe }}</div>
       <div class="footer__credits">{{ config.extra.persona.credits | markdown | safe }}</div>

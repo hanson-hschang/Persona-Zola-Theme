@@ -2,7 +2,7 @@
   <form method="post" class="contact-form" data-aos="fade-up" data-aos-delay="200">
     
     <fieldset class="row gy-4">
-      <legend style="display: none;">Contact Information</legend>
+      <legend class="visually-hidden">Contact Information</legend>
       <div class="col-md-6 contact-form__input-box">
         <input required type="text" id="name" name="name" class="form-control">
         <label class="contact-form__label" for="name">Name</label>
@@ -14,7 +14,7 @@
     </fieldset>
     
     <fieldset class="row gy-4">
-      <legend style="display: none;">Contact Content</legend>
+      <legend class="visually-hidden">Contact Content</legend>
       <div class="col-md-12 contact-form__input-box">
         <input type="text" id="subject" name="subject" class="form-control" required>
         <label class="contact-form__label" for="subject">Subject</label>
@@ -41,11 +41,11 @@
 
     <div class="row gy-4">
       <div class="col-md-12 text-center">
-        <div class="contact-form__loading">Loading</div>
-        <div class="contact-form__error"></div>
-        <div class="contact-form__success">
+        <output class="contact-form__loading" aria-live="polite">Loading</output>
+        <output class="contact-form__error" aria-live="assertive"></output>
+        <output class="contact-form__success" aria-live="polite">
           Your message has been sent. Thank you!
-        </div>
+        </output>
 
         <button type="submit">Send Message</button>
       </div>
