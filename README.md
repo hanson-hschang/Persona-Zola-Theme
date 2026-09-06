@@ -186,6 +186,14 @@ It integrates seamlessly with the site workflow, so you can focus on content rat
     ```
 5. Add a `references.bib` file in the same directory.
 
+The citation preprocessor resolves CSL files in this priority order:
+
+1. Per-post `[extra].citation_style`, resolved as `citation-style/<value>.csl`
+2. Local `style.csl` in the same directory as the `.src.md` file
+3. Site-level `config.toml` `[extra].citation_style`, or Persona-compatible `[extra.persona].citation_style`
+4. Theme-level `themes/persona/theme.toml` `[extra].citation_style`, or `themes/persona/config.toml` `[extra.persona].citation_style`
+5. Exit with an error when citation processing needs a CSL and none can be resolved
+
 ### Build & Write
 Use the provided `Makefile` to build or serve your site locally with automatic processing of `.src.md` files:
 

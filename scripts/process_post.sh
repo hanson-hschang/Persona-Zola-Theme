@@ -75,13 +75,16 @@ fi
 # --- 2. Resolve CSL Path ---
 # The citation style is determined by checking, in order of priority:
 #   (1) A style specified in the post's frontmatter ([extra].citation_style)
-#   (2) The default CSL provided as an argument to this script
+#   (2) A local style.csl file beside the .src.md file
+#   (3) The default CSL provided as an argument to this script
 post_style=$(parse_config_from_extra "$frontmatter" "citation_style" "" "")
 final_csl=""
 # Try to find the user-specified style first (if it exists)
 if [[ -n "$post_style" ]]; then
     final_csl=$(find_csl_path "$post_style" "$CSL_DIRS_STR") || \
     echo "  [WARN] Falling back to default CSL: $DEFAULT_CSL" >&2
+elif [[ -f "$DIR/style.csl" ]]; then
+    final_csl="$DIR/style.csl"
 fi
 # If no user-specified style or the specified style was not found, use default
 final_csl="${final_csl:-$DEFAULT_CSL}"
@@ -116,7 +119,7 @@ if [[ -n "$final_bib" ]]; then
         --metadata reference-section-title=Bibliography
     )
 fi
-pandoc_args=(--wrap=none -t html -f markdown "$BODY_TMP" -o "$RENDERED_TMP")
+pandoc_args=(--mathjax --wrap=none -t html -f markdown "$BODY_TMP" -o "$RENDERED_TMP")
 if ! pandoc "${cite_args[@]}" "${pandoc_args[@]}"; then
     echo "  [ERROR] Pandoc failed to process: $INPUT_FILE" >&2
     echo "  [ERROR] Please check the bibliography and CSL files for issues." >&2
@@ -142,7 +145,7 @@ fi
 # -0777 slurps the whole file so the \n between the two tags is matchable.
 # Only the Pandoc-generated <h1 class="unnumbered"> is targeted; any
 # user-written <h1> tags (no unnumbered class) are left untouched.
-perl -0777 -pi -e \
+LC_ALL=C LANG=C perl -0777 -pi -e \
     's|<h1 class="unnumbered"([^>]*)>(.*?)</h1>\n(<div id="refs"[^>]*>)|$3\n<h2 class="unnumbered"$1>$2</h2>|g' \
     "$RENDERED_TMP"
 

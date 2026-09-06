@@ -2,8 +2,15 @@
 # -----------------------------------------------------------------------------
 # SCRIPT: build.sh
 # DESCRIPTION: Converts every *.src.md file in content/ into Zola-renderable 
-#              *.md files. Identifies global settings and delegates work to 
+#              *.md files. Identifies global settings and delegates work to
 #              process_post.sh.
+#
+# CSL priority order:
+#   1. per-post [extra].citation_style
+#   2. local style.csl beside the .src.md file
+#   3. site config.toml [extra.persona].citation_style
+#   4. theme.toml [extra].citation_style, or theme config.toml [extra.persona].citation_style
+#   5. error when citation processing needs a CSL and none can be resolved
 #
 # USAGE: 
 #   ./scripts/build.sh
@@ -14,7 +21,7 @@ THEME_REPO_ISSUE="https://github.com/hanson-hschang/Persona-Zola-Theme/issues"
 THEME_NAME="persona"
 THEME_DIRECTORY="themes/${THEME_NAME}"
 # Priority list for configuration files
-CONFIG_FILES=("config.toml" "${THEME_DIRECTORY}/config.toml")
+CONFIG_FILES=("config.toml" "${THEME_DIRECTORY}/theme.toml" "${THEME_DIRECTORY}/config.toml")
 # Space-separated directories for CSL lookups
 CSL_SEARCH_DIRS="citation-style ${THEME_DIRECTORY}/citation-style"
 
@@ -39,7 +46,11 @@ default_csl_style=""
 for config_file in "${CONFIG_FILES[@]}"; do
     if [[ -f "$config_file" ]]; then
         config_content=$(cat "$config_file")
-        csl_style=$(parse_config_from_extra "$config_content" "citation_style" "$THEME_NAME")
+        if [[ "$config_file" == *"/theme.toml" || "$config_file" == "theme.toml" ]]; then
+            csl_style=$(parse_config_from_extra "$config_content" "citation_style" "" "")
+        else
+            csl_style=$(parse_config_from_extra "$config_content" "citation_style" "$THEME_NAME" "")
+        fi
         if [[ -n "$csl_style" ]]; then
             default_csl_style="$csl_style"
             echo "  [INFO] Found global citation style '$default_csl_style' in $config_file"
