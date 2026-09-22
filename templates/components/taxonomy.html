@@ -2,16 +2,25 @@
   <section class="plain segment">
     {{ <render.section_title title={title} /> }}
     <div class="container" data-aos="fade-up">
-      <ul id="post-entries">
+      <ul id="post-entries" class="post-list">
         {% for term in terms %}
+          {% set_global visible_count = 0 %}
+          {% for entry in term.pages %}
+            {% set project = entry.extra.project | default(value={}) %}
+            {% if not project.draft %}
+              {% set_global visible_count = visible_count + 1 %}
+            {% endif %}
+          {% endfor %}
+          {% if visible_count > 0 %}
           <li class="post-entry border-bottom">
             <div class="post-entry__meta d-flex justify-content-between align-items-center">
               <h4 class="post-entry__title">
                 <a href="{{ term.permalink }}">{{ term.name }}</a>
               </h4>
-              <span class="post-entry__date">{{ term.pages | length }} item{% if term.pages | length != 1 %}s{% endif %}</span>
+              <span class="post-entry__date">{{ visible_count }} item{% if visible_count != 1 %}s{% endif %}</span>
             </div>
           </li>
+          {% endif %}
         {% endfor %}
       </ul>
     </div>
@@ -19,14 +28,21 @@
 {% endcomponent taxonomy.list %}
 
 {% component taxonomy.term(title, pages) %}
+  {% set_global entries = [] %}
+  {% for entry in pages %}
+    {% set project = entry.extra.project | default(value={}) %}
+    {% if not project.draft %}
+      {% set_global entries = [...entries, entry] %}
+    {% endif %}
+  {% endfor %}
   <section class="plain segment">
     {{ <render.section_title title={title} /> }}
   </section>
 
-  {% if pages %}
-    <ol id="post-entries" class="container" data-aos="fade-up">
-      {% for page in pages %}
-        {{ <render.post_entry title={page.title} date={page.date | date(format="%b %d, %Y")} datetime={page.date | date(format="%Y-%m-%d")} link={page.permalink} excerpt={page.extra.excerpt | default(value="")} /> }}
+  {% if entries %}
+    <ol id="post-entries" class="container post-list" data-aos="fade-up">
+      {% for page in entries %}
+        {{ <render.post_entry page={page} /> }}
       {% endfor %}
     </ol>
   {% endif %}

@@ -14,7 +14,7 @@
 <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fhanson-hschang.github.io%2FPersona-Zola-Theme">
 <img alt="GitHub Release" src="https://img.shields.io/github/v/release/hanson-hschang/Persona-Zola-Theme">
 
-[Demo](https://hanson-hschang.github.io/Persona-Zola-Theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Citation](#-citation-pipeline) • [Architecture](ARCHITECTURE.md) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
+[Demo](https://hanson-hschang.github.io/Persona-Zola-Theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Academic Projects](docs/academic-projects.md) • [Citation](#-citation-pipeline) • [Architecture](ARCHITECTURE.md) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
 
 </div>
 
@@ -25,6 +25,7 @@
 - ⚡️ **Fast Performance**: Lightweight and optimized for speed
 - 📋 **Resume/CV**: Dedicated page for your resume or CV *(--upcoming feature--)*
 - 🎭 **Portfolio Showcase**: Showcase your work with elegant project cards *(--upcoming feature--)*
+- 🔬 **Academic Project Pages**: Research landing pages with authors, resource links, media galleries, posters, and copyable BibTeX
 - 📝 **Blog with $\TeX$ and Citations**: Built-in blog functionality with equation and bibliography support
 - 📧 **Contact Forms**: Integrated contact form email support
 - 🔍 **Search Ready**: Built-in search index generation *(--upcoming feature--)*
@@ -101,7 +102,9 @@ git submodule update --init --recursive
 The theme supports three main segment types:
 - **Plain segments** (for static text content like about)
 - **Category segments** (for portfolios, projects, showcases)
-- **Blog segments** (for blog posts and articles)
+- **Blog segments** (shared lists for blog posts, articles, and academic project pages)
+
+The `projects` segment type remains available as an alias for the shared blog list.
 
 <details>
 <summary>
@@ -119,7 +122,7 @@ icon_class = "bi bi-file-earmark-text"
 # Display order (lower numbers appear first)
 order = 1
 # Segment type determines rendering approach
-# options include "plain", "category", or "blog"
+# options include "plain", "category", or "blog" ("projects" is a blog alias)
 type = "plain"  
 +++
 ```
@@ -142,6 +145,48 @@ After completing the setup, build and serve your site with Zola:
 
 > [!NOTE]
 > If you are using the [Citation Pipeline](#-citation-pipeline), use `make build` and `make serve` instead to also process `.src.md` files.
+
+### Academic Project Pages
+
+Set `template = "project.html"` on a Markdown page to create a dedicated research page. Add optional research details under `[extra.project]`; write the main article in Markdown below the front matter.
+
+```toml
++++
+title = "Your research project"
+description = "A short summary for search results and link previews."
+date = 2026-09-21
+template = "project.html"
+
+[extra.project]
+subtitle = "A concise statement of the contribution"
+venue = "Conference 2026"
+authors = [{ name = "Alex Researcher", affiliations = "1" }]
+affiliations = [{ id = "1", name = "Example University" }]
+links = [{ name = "Paper", url = "paper.pdf", icon_class = "bi bi-file-earmark-pdf" }]
+abstract = "Explain the research question, approach, and findings."
++++
+
+## Method
+
+Describe your work here.
+```
+
+Use a page bundle such as `content/maps/public-self/my-project/index.md` and put its images and PDFs alongside it. A project page can live alongside ordinary posts in a blog section; its explicit `template` selects the research layout. Relative resource paths follow the rendered page URL; `/` paths respect the site's configured base URL, including deployment subpaths.
+
+The [academic project guide](docs/academic-projects.md) covers every field, reusable media components, and URL rules. The [Field Notes example](content/maps/public-self/field-notes/index.md) in [Public Self](content/maps/public-self/_index.md) provides a complete starting point. The layout and Sass are original Persona implementations, using the theme's existing typography, colors, spacing, and breakpoints.
+
+Use `type = "blog"` in the parent section's `[extra]` table to list posts and projects with the shared entry template. The home page shows up to three items in each list and links to the complete section when more are available. This limit applies to category subsection cards and blog/project entry lists. Change it in your site's `config.toml`:
+
+```toml
+[extra.persona]
+home_items_limit = 3
+```
+
+The default is `3` when the setting is omitted or negative. Set it to `0` to show only the **View all** link for each nonempty collection. Full section pages remain unlimited. Set each page's `[extra.project].thumbnail` to a colocated image, or let the listing use its teaser image (or video poster). See the guide for the section setup and ordering.
+
+Projects and blog posts share one entry template with optional thumbnails, dates, and subtitles. The top-level `date` appears on project pages as well as in their lists. Set `subtitle` under `[extra.project]` for projects or under `[extra]` for blog posts to show it on both the detail page and its list entry. Blog entries also accept `thumbnail` and `thumbnail_alt` under `[extra]`.
+
+To keep a project accessible by its URL but hide it from automatic home-page, blog/project, taxonomy, and Recent Posts lists, set `draft = true` under `[extra.project]` in its Markdown front matter. Omit it or set it to `false` to list the project. Use this theme flag rather than Zola's top-level draft flag, which excludes a page from normal builds.
 
 ## 📚 Citation Pipeline
 
@@ -250,6 +295,7 @@ This pipeline is ideal for writing technical, research-oriented, or reference-he
 - [**OpenAI**](https://openai.com/) - [ChatGPT](https://chat.openai.com/) • [Codex](https://openai.com/codex/)
 - [**BootstrapMade Templates**](https://bootstrapmade.com/) - [Active](https://bootstrapmade.com/demo/Active) • [MyResume](https://bootstrapmade.com/demo/MyResume) • [UpConstruction](https://bootstrapmade.com/demo/UpConstruction)
 - [**Zola Themes**](https://www.getzola.org/themes/) - [Mabuya](https://mabuya.vercel.app/) • [Vonge](https://pascal-berrang.de/vonge-zola-theme/) • [Zluinav](https://harrymkt.github.io/zluinav/)
+- [**Academic Project Page Template**](https://github.com/eliahuhorwitz/Academic-project-page-template) - Feature inspiration for academic project pages; Persona's layout, styling, and interactions are implemented independently
 
 
 ---

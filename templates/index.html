@@ -23,7 +23,7 @@
     {% endif %}
   {% endfor %}
   {% set_global poss = poss | sort(attribute="extra.order") %}
-  {{ <segment.populate poss={poss} /> }}
+  {{ <segment.populate poss={poss} home_items_limit={config.extra.persona.home_items_limit | default(value=3)} /> }}
 
   {% include "partials/contact.html" %}
 

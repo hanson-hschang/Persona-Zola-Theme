@@ -25,7 +25,10 @@
 
 {% component blog.post_header(page) %}
   <header class="blog-post__header">
-    <h2 class="blog-post__title">{{ page.title }}</h2>
+    <h2 id="blog-post-title" class="blog-post__title">{{ page.title }}</h2>
+    {% if page.extra.subtitle %}
+      <p class="blog-post__subtitle">{{ page.extra.subtitle }}</p>
+    {% endif %}
     {{ <blog.post_tag tags={page.taxonomies.tags} /> }}
     <div class="blog-post__meta-divider"></div>
     <div class="blog-post__meta">
@@ -63,12 +66,19 @@
 {% component blog.side_bar(page) %}
   {% set parent_section = page.ancestors | last %}
   {% set blog_section = get_section(path=parent_section, paginate_by=false, include_pages=true) %}
+  {% set_global entries = [] %}
+  {% for entry in blog_section.pages %}
+    {% set project = entry.extra.project | default(value={}) %}
+    {% if not project.draft %}
+      {% set_global entries = [...entries, entry] %}
+    {% endif %}
+  {% endfor %}
   <aside id="sidebar" class="sidebar col-lg-4">
     <section class="sidebar__widgets" aria-label="Sidebar widgets">
       <section class="recent-posts-widget widget" aria-labelledby="recent-posts-title">
         <h3 id="recent-posts-title" class="widget__title">Recent Posts</h3>
         <ul id="post-entries">
-          {% for page in blog_section.pages[:5] %}
+          {% for page in entries[:5] %}
             <li class="recent-posts-widget__item">
               <h4><a href="{{ page.permalink | safe }}">{{ page.title }}</a></h4>
               <time datetime="{{ page.date | date(format='%Y-%m-%d') }}">{{ page.date | date(format="%b %d, %Y") }}</time>
@@ -82,20 +92,20 @@
 
 {% component blog.post(page) %}
   {{ <render.breadcrumbs crumbs={page.components} /> }}
-  <div class="container">
+  <article class="container" aria-labelledby="blog-post-title">
     <div class="row">
       <section id="blog-post" class="blog-post segment col-lg-8">
         <div class="container" data-aos="fade-up">
-          <article class="blog-post__article">
+          <div class="blog-post__article">
             {% if page.extra.thumbnail %}
               {{ <blog.post_thumbnail thumbnail={page.extra.thumbnail} title={page.title} /> }}
             {% endif %}
             {{ <blog.post_header page={page} /> }}
             {{ <blog.post_content content={page.content} /> }}
-          </article>
+          </div>
         </div>
       </section>
       {{ <blog.side_bar page={page} /> }}
     </div>
-  </div>
+  </article>
 {% endcomponent blog.post %}

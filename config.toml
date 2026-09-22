@@ -48,6 +48,10 @@ light_theme = "github-light"
 [extra.persona]
 # Note: landing page title, subtitles, and icon are configured in `content/_index.md`
 
+# Maximum entries or category cards shown in each list on the home page.
+# Full section pages remain unlimited. Set to 0 to show only the View all link.
+home_items_limit = 3
+
 # Citation style
 # This configuration controls how references are formatted and displayed throughout the site.
 #

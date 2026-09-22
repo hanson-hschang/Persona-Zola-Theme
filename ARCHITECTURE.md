@@ -25,10 +25,11 @@ It serves as a guide for contributors to understand how the theme is structured 
 │           ├── pages/
 │           │   ├── _hero.scss        # Hero section styles (home page)
 │           │   ├── _contact.scss     # Contact section styles
+│           │   ├── _project.scss     # Academic project page styles
 │           │   └── _plain.scss       # Plain section content styles
 │           ├── components/
 │           │   ├── _category.scss    # Category section styles
-│           │   ├── _blog.scss        # Blog listing styles
+│           │   ├── _blog.scss        # Shared blog/project listing styles
 │           │   ├── _post.scss        # Blog post content styles
 │           │   └── _widgets.scss     # Sidebar widget styles
 │           ├── main.scss             # Entry point: all pages -> main.css
@@ -37,6 +38,7 @@ It serves as a guide for contributors to understand how the theme is structured 
 │           ├── page-category.scss    # Entry point: category sections -> page-category.css
 │           ├── page-blog.scss        # Entry point: blog sections -> page-blog.css
 │           ├── post.scss             # Entry point: blog posts -> post.css
+│           ├── page-project.scss     # Entry point: academic projects -> page-project.css
 │           ├── citations.scss        # Entry point: Pandoc citation output -> citations.css
 │           └── page-404.scss         # Entry point: 404 error page -> page-404.css
 ├── static/                           # Static assets
@@ -55,6 +57,7 @@ It serves as a guide for contributors to understand how the theme is structured 
 │   ├── section.html                  # Section page template
 │   ├── page.html                     # Single page template
 │   ├── post.html                     # Blog post template
+│   ├── project.html                  # Academic project template
 │   ├── 404.html                      # Error page template
 │   ├── components/                   # Tera 2 reusable components
 │   ├── partials/                     # Reusable template partials
@@ -85,7 +88,7 @@ Located in `templates/` root:
   - Shows contact section
 
 - **section.html**: Section page template
-  - Handles three section types: plain, category, blog
+  - Handles plain, category, and blog section types, with projects retained as an alias for blog lists
   - Conditionally loads type-specific CSS and components
   - Contains the logic that previously lived in the root `segment.html` page template
 
@@ -99,6 +102,17 @@ Located in `templates/` root:
   - Supports KaTeX for mathematical expressions
   - Loads `citations.css` for Pandoc citeproc output
 
+- **project.html**: Academic project template
+  - Selected with `template = "project.html"`; reads optional `page.extra.project` data
+  - Renders authors, affiliations, resource links, teaser, abstract, article, gallery, video, poster, and BibTeX
+  - Generates page metadata and scholarly citation tags
+  - Inherits standard navigation and mobile toggle, with breadcrumbs based on section ancestry
+  - Displays optional related-work links in a shared sidebar widget below the left contents navigation; below the content under the `lg` breakpoint
+  - Overrides the base `preloader` block so research content is available without JavaScript
+  - Loads `page-project.css`, AOS, `home.js`, and `project.js`; retains shared footer and conditional KaTeX support
+  - See the [front matter and component guide](docs/academic-projects.md)
+  - The [Field Notes example](content/maps/public-self/field-notes/index.md) lives alongside ordinary posts in Public Self; its explicit template overrides that section's default post template
+
 - **404.html**: Error page template
   - Custom 404 not found page
 
@@ -109,7 +123,7 @@ Located in `templates/components/`:
 Tera 2 components are globally registered by component name. They do not need imports. Call them with syntax such as `{{ <render.section_title title={title} /> }}`.
 
 - **render.html**: Core rendering utilities
-  - `render.post_entry`: Renders blog post entries
+  - `render.post_entry(page)`: Shared blog, project, and taxonomy page entries, with optional thumbnail, date, subtitle, and description
   - `render.section_title`: Renders section titles
   - `render.text_content`: Renders text content
   - `render.cards`: Renders card layouts
@@ -118,8 +132,12 @@ Tera 2 components are globally registered by component name. They do not need im
 - **segment.html**: Segment rendering logic
   - `segment.populate`: Populates section content
   - `segment.plain`: Renders plain sections
-  - `segment.category`: Renders category sections
-  - `segment.blog`: Renders blog sections
+  - `segment.category(pos, preview=false, limit=3)`: Renders subsection cards, with an optional limited home-page preview
+  - `segment.blog(pos, preview=false, limit=3)`: Renders shared blog/project page lists, with an optional limited home-page preview
+  - `segment.projects`: Thin compatibility alias for `segment.blog`
+  - The index passes `config.extra.persona.home_items_limit` (default `3`) through `segment.populate` to both category and page lists; Tera components receive the setting explicitly
+  - Preview limits apply after eligibility filtering. Zero shows only a View all link for a nonempty collection; negative limits use the default of three. Full section pages are unlimited
+  - `extra.project.draft` pages remain buildable but are excluded from automatic blog/project, taxonomy, and Recent Posts lists
 
 - **blog.html**: Blog-specific components
   - Blog listing and pagination logic
@@ -128,6 +146,13 @@ Tera 2 components are globally registered by component name. They do not need im
   - `media.image`: Resizes and renders colocated images
   - `media.block`: Renders image/text media rows
   - Content usage example: `{{ <media.image page={page} path="img/example.png" width={700} alt="Example" /> }}`
+
+- **project.html**: Academic project components
+  - `project.url(page, path)`: Resolves page-relative, site-root, and content URLs while preserving external links and fragments
+  - `project.media(page, item, eager=false)`: Renders an image or native video with optional caption
+  - `project.gallery(page, items, id="project-gallery", title="Results gallery")`: Renders a scrollable media gallery
+  - `project.embed(src, title)`: Renders a responsive iframe using a provider embed URL
+  - `project.poster(page, src, title="Research poster")`: Renders a PDF object with a direct-link fallback
 
 - **debug.html**: Debug utilities
   - Development helpers
@@ -200,11 +225,12 @@ stylesheet/
 ├── pages/
 │   ├── _hero.scss               # Hero section (home page only)
 │   ├── _contact.scss            # Contact form and info
+│   ├── _project.scss            # Academic project layout and components
 │   └── _plain.scss              # Plain section content
 │
 ├── components/
 │   ├── _category.scss           # Category card listing
-│   ├── _blog.scss               # Blog post listing
+│   ├── _blog.scss               # Shared blog/project post entries
 │   ├── _post.scss               # Individual blog post
 │   └── _widgets.scss            # Sidebar widgets
 │
@@ -215,6 +241,7 @@ stylesheet/
     ├── page-category.scss        # Category section pages
     ├── page-blog.scss            # Blog listing section pages
     ├── post.scss                 # Individual blog post pages
+    ├── page-project.scss         # Academic project pages
     ├── citations.scss            # Citation styling for post pages
     └── page-404.scss             # 404 error page
 ```
@@ -226,12 +253,14 @@ Each template loads only the CSS it needs:
 | Template | Entry point loaded | Contents |
 |---|---|---|
 | `base.html` (all pages) | `main.css` | variables, base, footer, preloader, custom |
-| `index.html` | `home.css` | nav-index, hero, segment, plain, category, contact |
+| `index.html` | `home.css` | nav-index, hero, segment, plain, category, shared page lists, contact |
 | `section.html` (plain) | `page-plain.css` | navigation, segment, plain |
 | `section.html` (category) | `page-category.css` | navigation, segment, category |
 | `section.html` (blog) | `page-blog.css` | navigation, segment, blog, breadcrumbs |
+| `section.html` (projects, compatibility alias) | `page-blog.css` | same shared listing as blog sections |
 | `post.html` | `post.css` | navigation, breadcrumbs, post, widgets |
 | `post.html` | `citations.css` | Pandoc citation and bibliography styles |
+| `project.html` | `page-project.css` | variables, navigation, breadcrumbs, sidebar widgets, project layout/media, custom |
 | `page.html` | `page-plain.css` | navigation, segment, plain |
 | `404.html` | `page-404.css` | navigation, segment, plain, contact |
 
@@ -267,6 +296,12 @@ JavaScript files in `static/assets/script/`:
 - **share.js**: Social sharing functionality
   - Generates share URLs for Twitter, Facebook, LinkedIn
   - Opens share menu when share button is clicked
+
+- **project.js**: Progressive enhancements for academic project pages
+  - Enables BibTeX clipboard copying with selection and status-message fallback
+  - Adds gallery navigation, keyboard controls, and announced slide positions
+  - Respects reduced-motion preferences and pauses videos on inactive slides
+  - Uses native browser APIs; project content, PDF links, video controls, and gallery scrolling remain available without JavaScript
 
 ## Development Workflow
 
@@ -320,6 +355,7 @@ JavaScript files in `static/assets/script/`:
 ## Related Documentation
 
 - [README.md](README.md) - Main theme documentation
+- [Academic project pages](docs/academic-projects.md) - Front matter, URL rules, media components, and customization
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
 - [theme.toml](theme.toml) - Theme metadata and configuration
 - [config.toml](config.toml) - Configuration template for user site

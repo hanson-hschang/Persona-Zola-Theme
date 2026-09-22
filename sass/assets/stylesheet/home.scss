@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // home — Loaded on the index / landing page only
-// Includes: index navigation, hero, segment, plain, category, contact.
+// Includes: index navigation, hero, segment, plain, category, page lists, contact.
 // Compiled output: public/assets/stylesheet/home.css
 // ─────────────────────────────────────────────────────────────────────────────
 @use 'layout/navigation-index';
@@ -8,4 +8,5 @@
 @use 'layout/segment';
 @use 'pages/plain';
 @use 'components/category';
+@use 'components/blog';
 @use 'pages/contact';

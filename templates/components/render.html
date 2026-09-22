@@ -3,15 +3,35 @@
   Shared presentation components used by page, segment, and blog templates.
 #}
 
-{% component render.post_entry(title, date, link, excerpt, datetime="") %}
-<li class="container post-entry border-bottom">
-  <div class="post-entry__meta d-flex justify-content-between align-items-center">
-    <h4 class="post-entry__title">
-      <a href="{{ link }}">{{ title }}</a>
-    </h4>
-    <time class="post-entry__date"{% if datetime %} datetime="{{ datetime }}"{% endif %}>{{ date }}</time>
-  </div>
-  <p class="mb-4 d-block">{{ excerpt }}</p>
+{% component render.post_entry(page) %}
+{% set project = page.extra.project | default(value={}) %}
+{% set subtitle = project.subtitle | default(value=page.extra.subtitle | default(value="")) %}
+{% set thumbnail = project.thumbnail | default(value=page.extra.thumbnail | default(value="")) %}
+{% if not thumbnail and project.teaser %}
+  {% if project.teaser.type is defined and project.teaser.type == "video" %}
+    {% set thumbnail = project.teaser.poster | default(value="") %}
+  {% else %}
+    {% set thumbnail = project.teaser.src %}
+  {% endif %}
+{% endif %}
+{% set excerpt = page.description %}
+{% if not excerpt %}{% set excerpt = page.extra.excerpt | default(value="") %}{% endif %}
+<li class="container post-entry post-entry--row border-bottom">
+  <a class="post-entry__link{% if thumbnail %} post-entry__link--with-thumbnail{% endif %}" href="{{ page.permalink }}">
+    {% if thumbnail %}
+    <figure class="post-entry__figure">
+      <img class="post-entry__thumbnail" src="{{ <project.url page={page} path={thumbnail} /> }}" alt="{{ project.thumbnail_alt | default(value=page.extra.thumbnail_alt | default(value='')) }}" width="160" height="120" loading="lazy" decoding="async">
+    </figure>
+    {% endif %}
+    <div class="post-entry__content">
+      <div class="post-entry__meta">
+        <h4 class="post-entry__title">{{ page.title }}</h4>
+        {% if page.date %}<time class="post-entry__date" datetime="{{ page.date | date(format='%Y-%m-%d') }}">{{ page.date | date(format='%b %d, %Y') }}</time>{% endif %}
+      </div>
+      {% if subtitle %}<p class="post-entry__subtitle">{{ subtitle }}</p>{% endif %}
+      {% if excerpt %}<p class="post-entry__excerpt">{{ excerpt }}</p>{% endif %}
+    </div>
+  </a>
 </li>
 {% endcomponent render.post_entry %}
 
@@ -62,10 +82,11 @@
 </nav>
 {% endcomponent render.share_menu %}
 
-{% component render.cards(sections) %}
+{% component render.cards(sections, limit=-1) %}
 <div class="container" data-aos="fade-up" data-aos-delay="200">
   <div class="row m-0 justify-content-center">
     {% for section in sections | sort(attribute="extra.order") %}
+      {% if limit < 0 or loop.index <= limit %}
       <div class="col-sm-6 col-md-6 mb-4 mb-lg-0 col-lg-4">
         <div class="post-entry" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
           <a href="{{ section.permalink }}" class="post-entry__thumb d-block">
@@ -77,18 +98,29 @@
           </div>
         </div>
       </div>
+      {% endif %}
     {% endfor %}
   </div>
 </div>
 {% endcomponent render.cards %}
 
-{% component render.breadcrumbs(crumbs) %}
-<header class="page-title d-flex align-items-center">
+{% component render.breadcrumbs(crumbs=[], page={}, class_name="") %}
+<header class="page-title d-flex align-items-center{% if class_name %} {{ class_name }}{% endif %}">
   <div class="container" data-aos="fade">
     <nav class="breadcrumbs" aria-label="Breadcrumb">
       <ol>
         {% set_global path = "" %}
         <li><a href="{{ get_url(path='/') }}">Home</a></li>
+        {% if page %}
+          {# Section ancestry remains valid when a page uses a custom output path. #}
+          {% for ancestor in page.ancestors %}
+            {% set ancestor_section = get_section(path=ancestor) %}
+            {% if ancestor_section.path != "/" %}
+            <li><a href="{{ ancestor_section.permalink }}">{{ ancestor_section.title }}</a></li>
+            {% endif %}
+          {% endfor %}
+          <li class="current" aria-current="page">{{ page.title }}</li>
+        {% else %}
         {% for crumb in crumbs %}
           {% set_global path = path ~ crumb ~ "/" %}
           {% if loop.last %}
@@ -97,6 +129,7 @@
             <li><a href="{{ get_url(path=path) }}">{{ crumb | capitalize }}</a></li>
           {% endif %}
         {% endfor %}
+        {% endif %}
       </ol>
     </nav>
   </div>
