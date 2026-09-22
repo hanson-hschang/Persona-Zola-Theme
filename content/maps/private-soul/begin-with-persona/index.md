@@ -6,6 +6,7 @@ draft = false
 tags = ['website', 'blog']
 categories = ['blogs', 'private-soul']
 [extra]
+subtitle = "From first installation to a personal website"
 excerpt = """
 A step-by-step tutorial on how to start a website using the Persona theme: from installation and configuration to segment setup and full theme customization.
 """

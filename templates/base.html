@@ -8,8 +8,10 @@
 
     <!-- Meta Info -->
     {% include "partials/head-title.html" %}
+    {% block metadata %}
     <meta name="description" content="{{ config.description }}" >
     <meta name="author" content="{{ config.author }}" >
+    {% endblock metadata %}
 
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="{{ get_url(path='assets/img/favicon.ico') }}" >
@@ -43,7 +45,9 @@
     {% endblock header %}
 
     <!-- Navigation Menu Toggle -->
+    {% block navigation_toggle %}
     <i class="nav-toggle d-lg-none bi bi-list"></i>
+    {% endblock navigation_toggle %}
 
     <!-- Main -->
     <main class="main">
@@ -55,7 +59,9 @@
     {% include "partials/footer.html" %}
 
     <!-- Preloader -->
+    {% block preloader %}
     <div id="preloader"></div>
+    {% endblock preloader %}
 
     <!-- Java Scripts -->
     {% block scripts %}

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/page-plain.css') }}">
   {% elif section_type == "category" %}
     <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/page-category.css') }}">
-  {% elif section_type == "blog" %}
+  {% elif section_type == "blog" or section_type == "projects" %}
     <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/page-blog.css') }}">
   {% else %}
     {# Return to 404 #}
@@ -26,7 +26,7 @@
     {{ <segment.plain pos={section} /> }}
   {% elif section_type == "category" %}
     {{ <segment.category pos={section} /> }}
-  {% elif section_type == "blog" %}
+  {% elif section_type == "blog" or section_type == "projects" %}
     {{ <segment.blog pos={section} /> }}
   {% else %}
     {# Return to 404 #}

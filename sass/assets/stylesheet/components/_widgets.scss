@@ -7,6 +7,22 @@
 .sidebar {
   &__widgets {
     margin: 60px 0 30px 0;
+
+    @include mixins.respond-above(lg) {
+      --sidebar-top: calc(100px + var(--spacing-lg));
+
+      position: sticky;
+      top: var(--sidebar-top);
+      max-height: calc(100vh - var(--sidebar-top) - var(--spacing-md));
+      max-height: calc(100dvh - var(--sidebar-top) - var(--spacing-md));
+      overflow-y: auto;
+    }
+
+    @media print {
+      position: static;
+      max-height: none;
+      overflow: visible;
+    }
   }
 }
 
