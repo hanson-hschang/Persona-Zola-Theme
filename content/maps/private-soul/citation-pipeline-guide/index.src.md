@@ -1,5 +1,5 @@
 +++
-template = "project.html"
+template = "post.html"
 title = 'How to Use Citation in Persona'
 date = 2025-03-19
 draft = false
@@ -17,7 +17,7 @@ bibliography = "references.bib"
 '\Real' = '\mathbb{R}^{#1}'
 '\norm' = '\left\lVert #1 \right\rVert'
 
-[extra.project]
+[extra.post]
 bibtex = '''
 @misc{persona_citation_guide,
   title = {How to Use Citation in Persona},
@@ -129,7 +129,7 @@ The pipeline emits HTML citations and bibliography blocks so SCSS can style stab
 - `.csl-right-inline`
 
 Inline citations anchor to bibliography entries, and the bibliography heading is rendered inside the refs container as "Bibliography".
-The project layout places that bibliography after the optional **Citation**
+The post layout places that bibliography after the optional **Citation**
 section. Citation contains BibTeX for this article; Bibliography contains the
 works cited in its text. This guide includes a clearly labeled demonstration
 BibTeX record so both sections can be viewed together.

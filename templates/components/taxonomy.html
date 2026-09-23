@@ -6,8 +6,8 @@
         {% for term in terms %}
           {% set_global visible_count = 0 %}
           {% for entry in term.pages %}
-            {% set project = entry.extra.project | default(value={}) %}
-            {% if not project.draft %}
+            {% set post = entry.extra.post | default(value={}) %}
+            {% if not post.draft %}
               {% set_global visible_count = visible_count + 1 %}
             {% endif %}
           {% endfor %}
@@ -30,8 +30,8 @@
 {% component taxonomy.term(title, pages) %}
   {% set_global entries = [] %}
   {% for entry in pages %}
-    {% set project = entry.extra.project | default(value={}) %}
-    {% if not project.draft %}
+    {% set post = entry.extra.post | default(value={}) %}
+    {% if not post.draft %}
       {% set_global entries = [...entries, entry] %}
     {% endif %}
   {% endfor %}

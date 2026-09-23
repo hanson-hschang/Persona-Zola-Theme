@@ -1,19 +1,19 @@
 (function () {
   "use strict";
 
-  const project = document.querySelector('.project');
-  const sidebar = project?.querySelector('.project__sidebar-inner');
-  const related = project?.querySelector('.project__related');
+  const post = document.querySelector('.post');
+  const sidebar = post?.querySelector('.post__sidebar-inner');
+  const related = post?.querySelector('.post__related');
 
   // Pandoc emits raw HTML headings, which Zola cannot include in page.toc.
   // Rebuild the prose portion from the rendered headings so both authoring
   // paths have the same outline and the same scroll-spy behavior.
-  const proseEnd = project?.querySelector('[data-prose-toc-end]');
-  const prose = project?.querySelector('.project__prose');
+  const proseEnd = post?.querySelector('[data-prose-toc-end]');
+  const prose = post?.querySelector('.post__prose');
   if (proseEnd && prose) {
     const headings = Array.from(prose.querySelectorAll('h1, h2'));
     if (headings.length) {
-      project.querySelectorAll('[data-prose-heading]').forEach((item) => item.remove());
+      post.querySelectorAll('[data-prose-heading]').forEach((item) => item.remove());
       headings.forEach((heading, index) => {
         if (!heading.id) {
           let id = `article-section-${index + 1}`;
@@ -34,7 +34,7 @@
   if (sidebar && related) {
     // Move one widget into the sticky group on desktop, restoring its original
     // reading/tab order below the article on small screens.
-    const home = document.createComment('Related projects on small screens');
+    const home = document.createComment('Related posts on small screens');
     related.before(home);
     const wideScreen = window.matchMedia('(min-width: 992px)');
     const placeRelated = () => {
@@ -47,7 +47,7 @@
     placeRelated();
   }
 
-  const contentsLinks = Array.from(project?.querySelectorAll('.project__contents a') || []);
+  const contentsLinks = Array.from(post?.querySelectorAll('.post__contents a') || []);
   const sections = contentsLinks.flatMap((link) => {
     const url = new URL(link.href);
     if (url.origin !== window.location.origin || url.pathname !== window.location.pathname) return [];
@@ -67,7 +67,7 @@
       frame = null;
       // Match anchor-link clearance so clicking and scrolling select the same
       // section underneath the site's desktop navigation.
-      const readingLine = parseFloat(window.getComputedStyle(project).scrollMarginTop) || 0;
+      const readingLine = parseFloat(window.getComputedStyle(post).scrollMarginTop) || 0;
       let current = null;
       sections.forEach(({ link, target }) => {
         if (target.getBoundingClientRect().top <= readingLine + 1) current = link;
@@ -95,13 +95,13 @@
     // Lazy media and font loading can move headings without a scroll event.
     if ('ResizeObserver' in window) {
       const observer = new ResizeObserver(scheduleCurrentSection);
-      observer.observe(project);
+      observer.observe(post);
     }
     scheduleCurrentSection();
   }
 
   const copyButton = document.querySelector('[data-copy-citation]');
-  const citation = document.getElementById('project-bibtex');
+  const citation = document.getElementById('post-bibtex');
   const copyStatus = document.querySelector('[data-copy-status]');
 
   if (copyButton && citation && copyStatus) {
@@ -127,9 +127,9 @@
     });
   }
 
-  document.querySelectorAll('[data-project-gallery]').forEach((gallery) => {
-    const track = gallery.querySelector('.project__slides');
-    const slides = Array.from(gallery.querySelectorAll('.project__slide'));
+  document.querySelectorAll('[data-post-gallery]').forEach((gallery) => {
+    const track = gallery.querySelector('.post__slides');
+    const slides = Array.from(gallery.querySelectorAll('.post__slide'));
     const controls = gallery.querySelector('[data-gallery-controls]');
     if (!track || slides.length < 2 || !controls) return;
 

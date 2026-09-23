@@ -1,17 +1,17 @@
 {#
   Render Components
-  Shared presentation components used by page, segment, and blog templates.
+  Shared presentation components used by page, segment, and post templates.
 #}
 
 {% component render.post_entry(page) %}
-{% set project = page.extra.project | default(value={}) %}
-{% set subtitle = project.subtitle | default(value=page.extra.subtitle | default(value="")) %}
-{% set thumbnail = project.thumbnail | default(value=page.extra.thumbnail | default(value="")) %}
-{% if not thumbnail and project.teaser %}
-  {% if project.teaser.type is defined and project.teaser.type == "video" %}
-    {% set thumbnail = project.teaser.poster | default(value="") %}
+{% set post = page.extra.post | default(value={}) %}
+{% set subtitle = post.subtitle | default(value=page.extra.subtitle | default(value="")) %}
+{% set thumbnail = post.thumbnail | default(value=page.extra.thumbnail | default(value="")) %}
+{% if not thumbnail and post.teaser %}
+  {% if post.teaser.type is defined and post.teaser.type == "video" %}
+    {% set thumbnail = post.teaser.poster | default(value="") %}
   {% else %}
-    {% set thumbnail = project.teaser.src %}
+    {% set thumbnail = post.teaser.src %}
   {% endif %}
 {% endif %}
 {% set excerpt = page.description %}
@@ -20,7 +20,7 @@
   <a class="post-entry__link{% if thumbnail %} post-entry__link--with-thumbnail{% endif %}" href="{{ page.permalink }}">
     {% if thumbnail %}
     <figure class="post-entry__figure">
-      <img class="post-entry__thumbnail" src="{{ <project.url page={page} path={thumbnail} /> }}" alt="{{ project.thumbnail_alt | default(value=page.extra.thumbnail_alt | default(value='')) }}" width="160" height="120" loading="lazy" decoding="async">
+      <img class="post-entry__thumbnail" src="{{ <post.url page={page} path={thumbnail} /> }}" alt="{{ post.thumbnail_alt | default(value=page.extra.thumbnail_alt | default(value='')) }}" width="160" height="120" loading="lazy" decoding="async">
     </figure>
     {% endif %}
     <div class="post-entry__content">

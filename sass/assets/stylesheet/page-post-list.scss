@@ -1,10 +1,9 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// post — Loaded on individual blog post pages
-// Includes: navigation, breadcrumbs, post content, sidebar widgets.
-// Compiled output: public/assets/styles/post.css
+// page-post-list — Loaded on post listing section pages
+// Includes: navigation, segment, post listing, breadcrumbs.
+// Compiled output: public/assets/stylesheet/page-post-list.css
 // ─────────────────────────────────────────────────────────────────────────────
 @use 'layout/navigation';
-@use 'layout/breadcrumbs';
+@use 'layout/segment';
 @use 'components/post';
-@use 'components/share';
-@use 'components/widgets';
+@use 'layout/breadcrumbs';

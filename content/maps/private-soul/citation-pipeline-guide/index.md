@@ -1,5 +1,5 @@
 +++
-template = "project.html"
+template = "post.html"
 title = 'How to Use Citation in Persona'
 date = 2025-03-19
 draft = false
@@ -17,7 +17,7 @@ bibliography = "references.bib"
 '\Real' = '\mathbb{R}^{#1}'
 '\norm' = '\left\lVert #1 \right\rVert'
 
-[extra.project]
+[extra.post]
 bibtex = '''
 @misc{persona_citation_guide,
   title = {How to Use Citation in Persona},
@@ -90,7 +90,7 @@ bibtex = '''
 <li><code>.csl-left-margin</code></li>
 <li><code>.csl-right-inline</code></li>
 </ul>
-<p>Inline citations anchor to bibliography entries, and the bibliography heading is rendered inside the refs container as “Bibliography”. The project layout places that bibliography after the optional <strong>Citation</strong> section. Citation contains BibTeX for this article; Bibliography contains the works cited in its text. This guide includes a clearly labeled demonstration BibTeX record so both sections can be viewed together.</p>
+<p>Inline citations anchor to bibliography entries, and the bibliography heading is rendered inside the refs container as “Bibliography”. The post layout places that bibliography after the optional <strong>Citation</strong> section. Citation contains BibTeX for this article; Bibliography contains the works cited in its text. This guide includes a clearly labeled demonstration BibTeX record so both sections can be viewed together.</p>
 <!-- persona-bibliography -->
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
 <h2 class="unnumbered" id="bibliography">Bibliography</h2>

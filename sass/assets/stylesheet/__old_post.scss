@@ -1,9 +1,11 @@
+// Archived blog entry point; excluded from Zola compilation.
 // ─────────────────────────────────────────────────────────────────────────────
-// page-blog — Loaded on blog listing section pages
-// Includes: navigation, segment, blog listing, breadcrumbs.
-// Compiled output: public/assets/styles/page-blog.css
+// post — Loaded on individual blog post pages
+// Includes: navigation, breadcrumbs, post content, sidebar widgets.
+// Compiled output: public/assets/styles/post.css
 // ─────────────────────────────────────────────────────────────────────────────
 @use 'layout/navigation';
-@use 'layout/segment';
-@use 'components/blog';
 @use 'layout/breadcrumbs';
+@use 'components/__old_post';
+@use 'components/share';
+@use 'components/__old_widgets';

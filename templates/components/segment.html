@@ -11,8 +11,8 @@
         {{ <segment.plain pos={pos} /> }}
       {% elif section_type == "category" %}
         {{ <segment.category pos={pos} preview={true} limit={home_items_limit} /> }}
-      {% elif section_type == "blog" or section_type == "projects" %}
-        {{ <segment.blog pos={pos} preview={true} limit={home_items_limit} /> }}
+      {% elif section_type == "posts" %}
+        {{ <segment.posts pos={pos} preview={true} limit={home_items_limit} /> }}
       {% else %}
         {{ <debug.print object={"Unknown section type: " ~ pos.extra.type} /> }}
         {{ <debug.print object={pos} /> }}
@@ -69,7 +69,7 @@
   </section>
 {% endcomponent segment.category %}
 
-{% component segment.blog(pos, preview=false, limit=3) %}
+{% component segment.posts(pos, preview=false, limit=3) %}
   {% if not preview %}
     {{ <render.breadcrumbs crumbs={pos.components} /> }}
   {% endif %}
@@ -77,8 +77,8 @@
   {# Theme drafts remain buildable at their URL but never consume listing slots. #}
   {% set_global entries = [] %}
   {% for entry in pos.pages %}
-    {% set project = entry.extra.project | default(value={}) %}
-    {% if not project.draft %}
+    {% set post = entry.extra.post | default(value={}) %}
+    {% if not post.draft %}
       {% set_global entries = [...entries, entry] %}
     {% endif %}
   {% endfor %}
@@ -105,9 +105,4 @@
       <div class="container"><p class="listing__more"><a href="{{ pos.permalink }}">View all {{ pos.title | lower }} <i class="bi bi-arrow-right" aria-hidden="true"></i></a></p></div>
       {% endif %}
   </section>
-{% endcomponent segment.blog %}
-
-{# Existing sites can keep their section type; both types use the same list. #}
-{% component segment.projects(pos, preview=false, limit=3) %}
-  {{ <segment.blog pos={pos} preview={preview} limit={limit} /> }}
-{% endcomponent segment.projects %}
+{% endcomponent segment.posts %}

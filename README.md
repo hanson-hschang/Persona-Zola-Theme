@@ -14,7 +14,7 @@
 <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fhanson-hschang.github.io%2FPersona-Zola-Theme">
 <img alt="GitHub Release" src="https://img.shields.io/github/v/release/hanson-hschang/Persona-Zola-Theme">
 
-[Demo](https://hanson-hschang.github.io/Persona-Zola-Theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Academic Projects](docs/academic-projects.md) • [Citation](#-citation-pipeline) • [Architecture](ARCHITECTURE.md) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
+[Demo](https://hanson-hschang.github.io/Persona-Zola-Theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Posts](docs/posts.md) • [Citation](#-citation-pipeline) • [Architecture](ARCHITECTURE.md) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
 
 </div>
 
@@ -24,9 +24,9 @@
 - 📱 **Fully Responsive**: Optimized for desktop, tablet, and mobile devices
 - ⚡️ **Fast Performance**: Lightweight and optimized for speed
 - 📋 **Resume/CV**: Dedicated page for your resume or CV *(--upcoming feature--)*
-- 🎭 **Portfolio Showcase**: Showcase your work with elegant project cards *(--upcoming feature--)*
-- 🔬 **Academic Project Pages**: Research landing pages with authors, resource links, media galleries, posters, and copyable BibTeX
-- 📝 **Blog with $\TeX$ and Citations**: Built-in blog functionality with equation and bibliography support
+- 🎭 **Portfolio Showcase**: Showcase your work with article previews and optional thumbnails
+- 🔬 **Research Posts**: Research landing pages with authors, resource links, media galleries, posters, and copyable BibTeX
+- 📝 **Posts with $\TeX$ and Citations**: Built-in article functionality with equation and bibliography support
 - 📧 **Contact Forms**: Integrated contact form email support
 - 🔍 **Search Ready**: Built-in search index generation *(--upcoming feature--)*
 
@@ -101,10 +101,8 @@ git submodule update --init --recursive
 
 The theme supports three main segment types:
 - **Plain segments** (for static text content like about)
-- **Category segments** (for portfolios, projects, showcases)
-- **Blog segments** (shared lists for blog posts, articles, and academic project pages)
-
-The `projects` segment type remains available as an alias for the shared blog list.
+- **Category segments** (for portfolios and grouped sections)
+- **Post segments** (article lists with optional thumbnails, dates, and subtitles)
 
 <details>
 <summary>
@@ -122,7 +120,7 @@ icon_class = "bi bi-file-earmark-text"
 # Display order (lower numbers appear first)
 order = 1
 # Segment type determines rendering approach
-# options include "plain", "category", or "blog" ("projects" is a blog alias)
+# options include "plain", "category", or "posts"
 type = "plain"  
 +++
 ```
@@ -146,18 +144,18 @@ After completing the setup, build and serve your site with Zola:
 > [!NOTE]
 > If you are using the [Citation Pipeline](#-citation-pipeline), use `make build` and `make serve` instead to also process `.src.md` files.
 
-### Articles and Academic Project Pages
+### Posts and Articles
 
-Use `project.html` as the common layout for blog articles and research projects. Set `template = "project.html"` on a page, or `page_template = "project.html"` on its parent section. Tags, publication date, estimated reading time, and Share appear beneath the title. Add optional research details under `[extra.project]`; write the main article in Markdown below the front matter. The earlier `post.html` remains available for compatibility.
+Use `post.html` as the common layout for all posts and articles. Set `template = "post.html"` on a page, or `page_template = "post.html"` on its parent section. Tags appear with the title; publication date, estimated reading time, and Share sit in a full-width metadata row after the author byline and before the resources. Add optional research details under `[extra.post]`; write the main article in Markdown below the front matter. The former blog layout is archived under filenames prefixed with `__old_` and is no longer used.
 
 ```toml
 +++
-title = "Your research project"
+title = "Your research post"
 description = "A short summary for search results and link previews."
 date = 2026-09-21
-template = "project.html"
+template = "post.html"
 
-[extra.project]
+[extra.post]
 subtitle = "A concise statement of the contribution"
 venue = "Conference 2026"
 authors = [{ name = "Alex Researcher", affiliations = "1" }]
@@ -171,24 +169,24 @@ abstract = "Explain the research question, approach, and findings."
 Describe your work here.
 ```
 
-Use a page bundle such as `content/maps/public-self/my-project/index.md` and put its images and PDFs alongside it. Existing articles can use this layout without adding any research fields or changing their URLs. Relative resource paths follow the rendered page URL; `/` paths respect the site's configured base URL, including deployment subpaths.
+Use a page bundle such as `content/maps/public-self/my-post/index.md` and put its images and PDFs alongside it. Existing articles can use this layout without adding any research fields or changing their URLs. Relative resource paths follow the rendered page URL; `/` paths respect the site's configured base URL, including deployment subpaths.
 
-The [academic project guide](docs/academic-projects.md) covers every field, reusable media components, and URL rules. The [Field Notes example](content/maps/public-self/field-notes/index.md) in [Public Self](content/maps/public-self/_index.md) provides a complete starting point. The layout and Sass are original Persona implementations, using the theme's existing typography, colors, spacing, and breakpoints.
+The [post guide](docs/posts.md) covers every field, reusable media components, and URL rules. The [Field Notes example](content/maps/public-self/field-notes/index.md) in [Public Self](content/maps/public-self/_index.md) provides a complete starting point. The layout and Sass are original Persona implementations, using the theme's existing typography, colors, spacing, and breakpoints.
 
-Use `type = "blog"` in the parent section's `[extra]` table to list posts and projects with the shared entry template. The home page shows up to three items in each list and links to the complete section when more are available. This limit applies to category subsection cards and blog/project entry lists. Change it in your site's `config.toml`:
+Use `type = "posts"` in the parent section's `[extra]` table to list articles with the shared entry template. The home page shows up to three items in each list and links to the complete section when more are available. This limit applies to category subsection cards and post entry lists. Change it in your site's `config.toml`:
 
 ```toml
 [extra.persona]
 home_items_limit = 3
 ```
 
-The default is `3` when the setting is omitted or negative. Set it to `0` to show only the **View all** link for each nonempty collection. Full section pages remain unlimited. Set each page's `[extra.project].thumbnail` to a colocated image, or let the listing use its teaser image (or video poster). See the guide for the section setup and ordering.
+The default is `3` when the setting is omitted or negative. Set it to `0` to show only the **View all** link for each nonempty collection. Full section pages remain unlimited. Set each page's `[extra.post].thumbnail` to a colocated image, or let the listing use its teaser image (or video poster). See the guide for the section setup and ordering.
 
-Projects and blog posts share one entry template with optional thumbnails, dates, and subtitles. The top-level `date` appears on project pages as well as in their lists. Set `subtitle` under `[extra.project]` or `[extra]` to show it on both the detail page and its list entry. Existing `thumbnail`, `thumbnail_alt`, tags, and `[extra.tex.macros]` settings continue to work. Related Projects automatically shows up to five other listed articles from the same section; use `[extra.project].related` for a custom list, or `related = []` to hide it.
+All posts use one entry template with optional thumbnails, dates, and subtitles. The top-level `date` appears on post pages as well as in their lists. Set `subtitle` under `[extra.post]` or `[extra]` to show it on both the detail page and its list entry. Existing `thumbnail`, `thumbnail_alt`, tags, and `[extra.tex.macros]` settings continue to work. Related Posts automatically shows up to five other listed articles from the same section; use `[extra.post].related` for a custom list, or `related = []` to hide it.
 
-The project layout supports the same `[@cite-key]` preprocessing and KaTeX macros as the blog layout. The generated **Bibliography** follows the optional **Citation** section containing this article's BibTeX. See the [citation and mathematics example](content/maps/private-soul/citation-pipeline-guide/index.src.md).
+The unified post layout supports `[@cite-key]` preprocessing and KaTeX macros. The generated **Bibliography** follows the optional **Citation** section containing this article's BibTeX. See the [citation and mathematics example](content/maps/private-soul/citation-pipeline-guide/index.src.md).
 
-To keep a project accessible by its URL but hide it from automatic home-page, blog/project, taxonomy, and Recent Posts lists, set `draft = true` under `[extra.project]` in its Markdown front matter. Omit it or set it to `false` to list the project. Use this theme flag rather than Zola's top-level draft flag, which excludes a page from normal builds.
+To keep a post accessible by its URL but hide it from automatic home-page, post, taxonomy, and Related Posts lists, set `draft = true` under `[extra.post]` in its Markdown front matter. Omit it or set it to `false` to list the post. Use this theme flag rather than Zola's top-level draft flag, which excludes a page from normal builds.
 
 ## 📚 Citation Pipeline
 
@@ -207,7 +205,7 @@ It integrates seamlessly with the site workflow, so you can focus on content rat
 - Store your references in the `references.bib` file in the same directory as your post
 - A build script processes the source files and converts them into final Markdown file `.md` with formatted citations  
 - The output is ready for rendering without any additional steps  
-- `project.html` places generated references after the optional BibTeX Citation section; `post.html` remains supported
+- `post.html` places generated references after the optional BibTeX Citation section
 
 ### Setup
 
@@ -300,7 +298,7 @@ This pipeline is ideal for writing technical, research-oriented, or reference-he
 - [**OpenAI**](https://openai.com/) - [ChatGPT](https://chat.openai.com/) • [Codex](https://openai.com/codex/)
 - [**BootstrapMade Templates**](https://bootstrapmade.com/) - [Active](https://bootstrapmade.com/demo/Active) • [MyResume](https://bootstrapmade.com/demo/MyResume) • [UpConstruction](https://bootstrapmade.com/demo/UpConstruction)
 - [**Zola Themes**](https://www.getzola.org/themes/) - [Mabuya](https://mabuya.vercel.app/) • [Vonge](https://pascal-berrang.de/vonge-zola-theme/) • [Zluinav](https://harrymkt.github.io/zluinav/)
-- [**Academic Project Page Template**](https://github.com/eliahuhorwitz/Academic-project-page-template) - Feature inspiration for academic project pages; Persona's layout, styling, and interactions are implemented independently
+- [**Academic Project Page Template**](https://github.com/eliahuhorwitz/Academic-project-page-template) - Feature inspiration for research posts; Persona's layout, styling, and interactions are implemented independently
 
 
 ---
