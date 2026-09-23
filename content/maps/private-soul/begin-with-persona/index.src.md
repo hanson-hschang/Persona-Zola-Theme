@@ -1,4 +1,5 @@
 +++
+template = "project.html"
 title = 'Begin with Persona'
 date = 2025-03-17
 draft = false

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # -----------------------------------------------------------------------------
 # SCRIPT: watch.sh
-# DESCRIPTION: Monitors the content/ folder for changes and triggers build.sh.
+# DESCRIPTION: Monitors content and preprocessing dependencies for changes.
 #              Uses 'watchexec' for high-performance recursive monitoring.
 #
 # USAGE: 
@@ -28,10 +28,10 @@ echo "  [MONITORING] $WATCH_DIR/"
 echo "  [TRIGGER]    $BUILD_SCRIPT"
 
 # watchexec flags:
-#   --watch:  Watch the content directory
+#   --watch:  Watch content, scripts, config, and available CSL directories
 #   --filter: Glob patterns for files that trigger a rebuild.
-#             "**/*.src.md" and "**/*.bib" are used so only source and
-#             bibliography changes fire the build.  Generated *.md output files
+#             Source, bibliography, style, and pipeline changes fire the build.
+#             Generated *.md output files
 #             never match these patterns, preventing an infinite rebuild loop.
 #             NOTE: --exts cannot be used here because watchexec treats only the
 #             last segment after the final dot as the "extension", so a file like
@@ -39,12 +39,26 @@ echo "  [TRIGGER]    $BUILD_SCRIPT"
 #             a glob pattern is the correct approach.
 #   --clear:  Clear the screen on each rebuild (keeps things tidy)
 #   --shell:  Run the command inside a bash shell
-#   --postpone: Skips the initial run and waits for the first file event.
+
+watch_args=(--watch "$WATCH_DIR" --watch "$SCRIPT_DIR")
+for dependency_file in config.toml themes/persona/theme.toml themes/persona/config.toml; do
+    if [[ -f "$dependency_file" ]]; then
+        watch_args+=(--watch "$dependency_file")
+    fi
+done
+for dependency_dir in citation-style themes/persona/citation-style; do
+    if [[ -d "$dependency_dir" ]]; then
+        watch_args+=(--watch "$dependency_dir")
+    fi
+done
 
 watchexec \
-    --watch "$WATCH_DIR" \
+    "${watch_args[@]}" \
     --filter "**/*.src.md" \
     --filter "**/*.bib" \
+    --filter "**/*.csl" \
+    --filter "**/*.sh" \
+    --filter "**/*.toml" \
     --clear \
     --shell bash \
     "$BUILD_SCRIPT"

@@ -1,8 +1,8 @@
 # Academic project pages
 
-Persona's `project.html` template presents a paper or research project using the theme's existing design tokens and an original layout. It includes a research header, authors and affiliations, resource links, a teaser, article content, galleries, an embedded presentation, a PDF poster, and BibTeX. Each optional section appears only when configured.
+Persona's `project.html` is the shared article layout for blog posts and research projects, using the theme's existing design tokens and an original layout. It includes tags, publication date, estimated reading time, Share, citations, and mathematics. Optional research features include authors and affiliations, resource links, a teaser, galleries, an embedded presentation, a PDF poster, and BibTeX. Each optional section appears only when configured; an ordinary article needs no `[extra.project]` table.
 
-See the [Field Notes example](../content/maps/public-self/field-notes/index.md) in [Public Self](../content/maps/public-self/_index.md). Copy the example directory into a blog section such as your site's `content/maps/public-self/` directory, replace the text and assets, and run `zola serve`. The explicit `template = "project.html"` selects the project layout while its listing is shared with ordinary posts. Zola 0.23+ is required, as with the rest of Persona.
+See the [Field Notes example](../content/maps/public-self/field-notes/index.md) in [Public Self](../content/maps/public-self/_index.md). Copy the example directory into a blog section such as your site's `content/maps/public-self/` directory, replace the text and assets, and run `zola serve`. The demo sections default to `project.html`, and an explicit `template = "project.html"` also works. The former `post.html` template remains available for compatibility. Zola 0.23+ is required, as with the rest of Persona.
 
 ## Page setup
 
@@ -32,7 +32,7 @@ Project pages can share a section with blog posts. For example, `content/maps/pu
 +++
 title = "Public Self"
 sort_by = "date"
-page_template = "post.html"
+page_template = "project.html"
 
 [extra]
 type = "blog"
@@ -40,7 +40,7 @@ order = 10
 +++
 ```
 
-This creates a complete mixed listing at `/maps/public-self/`. Keep `template = "project.html"` on each research page to override the section's default post template. Projects, blog posts, and taxonomy page lists use the same `render.post_entry(page)` template and shared styles. Each entry can display a thumbnail on the left, a title and date, a subtitle below the title, and a description. The image and text form one link. Section Markdown, if supplied, appears above the entries. Existing sections using `type = "projects"` remain supported as an alias for the shared blog list.
+This creates a complete listing at `/maps/public-self/` and uses the shared article layout for its pages. Projects, blog posts, and taxonomy page lists use the same `render.post_entry(page)` template and shared styles. Each entry can display a thumbnail on the left, a title and date, a subtitle below the title, and a description. The image and text form one link. Section Markdown, if supplied, appears above the entries. Existing sections using `type = "projects"` remain supported as an alias for the shared blog list.
 
 For this date-sorted section, give **every page** a top-level `date` to list newest first. Zola excludes pages without dates from a section sorted by date. Alternatively, use `sort_by = "weight"` and give every page a `weight`; lower values appear first. Both posts and projects follow the section's ordering.
 
@@ -71,7 +71,27 @@ Thumbnails follow the resource URL rules below. If `extra.project.thumbnail` is 
 
 The top-level `date` appears below the project title/subtitle on the detail page and beside the title in listings. Omit it to hide the date. Project subtitles appear on both the detail page and listings; `extra.project.subtitle` takes precedence over `extra.subtitle`.
 
-Blog posts use the same optional listing fields under `[extra]`: `subtitle`, `thumbnail`, and `thumbnail_alt`. A blog subtitle also appears below the title on its detail page. Use the top-level `description` or the existing `extra.excerpt` for a separate summary. Thumbnails are optional for either kind of entry.
+Existing optional fields under `[extra]` remain supported: `subtitle`, `thumbnail`, and `thumbnail_alt`. A subtitle also appears below the title on the detail page. Use the top-level `description` or the existing `extra.excerpt` for a separate summary. Thumbnails are optional; an `extra.thumbnail` also supplies the article's hero image when no project teaser is configured.
+
+### Tags, metadata, citations, and mathematics
+
+Keep tags in the standard `[taxonomies]` table and the date at the top level. The article header shows linked tags, the publication date, an estimated reading time, and a Share menu. It has no Save action. The same metadata components serve the legacy blog template.
+
+```toml
+date = 2026-09-21
+
+[taxonomies]
+tags = ["research", "mathematics"]
+
+[extra.tex.macros]
+'\Real' = '\mathbb{R}^{#1}'
+```
+
+Use `$x \in \Real{n}$` for inline mathematics and `$$ ... $$` for display mathematics. Adding `[extra.tex.macros]` enables KaTeX, including page-specific macros. An empty `[extra.tex]` table enables mathematics without custom macros.
+
+For citations, author `index.src.md` using `[@citation-key]`, place `references.bib` beside it, and run the [citation pipeline](../README.md#-citation-pipeline) before building with Zola. Optional `[extra].bibliography` and `[extra].citation_style` keep their existing behavior. The preprocessor inserts a `<!-- persona-bibliography -->` boundary before its generated references, allowing the article to place **Bibliography** after the optional **Citation** section. Citation displays `[extra.project].bibtex` for readers who want to cite this article; Bibliography lists works cited in its text. Existing generated references without the marker remain supported.
+
+The [Citation Pipeline Guide source](../content/maps/private-soul/citation-pipeline-guide/index.src.md) demonstrates citations, macro-based mathematics, and a sample BibTeX record together. Rebuild generated `.md` files after editing source, bibliography, CSL, or pipeline scripts. No source conversion is needed for an ordinary Markdown article without Pandoc citations.
 
 ### Draft projects with accessible URLs
 
@@ -116,13 +136,13 @@ All fields below belong to `[extra.project]` unless another location is shown. O
 | `gallery_title` | String | Gallery heading; defaults to `Results gallery`. |
 | `video` | Embed table | Embedded video after the gallery. |
 | `poster` | Poster table | PDF viewer and a direct link after the video. |
-| `related` | Array of related-work tables | Blog-style sidebar widget below On this page on the left; below the article and citation on screens narrower than 992px. |
+| `related` | Array of related-work tables | Related Projects widget below On this page on the left; below the article on screens narrower than 992px. When omitted, shows up to five other listed pages from the parent section. Set `[]` to hide it. |
 | `bibtex` | String | Literal BibTeX displayed in a code block with a copy button. |
 | `paper` | URL string | PDF URL for `citation_pdf_url` metadata. Add a resource link separately to show a Paper button. |
 | `doi` | String | DOI for citation metadata. |
 | `social_image` | URL string | Open Graph image; enables the large-image Twitter card. |
 
-The main Markdown content appears after the abstract and before the gallery. Its top-level table-of-contents headings appear in `On this page`, alongside configured sections. Avoid custom heading IDs beginning with `project-`, which are reserved for the template.
+The main Markdown content appears after the abstract and before the gallery. Its top-level table-of-contents headings appear in `On this page`, alongside configured sections. JavaScript also adds headings from Pandoc-generated HTML. Bibliography appears after Citation, with its original citation anchors preserved. Avoid custom heading IDs beginning with `project-`, which are reserved for the template.
 
 Project pages use the same responsive container widths as blog posts: 540px from 576px, 720px from 768px, 960px from 992px, 1140px from 1200px, and 1320px from 1400px. Below 576px, the container fills the available width with space at both edges.
 

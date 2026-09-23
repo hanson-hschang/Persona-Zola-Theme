@@ -56,8 +56,8 @@ It serves as a guide for contributors to understand how the theme is structured 
 │   ├── index.html                    # Home page template
 │   ├── section.html                  # Section page template
 │   ├── page.html                     # Single page template
-│   ├── post.html                     # Blog post template
-│   ├── project.html                  # Academic project template
+│   ├── post.html                     # Legacy blog post template
+│   ├── project.html                  # Shared article / academic project template
 │   ├── 404.html                      # Error page template
 │   ├── components/                   # Tera 2 reusable components
 │   ├── partials/                     # Reusable template partials
@@ -96,22 +96,24 @@ Located in `templates/` root:
   - For standalone pages
   - Plain content rendering
 
-- **post.html**: Post template
-  - Dedicated template for blog and portfolio posts
+- **post.html**: Legacy post template
+  - Retained for compatibility; existing demo and site articles now use `project.html`
   - Includes breadcrumbs, widgets, metadata
   - Supports KaTeX for mathematical expressions
   - Loads `citations.css` for Pandoc citeproc output
 
-- **project.html**: Academic project template
-  - Selected with `template = "project.html"`; reads optional `page.extra.project` data
+- **project.html**: Shared article and academic project template
+  - Selected with `template = "project.html"` or the section's `page_template`; reads optional `page.extra.project` data
+  - Reuses linked tags, publication date, reading time, and Share components from the blog layout; no Save action
   - Renders authors, affiliations, resource links, teaser, abstract, article, gallery, video, poster, and BibTeX
+  - Separates Pandoc's appended bibliography at `<!-- persona-bibliography -->` and renders it after the BibTeX Citation section, preserving all citation anchors; legacy `<div id="refs">` output is also supported
   - Generates page metadata and scholarly citation tags
   - Inherits standard navigation and mobile toggle, with breadcrumbs based on section ancestry
-  - Displays optional related-work links in a shared sidebar widget below the left contents navigation; below the content under the `lg` breakpoint
+  - Displays related-work links below the left contents navigation; below the content under the `lg` breakpoint. Defaults to up to five other listed pages from the parent section; explicit `project.related` overrides the list and `[]` disables it
   - Overrides the base `preloader` block so research content is available without JavaScript
-  - Loads `page-project.css`, AOS, `home.js`, and `project.js`; retains shared footer and conditional KaTeX support
+  - Loads `page-project.css`, `citations.css`, AOS, `home.js`, `share.js`, and `project.js`; retains shared footer and conditional KaTeX support with the existing `[extra.tex.macros]` configuration
   - See the [front matter and component guide](docs/academic-projects.md)
-  - The [Field Notes example](content/maps/public-self/field-notes/index.md) lives alongside ordinary posts in Public Self; its explicit template overrides that section's default post template
+  - The [Field Notes example](content/maps/public-self/field-notes/index.md) lives in Public Self; both demo article sections default to this layout
 
 - **404.html**: Error page template
   - Custom 404 not found page
@@ -124,6 +126,7 @@ Tera 2 components are globally registered by component name. They do not need im
 
 - **render.html**: Core rendering utilities
   - `render.post_entry(page)`: Shared blog, project, and taxonomy page entries, with optional thumbnail, date, subtitle, and description
+  - `render.article_tags(page)` and `render.article_meta(page)`: Shared article tags and metadata / sharing controls for both layouts
   - `render.section_title`: Renders section titles
   - `render.text_content`: Renders text content
   - `render.cards`: Renders card layouts
@@ -261,6 +264,7 @@ Each template loads only the CSS it needs:
 | `post.html` | `post.css` | navigation, breadcrumbs, post, widgets |
 | `post.html` | `citations.css` | Pandoc citation and bibliography styles |
 | `project.html` | `page-project.css` | variables, navigation, breadcrumbs, sidebar widgets, project layout/media, custom |
+| `project.html` | `citations.css` | Pandoc citation and bibliography styles |
 | `page.html` | `page-plain.css` | navigation, segment, plain |
 | `404.html` | `page-404.css` | navigation, segment, plain, contact |
 
@@ -301,9 +305,14 @@ JavaScript files in `static/assets/script/`:
   - Enables BibTeX clipboard copying with selection and status-message fallback
   - Adds gallery navigation, keyboard controls, and announced slide positions
   - Respects reduced-motion preferences and pauses videos on inactive slides
+  - Builds the contents navigation from Pandoc HTML headings and highlights the current section as the reader scrolls
   - Uses native browser APIs; project content, PDF links, video controls, and gallery scrolling remain available without JavaScript
 
 ## Development Workflow
+
+For citation-enabled content, author `.src.md` and run `bash scripts/build.sh` before Zola. `scripts/process_post.sh` preserves front matter and mathematical expressions, resolves the bibliography and CSL, runs Pandoc citeproc, moves the bibliography heading inside the references container, and inserts the stable bibliography boundary used by `project.html`. Generated `.md` files remain ordinary Zola content; `post.html` ignores the marker as an HTML comment.
+
+The incremental build checks source files, preprocessing scripts, configuration, and bibliography/CSL dependencies. `scripts/watch.sh` watches these inputs while excluding generated Markdown to avoid rebuild loops. When calling the pipeline from an installed theme, use `bash themes/persona/scripts/build.sh` from the site root. Existing article URLs, taxonomy data, and math macros are unaffected by changing their template.
 
 1. **Check theme**: `zola check`
 2. **Build**: `zola build`

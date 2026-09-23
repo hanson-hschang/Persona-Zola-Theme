@@ -1,4 +1,5 @@
 +++
+template = "project.html"
 title = 'How to Use Citation in Persona'
 date = 2025-03-19
 draft = false
@@ -11,6 +12,19 @@ A practical guide for writing citation-enabled posts in Persona with Pandoc and 
 """
 citation_style = "apa"
 bibliography = "references.bib"
+
+[extra.tex.macros]
+'\Real' = '\mathbb{R}^{#1}'
+'\norm' = '\left\lVert #1 \right\rVert'
+
+[extra.project]
+bibtex = '''
+@misc{persona_citation_guide,
+  title = {How to Use Citation in Persona},
+  year = {2025},
+  note = {Demonstration guide for the Persona theme; not a research publication}
+}
+'''
 +++
 
 <p>Persona supports <code>[@cite]</code> through a Pandoc preprocessing pipeline. This post is the working example for authoring and building citation-enabled content <span class="citation" data-cites="zolathemes">(<a href="#ref-zolathemes" role="doc-biblioref">Zola themes</a>)</span>.</p>
@@ -38,22 +52,33 @@ bibliography = "references.bib"
 <li><code>citation_style = "apa"</code></li>
 <li><code>bibliography = "references.bib"</code></li>
 </ul>
+<h2 id="mathematics-and-latex-macros">Mathematics and LaTeX macros</h2>
+<p>Project articles use the same KaTeX configuration as the original blog layout. Define reusable macros with TOML literal strings so backslashes are preserved:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode toml"><code class="sourceCode toml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[extra.tex.macros]</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="dt">&#39;\Real&#39;</span> <span class="op">=</span> <span class="st">&#39;</span><span class="vs">\mathbb{R}^{#1}</span><span class="st">&#39;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="dt">&#39;\norm&#39;</span> <span class="op">=</span> <span class="st">&#39;</span><span class="vs">\left\lVert #1 \right\rVert</span><span class="st">&#39;</span></span></code></pre></div>
+<p>For a vector <span class="math inline">\(x \in \Real{n}\)</span>, the Euclidean norm is</p>
+<p><span class="math display">\[
+\norm{x}_2 = \sqrt{\sum_{i=1}^{n} x_i^2}.
+\]</span></p>
+<p>Write inline mathematics between <code>$</code> delimiters and display mathematics between <code>$$</code> delimiters. Pandoc preserves the expressions for KaTeX, including these page-specific macros. Citation references and mathematics can appear together in the same article <span class="citation" data-cites="zolathemes">(<a href="#ref-zolathemes" role="doc-biblioref">Zola themes</a>)</span>.</p>
 <h2 id="build-and-serve">Build and serve</h2>
 <ul>
 <li><p>Generate <code>*.md</code> from all <code>*.src.md</code> files:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/build.sh</span></code></pre></div></li>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/build.sh</span></code></pre></div></li>
 <li><p>Live rebuild + local server:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># In one terminal, watch for changes and rebuild:</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/watch.sh</span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># In a separate terminal, serve with Zola:</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">zola</span> serve</span></code></pre></div></li>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># In one terminal, watch for changes and rebuild:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/watch.sh</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># In a separate terminal, serve with Zola:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">zola</span> serve</span></code></pre></div></li>
 </ul>
 <h2 id="citation-style-resolution-order">Citation style resolution order</h2>
 <p>Priority from highest to lowest:</p>
 <ol type="1">
 <li>Post frontmatter: <code>[extra] citation_style = "..."</code></li>
+<li>A local <code>style.csl</code> beside the source file</li>
 <li>Site-level <code>config.toml</code> <code>[extra.persona].citation_style</code></li>
-<li>Theme config <code>themes/persona/config.toml</code> <code>[extra.persona].citation_style</code></li>
+<li>Theme metadata <code>themes/persona/theme.toml</code> <code>[extra].citation_style</code>, or theme config <code>themes/persona/config.toml</code> <code>[extra.persona].citation_style</code></li>
 </ol>
 <p>Bundled styles in <code>citation-style/</code>: <code>ieee</code>, <code>apa</code>. Custom styles can be added by placing <code>.csl</code> files in <code>citation-style/</code> and referencing them in frontmatter.</p>
 <h2 id="output-and-styling">Output and styling</h2>
@@ -65,7 +90,8 @@ bibliography = "references.bib"
 <li><code>.csl-left-margin</code></li>
 <li><code>.csl-right-inline</code></li>
 </ul>
-<p>Inline citations anchor to bibliography entries, and the bibliography heading is rendered inside the refs container as “Bibliography”.</p>
+<p>Inline citations anchor to bibliography entries, and the bibliography heading is rendered inside the refs container as “Bibliography”. The project layout places that bibliography after the optional <strong>Citation</strong> section. Citation contains BibTeX for this article; Bibliography contains the works cited in its text. This guide includes a clearly labeled demonstration BibTeX record so both sections can be viewed together.</p>
+<!-- persona-bibliography -->
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
 <h2 class="unnumbered" id="bibliography">Bibliography</h2>
 <div id="ref-zolathemes" class="csl-entry" role="listitem">

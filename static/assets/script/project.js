@@ -5,6 +5,32 @@
   const sidebar = project?.querySelector('.project__sidebar-inner');
   const related = project?.querySelector('.project__related');
 
+  // Pandoc emits raw HTML headings, which Zola cannot include in page.toc.
+  // Rebuild the prose portion from the rendered headings so both authoring
+  // paths have the same outline and the same scroll-spy behavior.
+  const proseEnd = project?.querySelector('[data-prose-toc-end]');
+  const prose = project?.querySelector('.project__prose');
+  if (proseEnd && prose) {
+    const headings = Array.from(prose.querySelectorAll('h1, h2'));
+    if (headings.length) {
+      project.querySelectorAll('[data-prose-heading]').forEach((item) => item.remove());
+      headings.forEach((heading, index) => {
+        if (!heading.id) {
+          let id = `article-section-${index + 1}`;
+          while (document.getElementById(id)) id += '-section';
+          heading.id = id;
+        }
+        const item = document.createElement('li');
+        item.dataset.proseHeading = '';
+        const link = document.createElement('a');
+        link.href = `#${encodeURIComponent(heading.id)}`;
+        link.textContent = heading.textContent.trim();
+        item.append(link);
+        proseEnd.before(item);
+      });
+    }
+  }
+
   if (sidebar && related) {
     // Move one widget into the sticky group on desktop, restoring its original
     // reading/tab order below the article on small screens.

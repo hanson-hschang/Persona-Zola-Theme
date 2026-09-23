@@ -2,7 +2,8 @@
 """Build project fixtures in isolation: python3 tests/test_projects.py.
 
 Requires Zola 0.23+. Uses only the Python standard library and skips external
-link checks. Media fixtures test generated markup and URLs, not playback.
+link checks. Pandoc enables the citation-pipeline fixtures. Media fixtures test
+generated markup and URLs, not playback.
 """
 
 import json
@@ -13,6 +14,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from urllib.parse import parse_qs, urlparse
 
 
 THEME = Path(__file__).resolve().parents[1]
@@ -256,6 +258,8 @@ date = 2025-03-04
 slug = "ignored-slug"
 path = "research/custom-output"
 template = "project.html"
+[taxonomies]
+tags = ["Research & Methods", "Equations"]
 [extra.project]
 kind = "Research project"
 venue = "Example Conference 2025"
@@ -300,6 +304,75 @@ The project body supports normal Markdown.
         cls.write("content/test-full/paper.pdf", "%PDF-1.4\nstructural PDF fixture")
         cls.write("content/test-full/poster.pdf", "%PDF-1.4\nstructural PDF fixture")
         cls.write("content/test-full/captions.vtt", "WEBVTT\n\n00:00.000 --> 00:01.000\nCaption.\n")
+        cls.pandoc = shutil.which("pandoc")
+        if cls.pandoc:
+            for folder, has_bibtex in (("test-citations", True),
+                                       ("test-references-only", False)):
+                citation = 'bibtex = "@article{this-project, title={This project}}"' if has_bibtex else ""
+                cls.write(f"content/{folder}/index.src.md", r'''+++
+title = "Citation and math fixture"
+date = 2025-04-05
+template = "project.html"
+[taxonomies]
+tags = ["Equations"]
+[extra]
+bibliography = "references.bib"
+[extra.tex.macros]
+'\RR' = '\mathbb{R}'
+[extra.project]
+gallery = [{ src = "/test-assets/shared.svg", alt = "Result after the prose" }]
+''' + citation + r'''
++++
+## Cited method
+
+This method builds on prior research [@fixture2025].
+Its domain is $x \in \RR$ and its display equation is:
+
+$$\int_0^1 x\,dx = \frac{1}{2}.$$
+
+### Implementation details
+
+A note preserves the original explanation.[^detail]
+
+[^detail]: This is the explanatory footnote.
+''')
+                cls.write(f"content/{folder}/references.bib", '''@article{fixture2025,
+  title = {A cited fixture for project pages},
+  author = {Example, Ada},
+  journal = {Journal of Reproducible Fixtures},
+  year = {2025}
+}
+''')
+                cls.process_source(folder)
+            cls.write("content/test-pandoc-without-references/index.src.md", '''+++
+title = "Pandoc without references"
+template = "project.html"
++++
+## Frontmatter example
+
+```toml
++++
+title = "An example inside the body"
++++
+```
+
+The explanation after the example must remain in the page.
+''')
+            cls.process_source("test-pandoc-without-references")
+        # Previously generated pages must remain usable until next preprocessing.
+        cls.write("content/test-legacy-bibliography.md", '''+++
+title = "Previously generated citation page"
+template = "project.html"
+[extra.project]
+bibtex = "@misc{legacy, title={Legacy project}}"
++++
+<h2 id="old-method">Old method</h2>
+<p>A <span class="citation" data-cites="old"><a href="#ref-old" role="doc-biblioref">citation</a></span>.</p>
+<div id="refs" class="references csl-bib-body" role="doc-bibliography">
+<h2 id="bibliography" class="unnumbered">Bibliography</h2>
+<div id="ref-old" class="csl-entry">Existing reference.</div>
+</div>
+''')
         for arguments in (("check", "--skip-external-links"),
                           ("build", "--base-url", BASE)):
             result = subprocess.run([zola, *arguments], cwd=cls.site, text=True,
@@ -341,6 +414,18 @@ The project body supports normal Markdown.
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(contents, encoding="utf-8")
 
+    @classmethod
+    def process_source(cls, folder):
+        result = subprocess.run([
+            "bash", str(THEME / "scripts/process_post.sh"),
+            str(cls.site / f"content/{folder}/index.src.md"),
+            str(THEME / "citation-style/ieee.csl"),
+            str(THEME / "citation-style"),
+        ], cwd=cls.site, text=True, stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT, timeout=60, check=False)
+        if result.returncode:
+            raise AssertionError(f"Pandoc project fixture failed:\n{result.stdout}")
+
     def document(self, output, directory="public"):
         return Document((self.site / directory / output / "index.html").read_text(encoding="utf-8"))
 
@@ -368,7 +453,7 @@ The project body supports normal Markdown.
         self.single(page, "h1", id="project-title")
         self.assertIn("Minimal project", page.text)
         self.assertFalse(page.with_class("project__byline"))
-        self.assertFalse(page.with_class("project__date"))
+        self.assertFalse(page.with_class("article-meta__date"))
         self.assertFalse(page.with_class("project__subtitle"))
         self.assertFalse(page.with_class("project__contents"))
         self.assertFalse(page.find(id="project-citation"))
@@ -438,6 +523,143 @@ The project body supports normal Markdown.
         self.assertFalse(page.find("img", src="x"))
         self.assertTrue(all("src" in script for script in page.find("script")))
         self.assertFalse(any("onerror" in attributes for _, attributes in page.elements))
+
+    def test_project_metadata_tags_and_share_are_integrated_without_bookmark(self):
+        page = self.document("research/custom-output")
+        metadata = page.with_class("article-meta")
+        self.assertEqual(len(metadata), 1)
+        self.single(page, "time", datetime="2025-03-04")
+        reading = page.with_class("article-meta__reading-time")
+        self.assertEqual(len(reading), 1)
+        self.assertRegex(page.text_content(reading[0]), r"\d+\s+min")
+        tags = page.with_class("article-tags")
+        self.assertEqual(len(tags), 1)
+        tag_links = [attrs["href"] for tag, attrs in page.descendants(tags[0]) if tag == "a"]
+        self.assertEqual(tag_links, [BASE + "tags/research-methods/", BASE + "tags/equations/"])
+        self.assertIn("research & methods", page.text_content(tags[0]).lower())
+        self.assertFalse(page.find(id="bookmark-button"))
+        self.assertFalse(any("bookmark" in attrs.get("aria-label", "").lower()
+                             for attrs in page.find("button")))
+        self.single(page, "script", src=BASE + "assets/script/share.js")
+        self.single(page, "link", href=BASE + "assets/stylesheet/citations.css")
+        toggle = self.single(page, "button", **{"data-share-toggle": None})
+        self.assertEqual(toggle.get("aria-expanded"), "false")
+        menu = self.single(page, "nav", id=toggle["aria-controls"])
+        self.assertNotIn("hidden", menu, "Share links must be usable without JavaScript")
+        links = [attrs for tag, attrs in page.descendants(menu) if tag == "a"]
+        twitter = next(link for link in links if "twitter.com/intent/tweet" in link["href"]
+                       or "x.com/intent" in link["href"])
+        query = parse_qs(urlparse(twitter["href"]).query)
+        self.assertEqual(query["url"], [FULL_URL])
+        self.assertEqual(query["text"], [TITLE])
+        self.assertTrue(any(link["href"] == FULL_URL for link in links))
+        self.assertFalse(self.document("test-minimal").with_class("article-tags"))
+
+    def assert_bibliography_at_end(self, page, preceding_section):
+        bibliography = self.single(page, "section", id="project-bibliography")
+        refs = self.single(page, "div", id="refs")
+        self.single(page, "h2", id="bibliography")
+        self.assertIn(("div", refs), page.descendants(bibliography))
+        body = page.with_class("project__body")[0]
+        sections = [attrs for tag, attrs in page.descendants(body)
+                    if tag == "section" and "project__section" in attrs.get("class", "").split()]
+        self.assertIs(sections[-1], bibliography)
+        previous = self.single(page, "section", id=preceding_section)
+        positions = {id(attrs): index for index, (_, attrs) in enumerate(page.elements)}
+        self.assertGreater(positions[id(bibliography)], positions[id(previous)])
+        prose = page.with_class("project__prose")[0]
+        self.assertNotIn(("div", refs), page.descendants(prose))
+        self.assertTrue(page.find("a", href="#project-bibliography"))
+        return refs
+
+    def test_citation_pipeline_preserves_math_macros_and_moves_references_after_citation(self):
+        if not self.pandoc:
+            self.skipTest("Pandoc is required for citation-pipeline fixtures")
+        for output, predecessor in (("test-citations", "project-citation"),
+                                    ("test-references-only", "project-results")):
+            with self.subTest(output=output):
+                generated = (self.site / "content" / output / "index.md").read_text(encoding="utf-8")
+                self.assertEqual(generated.count("<!-- persona-bibliography -->"), 1)
+                page = self.document(output)
+                refs = self.assert_bibliography_at_end(page, predecessor)
+                self.assertEqual(bool(page.find(id="project-citation")), output == "test-citations")
+                entry = self.single(page, "div", id="ref-fixture2025")
+                self.assertIn(("div", entry), page.descendants(refs))
+                self.assertIn("A cited fixture for project pages", page.text_content(entry))
+                self.assertTrue(page.find("a", href="#ref-fixture2025"))
+                self.assertNotIn("[@fixture2025]", page.text)
+                self.single(page, "h2", id="cited-method")
+                self.single(page, "h3", id="implementation-details")
+                self.assertEqual(len(page.with_class("project__contents")), 1)
+                self.single(page, "link", href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css")
+                self.single(page, "script", src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js")
+                self.single(page, "script", src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js")
+                initialization = [page.text_content(script) for script in page.find("script")
+                                  if "src" not in script]
+                self.assertEqual(len(initialization), 1)
+                macro_data = re.search(r"const katexMacros\s*=\s*(\{.*?\});", initialization[0])
+                self.assertIsNotNone(macro_data)
+                self.assertEqual(json.loads(macro_data[1]), {r"\RR": r"\mathbb{R}"})
+                self.assertIn(r"\RR", page.text_content(page.with_class("project__prose")[0]))
+                self.assertTrue(page.with_class("math"))
+                # Footnote references and backreferences retain their original IDs.
+                self.single(page, "li", id="fn1")
+                self.assertTrue(page.find("a", href="#fn1"))
+                self.assertTrue(page.find("a", href="#fnref1"))
+
+    def test_previous_citation_output_is_relocated_without_regenerating(self):
+        page = self.document("test-legacy-bibliography")
+        refs = self.assert_bibliography_at_end(page, "project-citation")
+        self.assertIn("Existing reference.", page.text_content(refs))
+        self.single(page, "div", id="ref-old")
+        self.assertTrue(page.find("a", href="#ref-old"))
+
+    def test_pandoc_without_references_preserves_frontmatter_examples(self):
+        if not self.pandoc:
+            self.skipTest("Pandoc is required for citation-pipeline fixtures")
+        page = self.document("test-pandoc-without-references")
+        self.assertFalse(page.find(id="project-bibliography"))
+        self.assertFalse(page.find(id="refs"))
+        code = page.find("code")
+        self.assertEqual(len(code), 1)
+        self.assertEqual(page.text_content(code[0]).strip(),
+                         '+++\ntitle = "An example inside the body"\n+++')
+        self.assertIn("The explanation after the example must remain in the page.", page.text)
+        self.single(page, "h2", id="frontmatter-example")
+
+    def test_related_projects_include_published_siblings_and_exclude_current_page(self):
+        page = self.document("research/nested-project")
+        related = self.single(page, "aside", **{"aria-labelledby": "project-related-title"})
+        links = [attrs["href"] for tag, attrs in page.descendants(related) if tag == "a"]
+        self.assertEqual(links, [BASE + "projects/" + name + "/" for name in
+                                ("renamed-image", "m-video", "b-no-image", "c-excerpt")])
+        self.assertEqual(page.text_content(self.single(page, "h2", id="project-related-title")),
+                         "Related Projects")
+
+        explicit = self.document("research/custom-output")
+        related = self.single(explicit, "aside", **{"aria-labelledby": "project-related-title"})
+        self.assertEqual([attrs["href"] for tag, attrs in explicit.descendants(related) if tag == "a"],
+                         [BASE + "test-minimal/"])
+
+    def test_migrated_theme_posts_use_project_layout_at_existing_urls(self):
+        for slug, title in (("begin-with-persona", "Begin with Persona"),
+                            ("citation-pipeline-guide", "How to Use Citation in Persona")):
+            output = "maps/private-soul/" + slug
+            with self.subTest(output=output):
+                page = self.document(output)
+                heading = self.single(page, "h1", id="project-title")
+                self.assertEqual(page.text_content(heading), title)
+                self.single(page, "link", rel="canonical", href=BASE + output + "/")
+                self.single(page, "article", id="project-main")
+                self.assertFalse(page.with_class("blog-post"))
+                self.assertEqual(len(page.with_class("article-meta")), 1)
+                self.assertTrue(page.with_class("article-tags"))
+                self.single(page, "section", id="project-bibliography")
+                self.single(page, "div", id="refs")
+                self.assertTrue(page.find("a", href="#ref-zolathemes"))
+                self.assertFalse(page.find(id="bookmark-button"))
+                if slug == "begin-with-persona":
+                    self.assertIn("From first installation to a personal website", page.text)
 
     def test_ordinary_page_keeps_base_defaults(self):
         page = self.document("test-ordinary")
@@ -608,11 +830,9 @@ The project body supports normal Markdown.
 
     def test_project_date_and_subtitle_are_consistent_between_detail_and_list(self):
         detail = self.document("research/nested-project")
-        date = detail.with_class("project__date")
+        date = detail.with_class("article-meta__date")
         self.assertEqual(len(date), 1)
-        times = [attrs for tag, attrs in detail.descendants(date[0]) if tag == "time"]
-        self.assertEqual(len(times), 1)
-        self.assertEqual(times[0]["datetime"], "2025-03-04")
+        self.assertEqual(date[0]["datetime"], "2025-03-04")
         self.assertIn("2025", detail.text_content(date[0]))
         self.assertEqual(detail.text_content(detail.with_class("project__subtitle")[0]), SUBTITLE)
         self.assertNotIn("Shared subtitle should be overridden", detail.text)
@@ -620,7 +840,7 @@ The project body supports normal Markdown.
         fallback = self.document("projects/renamed-image")
         self.assertEqual(fallback.text_content(fallback.with_class("project__subtitle")[0]),
                          "Shared project subtitle")
-        self.assertFalse(fallback.with_class("project__date"))
+        self.assertFalse(fallback.with_class("article-meta__date"))
 
         for output in ("", "projects"):
             with self.subTest(output=output):
