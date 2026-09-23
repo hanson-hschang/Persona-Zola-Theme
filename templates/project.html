@@ -20,6 +20,7 @@
     <meta name="author" content="{{ author.name }}">
     <meta name="citation_author" content="{{ author.name }}">
   {% endfor %}
+  {% if not project.authors %}<meta name="author" content="{{ config.author }}">{% endif %}
   {% if page.date %}<meta name="citation_publication_date" content="{{ page.date | date(format='%Y/%m/%d') }}">{% endif %}
   {% if project.venue %}<meta name="citation_conference_title" content="{{ project.venue }}">{% endif %}
   {% if project.doi %}<meta name="citation_doi" content="{{ project.doi }}">{% endif %}
@@ -28,6 +29,7 @@
 
 {% block extra_css %}
   <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/page-project.css') }}">
+  <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/citations.css') }}">
 {% endblock extra_css %}
 
 {% block header %}
@@ -40,6 +42,30 @@
 
 {% block main %}
   {% set project = page.extra.project | default(value={}) %}
+  {# Separate Pandoc's appended bibliography without changing citation anchors.
+     The fallback also supports pages generated before the marker was added. #}
+  {% set body_parts = page.content | split(pat="<!-- persona-bibliography -->") %}
+  {% set prose = body_parts | first %}
+  {% set bibliography = "" %}
+  {% if body_parts | length > 1 %}
+    {% set bibliography = body_parts | last %}
+  {% elif page.content is containing(pat='<div id="refs"') %}
+    {% set body_parts = page.content | split(pat='<div id="refs"') %}
+    {% set prose = body_parts | first %}
+    {% set references_tail = body_parts | last %}
+    {% set bibliography = '<div id="refs"' ~ references_tail %}
+  {% endif %}
+  {% set_global related = project.related | default(value=[]) %}
+  {% if project.related is not defined and page.ancestors %}
+    {% set parent = get_section(path=page.ancestors | last) %}
+    {% for entry in parent.pages %}
+      {% set entry_project = entry.extra.project | default(value={}) %}
+      {% if entry.permalink != page.permalink and not entry_project.draft and related | length < 5 %}
+        {% set_global related = [...related, {"title": entry.title, "url": entry.permalink, "date": entry.date}] %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  {% set has_contents = project.abstract or page.toc or project.gallery or project.video or project.poster or project.bibtex or bibliography or prose is containing(pat='<h1') or prose is containing(pat='<h2') %}
   {{ <render.breadcrumbs page={page} class_name="project-breadcrumbs" /> }}
   <article class="project container" id="project-main" aria-labelledby="project-title" tabindex="-1">
     <header class="project__hero">
@@ -50,7 +76,8 @@
         <h1 id="project-title">{{ page.title }}</h1>
         {% set subtitle = project.subtitle | default(value=page.extra.subtitle | default(value="")) %}
         {% if subtitle %}<p class="project__subtitle">{{ subtitle }}</p>{% endif %}
-        {% if page.date %}<p class="project__date"><i class="bi bi-calendar-event" aria-hidden="true"></i> <time datetime="{{ page.date | date(format='%Y-%m-%d') }}">{{ page.date | date(format='%B %d, %Y') }}</time></p>{% endif %}
+        {{ <render.article_tags page={page} /> }}
+        {{ <render.article_meta page={page} /> }}
         {% if project.award %}<p class="project__award"><i class="bi bi-award" aria-hidden="true"></i> {{ project.award }}</p>{% endif %}
       </div>
       {% if project.authors or project.affiliations %}
@@ -85,23 +112,28 @@
 
     {% if project.teaser %}
     <div class="project__teaser">{{ <project.media page={page} item={project.teaser} eager={true} /> }}</div>
+    {% elif page.extra.thumbnail %}
+    {% set thumbnail = {"src": page.extra.thumbnail, "alt": page.extra.thumbnail_alt | default(value=page.title)} %}
+    <div class="project__teaser">{{ <project.media page={page} item={thumbnail} eager={true} /> }}</div>
     {% endif %}
 
     <div class="project__layout">
-      {% if project.abstract or page.toc or project.gallery or project.video or project.poster or project.bibtex or project.related %}
+      {% if has_contents or related %}
       <div class="project__sidebar">
         <div class="project__sidebar-inner">
-      {% if project.abstract or page.toc or project.gallery or project.video or project.poster or project.bibtex %}
+      {% if has_contents %}
       <aside class="project__contents">
         <nav aria-label="On this page">
           <p>On this page</p>
           <ul>
             {% if project.abstract %}<li><a href="#project-abstract">Abstract</a></li>{% endif %}
-            {% for heading in page.toc %}<li><a href="{{ heading.permalink }}">{{ heading.title }}</a></li>{% endfor %}
+            {% for heading in page.toc %}<li data-prose-heading><a href="{{ heading.permalink }}">{{ heading.title }}</a></li>{% endfor %}
+            <li data-prose-toc-end hidden></li>
             {% if project.gallery %}<li><a href="#project-results">{{ project.gallery_title | default(value='Results gallery') }}</a></li>{% endif %}
             {% if project.video %}<li><a href="#project-video">{{ project.video.title }}</a></li>{% endif %}
             {% if project.poster %}<li><a href="#project-poster">{{ project.poster.title | default(value='Poster') }}</a></li>{% endif %}
             {% if project.bibtex %}<li><a href="#project-citation">Citation</a></li>{% endif %}
+            {% if bibliography %}<li><a href="#project-bibliography">Bibliography</a></li>{% endif %}
           </ul>
         </nav>
       </aside>
@@ -117,7 +149,7 @@
         </section>
         {% endif %}
 
-        {% if page.content %}<div class="project__prose">{{ page.content | safe }}</div>{% endif %}
+        {% if prose %}<div class="project__prose">{{ prose | safe }}</div>{% endif %}
 
         {% if project.gallery %}
         <section class="project__section" id="project-results" aria-labelledby="project-results-title">
@@ -150,14 +182,20 @@
         </section>
         {% endif %}
 
+        {% if bibliography %}
+        <section class="project__section project__bibliography" id="project-bibliography" aria-label="Bibliography">
+          {{ bibliography | safe }}
+        </section>
+        {% endif %}
+
       </div>
-      {% if project.related %}
+      {% if related %}
       <aside class="project__related sidebar" aria-labelledby="project-related-title">
         <section class="widget">
           <h2 class="widget__title" id="project-related-title">Related Projects</h2>
           <ul class="project__related-list">
-            {% for work in project.related %}
-            <li><a href="{{ <project.url page={page} path={work.url} /> }}">{{ work.title }}</a></li>
+            {% for work in related %}
+            <li><a href="{{ <project.url page={page} path={work.url} /> }}">{{ work.title }}</a>{% if work.date %}<time datetime="{{ work.date | date(format='%Y-%m-%d') }}">{{ work.date | date(format='%b %d, %Y') }}</time>{% endif %}</li>
             {% endfor %}
           </ul>
         </section>
@@ -171,5 +209,6 @@
   {{ super() }}
   <script src="{{ get_url(path='vendor/aos/aos.js') }}"></script>
   <script src="{{ get_url(path='assets/script/home.js') }}"></script>
+  <script src="{{ get_url(path='assets/script/share.js') }}" defer></script>
   <script src="{{ get_url(path='assets/script/project.js') }}" defer></script>
 {% endblock scripts %}

@@ -120,7 +120,8 @@ if [[ -n "$final_bib" ]]; then
     )
 fi
 pandoc_args=(--mathjax --wrap=none -t html -f markdown "$BODY_TMP" -o "$RENDERED_TMP")
-if ! pandoc "${cite_args[@]}" "${pandoc_args[@]}"; then
+# Bash 3.2 (the macOS system Bash) treats an empty array as unset with -u.
+if ! pandoc ${cite_args[@]+"${cite_args[@]}"} "${pandoc_args[@]}"; then
     echo "  [ERROR] Pandoc failed to process: $INPUT_FILE" >&2
     echo "  [ERROR] Please check the bibliography and CSL files for issues." >&2
     exit 1
@@ -147,6 +148,12 @@ fi
 # user-written <h1> tags (no unnumbered class) are left untouched.
 LC_ALL=C LANG=C perl -0777 -pi -e \
     's|<h1 class="unnumbered"([^>]*)>(.*?)</h1>\n(<div id="refs"[^>]*>)|$3\n<h2 class="unnumbered"$1>$2</h2>|g' \
+    "$RENDERED_TMP"
+
+# Mark the boundary so project.html can place the bibliography after its
+# optional project citation. Legacy post.html simply renders this HTML comment.
+LC_ALL=C LANG=C perl -0777 -pi -e \
+    's|(?=^<div id="refs"\s)|<!-- persona-bibliography -->\n|m' \
     "$RENDERED_TMP"
 
 # --- 5. Reassemble ---

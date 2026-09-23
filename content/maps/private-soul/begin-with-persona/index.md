@@ -1,4 +1,5 @@
 +++
+template = "project.html"
 title = 'Begin with Persona'
 date = 2025-03-17
 draft = false
@@ -45,11 +46,13 @@ bibliography = "references.bib"
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="op">{ </span><span class="dt">item</span><span class="op"> =</span> <span class="st">&quot;Phone&quot;</span><span class="op">, </span><span class="dt">content</span><span class="op"> =</span> <span class="st">&quot;+0 (123) 456-7890&quot;</span><span class="op">, </span><span class="dt">icon_class</span><span class="op"> =</span> <span class="st">&quot;bi bi-phone&quot;</span><span class="op"> },</span></span>
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="op">]</span></span></code></pre></div>
 <p>Modify the landing page content in <code>content/_index.md</code>:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode toml"><code class="sourceCode toml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">title</span> <span class="op">=</span> <span class="st">&quot;Presented Site Name&quot;</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">template</span> <span class="op">=</span> <span class="st">&quot;index.html&quot;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">[extra]</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="dt">icon_class</span> <span class="op">=</span> <span class="st">&quot;bi bi-house&quot;</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="dt">subtitles</span> <span class="op">=</span> <span class="st">&quot;Item 1, Item 2, Item 3&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode toml"><code class="sourceCode toml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="er">+++</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">title</span> <span class="op">=</span> <span class="st">&quot;Presented Site Name&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="dt">template</span> <span class="op">=</span> <span class="st">&quot;index.html&quot;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">[extra]</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="dt">icon_class</span> <span class="op">=</span> <span class="st">&quot;bi bi-house&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="dt">subtitles</span> <span class="op">=</span> <span class="st">&quot;Item 1, Item 2, Item 3&quot;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="er">+++</span></span></code></pre></div>
 <p>Also update your assets in <code>static/assets/img/</code>:</p>
 <ul>
 <li><a href="https://en.wiktionary.org/wiki/hero_image">hero image</a>: <code>background.jpg</code></li>
@@ -62,9 +65,9 @@ bibliography = "references.bib"
 <p>The Persona theme provides extensive options to customize colors and fonts by overriding CSS variables in <code>sass/assets/stylesheet/_custom.scss</code> without modifying the core theme files. For example, to change the accent color, heading color, and title font size, you can use the following CSS:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sass/assets/stylesheet/_custom.scss */</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="in">:root</span> {</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="va">--color-accent</span>: <span class="cn">#FF5F05</span><span class="op">;</span>   <span class="co">/* Override accent color to vibrant orange */</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="va">--color-heading</span>: <span class="cn">#13294B</span><span class="op">;</span>  <span class="co">/* Override heading color to dark blue */</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="va">--font-size-title</span>: <span class="dv">72</span><span class="dt">px</span><span class="op">;</span>   <span class="co">/* Increase title font size for more impact */</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="va">--color-accent</span><span class="ch">:</span> <span class="cn">#FF5F05</span><span class="op">;</span>   <span class="co">/* Override accent color to vibrant orange */</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="va">--color-heading</span><span class="ch">:</span> <span class="cn">#13294B</span><span class="op">;</span>  <span class="co">/* Override heading color to dark blue */</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="va">--font-size-title</span><span class="ch">:</span> <span class="dv">72</span><span class="dt">px</span><span class="op">;</span>   <span class="co">/* Increase title font size for more impact */</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p><strong>Available Customization Variables:</strong></p>
 <p>Colors:</p>
@@ -96,7 +99,8 @@ bibliography = "references.bib"
 <p>See <code>sass/assets/stylesheet/_variables.scss</code> for the complete list of customizable variables with detailed descriptions (the compiled CSS is emitted under <code>public/assets/stylesheet/</code> at build time).</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>Starting a website with the Persona theme is a great way to share your thoughts and ideas with the world. With its user-friendly setup and extensive customization options, you can create a unique and engaging site that reflects your personality and style.</p>
-<div id="refs" class="references csl-bib-body" role="list">
+<!-- persona-bibliography -->
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
 <h2 class="unnumbered" id="bibliography">Bibliography</h2>
 <div id="ref-zolathemes" class="csl-entry" role="listitem">
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline"><a href="https://www.getzola.org/themes/">Zola themes</a>, </div>

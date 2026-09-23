@@ -146,9 +146,9 @@ After completing the setup, build and serve your site with Zola:
 > [!NOTE]
 > If you are using the [Citation Pipeline](#-citation-pipeline), use `make build` and `make serve` instead to also process `.src.md` files.
 
-### Academic Project Pages
+### Articles and Academic Project Pages
 
-Set `template = "project.html"` on a Markdown page to create a dedicated research page. Add optional research details under `[extra.project]`; write the main article in Markdown below the front matter.
+Use `project.html` as the common layout for blog articles and research projects. Set `template = "project.html"` on a page, or `page_template = "project.html"` on its parent section. Tags, publication date, estimated reading time, and Share appear beneath the title. Add optional research details under `[extra.project]`; write the main article in Markdown below the front matter. The earlier `post.html` remains available for compatibility.
 
 ```toml
 +++
@@ -171,7 +171,7 @@ abstract = "Explain the research question, approach, and findings."
 Describe your work here.
 ```
 
-Use a page bundle such as `content/maps/public-self/my-project/index.md` and put its images and PDFs alongside it. A project page can live alongside ordinary posts in a blog section; its explicit `template` selects the research layout. Relative resource paths follow the rendered page URL; `/` paths respect the site's configured base URL, including deployment subpaths.
+Use a page bundle such as `content/maps/public-self/my-project/index.md` and put its images and PDFs alongside it. Existing articles can use this layout without adding any research fields or changing their URLs. Relative resource paths follow the rendered page URL; `/` paths respect the site's configured base URL, including deployment subpaths.
 
 The [academic project guide](docs/academic-projects.md) covers every field, reusable media components, and URL rules. The [Field Notes example](content/maps/public-self/field-notes/index.md) in [Public Self](content/maps/public-self/_index.md) provides a complete starting point. The layout and Sass are original Persona implementations, using the theme's existing typography, colors, spacing, and breakpoints.
 
@@ -184,7 +184,9 @@ home_items_limit = 3
 
 The default is `3` when the setting is omitted or negative. Set it to `0` to show only the **View all** link for each nonempty collection. Full section pages remain unlimited. Set each page's `[extra.project].thumbnail` to a colocated image, or let the listing use its teaser image (or video poster). See the guide for the section setup and ordering.
 
-Projects and blog posts share one entry template with optional thumbnails, dates, and subtitles. The top-level `date` appears on project pages as well as in their lists. Set `subtitle` under `[extra.project]` for projects or under `[extra]` for blog posts to show it on both the detail page and its list entry. Blog entries also accept `thumbnail` and `thumbnail_alt` under `[extra]`.
+Projects and blog posts share one entry template with optional thumbnails, dates, and subtitles. The top-level `date` appears on project pages as well as in their lists. Set `subtitle` under `[extra.project]` or `[extra]` to show it on both the detail page and its list entry. Existing `thumbnail`, `thumbnail_alt`, tags, and `[extra.tex.macros]` settings continue to work. Related Projects automatically shows up to five other listed articles from the same section; use `[extra.project].related` for a custom list, or `related = []` to hide it.
+
+The project layout supports the same `[@cite-key]` preprocessing and KaTeX macros as the blog layout. The generated **Bibliography** follows the optional **Citation** section containing this article's BibTeX. See the [citation and mathematics example](content/maps/private-soul/citation-pipeline-guide/index.src.md).
 
 To keep a project accessible by its URL but hide it from automatic home-page, blog/project, taxonomy, and Recent Posts lists, set `draft = true` under `[extra.project]` in its Markdown front matter. Omit it or set it to `false` to list the project. Use this theme flag rather than Zola's top-level draft flag, which excludes a page from normal builds.
 
@@ -205,6 +207,7 @@ It integrates seamlessly with the site workflow, so you can focus on content rat
 - Store your references in the `references.bib` file in the same directory as your post
 - A build script processes the source files and converts them into final Markdown file `.md` with formatted citations  
 - The output is ready for rendering without any additional steps  
+- `project.html` places generated references after the optional BibTeX Citation section; `post.html` remains supported
 
 ### Setup
 
@@ -246,6 +249,8 @@ Use the provided `Makefile` to build or serve your site locally with automatic p
 |---|---|---|
 |Build the site|`make build`|site build under `public/`|
 |Serve the site|`make serve`|locally with live reload|
+
+The incremental build also checks the processing scripts, configuration, bibliography, and CSL files. The watcher monitors these dependencies without rebuilding in response to generated `.md` files. Regenerate existing `.src.md` files with `bash scripts/build.sh` after updating the pipeline. When using the scripts directly from an installed theme, run `bash themes/persona/scripts/build.sh` from your site root.
 
 
 > [!TIP]
