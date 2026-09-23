@@ -4,9 +4,9 @@ description = """
 Where stories shared quietly and thoughts drift restless.
 """
 sort_by = "date"
-page_template = "project.html"
+page_template = "post.html"
 [extra]
-type = "blog" 
+type = "posts"
 thumbnail = "thumbnail.jpg"
 order = 20
 +++

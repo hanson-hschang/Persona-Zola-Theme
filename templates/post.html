@@ -1,24 +1,214 @@
 {% extends "base.html" %}
 
-{% block head %}
-  {{ super() }}
-  <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/post.css') }}">
-{% endblock head %}
+{% block metadata %}
+  {% set post = page.extra.post | default(value={}) %}
+  <meta name="description" content="{{ page.description | default(value=config.description) }}">
+  <link rel="canonical" href="{{ page.permalink }}">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="{{ page.title }}">
+  <meta property="og:description" content="{{ page.description | default(value=config.description) }}">
+  <meta property="og:url" content="{{ page.permalink }}">
+  <meta property="og:site_name" content="{{ config.title }}">
+  {% if post.social_image %}
+    <meta property="og:image" content="{{ <post.url page={page} path={post.social_image} /> }}">
+    <meta name="twitter:card" content="summary_large_image">
+  {% else %}
+    <meta name="twitter:card" content="summary">
+  {% endif %}
+  <meta name="citation_title" content="{{ page.title }}">
+  {% for author in post.authors | default(value=[]) %}
+    <meta name="author" content="{{ author.name }}">
+    <meta name="citation_author" content="{{ author.name }}">
+  {% endfor %}
+  {% if not post.authors %}<meta name="author" content="{{ config.author }}">{% endif %}
+  {% if page.date %}<meta name="citation_publication_date" content="{{ page.date | date(format='%Y/%m/%d') }}">{% endif %}
+  {% if post.venue %}<meta name="citation_conference_title" content="{{ post.venue }}">{% endif %}
+  {% if post.doi %}<meta name="citation_doi" content="{{ post.doi }}">{% endif %}
+  {% if post.paper %}<meta name="citation_pdf_url" content="{{ <post.url page={page} path={post.paper} /> }}">{% endif %}
+{% endblock metadata %}
 
 {% block extra_css %}
+  <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/page-post.css') }}">
   <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/citations.css') }}">
 {% endblock extra_css %}
 
+{% block header %}
+  <a class="post__skip" href="#post-main">Skip to post</a>
+  {{ super() }}
+{% endblock header %}
+
+{# Keep research content available immediately, including without JavaScript. #}
+{% block preloader %}{% endblock preloader %}
+
 {% block main %}
+  {% set post = page.extra.post | default(value={}) %}
+  {# Separate Pandoc's appended bibliography without changing citation anchors.
+     The fallback also supports pages generated before the marker was added. #}
+  {% set body_parts = page.content | split(pat="<!-- persona-bibliography -->") %}
+  {% set prose = body_parts | first %}
+  {% set bibliography = "" %}
+  {% if body_parts | length > 1 %}
+    {% set bibliography = body_parts | last %}
+  {% elif page.content is containing(pat='<div id="refs"') %}
+    {% set body_parts = page.content | split(pat='<div id="refs"') %}
+    {% set prose = body_parts | first %}
+    {% set references_tail = body_parts | last %}
+    {% set bibliography = '<div id="refs"' ~ references_tail %}
+  {% endif %}
+  {% set_global related = post.related | default(value=[]) %}
+  {% if post.related is not defined and page.ancestors %}
+    {% set parent = get_section(path=page.ancestors | last) %}
+    {% for entry in parent.pages %}
+      {% set entry_post = entry.extra.post | default(value={}) %}
+      {% if entry.permalink != page.permalink and not entry_post.draft and related | length < 5 %}
+        {% set_global related = [...related, {"title": entry.title, "url": entry.permalink, "date": entry.date}] %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  {% set has_contents = post.abstract or page.toc or post.gallery or post.video or post.poster or post.bibtex or bibliography or prose is containing(pat='<h1') or prose is containing(pat='<h2') %}
+  {{ <render.breadcrumbs page={page} class_name="post-breadcrumbs" /> }}
+  <article class="post container" id="post-main" aria-labelledby="post-title" tabindex="-1">
+    <header class="post__hero">
+      <div class="post__heading">
+        {% if post.venue or post.kind %}
+        <p class="post__eyebrow">{{ post.kind | default(value='Research post') }}{% if post.venue %}<span aria-hidden="true"> / </span>{{ post.venue }}{% endif %}</p>
+        {% endif %}
+        <h1 id="post-title">{{ page.title }}</h1>
+        {% set subtitle = post.subtitle | default(value=page.extra.subtitle | default(value="")) %}
+        {% if subtitle %}<p class="post__subtitle">{{ subtitle }}</p>{% endif %}
+        {{ <render.article_tags page={page} /> }}
+        {% if post.award %}<p class="post__award"><i class="bi bi-award" aria-hidden="true"></i> {{ post.award }}</p>{% endif %}
+      </div>
+      {% if post.authors or post.affiliations %}
+      <div class="post__byline">
+        {% if post.authors %}
+        <ul class="post__authors" aria-label="Authors">
+          {% for author in post.authors %}
+          <li>
+            {% if author.url %}<a href="{{ <post.url page={page} path={author.url} /> }}">{{ author.name }}</a>{% else %}<span>{{ author.name }}</span>{% endif %}{% if author.affiliations %}<sup>{{ author.affiliations }}</sup>{% endif %}{% if author.equal %}<sup aria-label="Equal contribution">*</sup>{% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% if post.affiliations %}
+        <ul class="post__affiliations" aria-label="Affiliations">
+          {% for affiliation in post.affiliations %}
+          <li>{% if affiliation.id %}<sup>{{ affiliation.id }}</sup> {% endif %}{{ affiliation.name }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% if post.author_note %}<p class="post__note">{{ post.author_note }}</p>{% endif %}
+      </div>
+      {% endif %}
+      {{ <render.article_meta page={page} /> }}
+      {% if post.links %}
+      <nav class="post__resources" aria-label="Post resources">
+        {% for link in post.links %}
+        <a class="post__button{% if loop.first %} post__button--primary{% endif %}" href="{{ <post.url page={page} path={link.url} /> }}">{% if link.icon_class %}<i class="{{ link.icon_class }}" aria-hidden="true"></i>{% endif %}{{ link.name }}</a>
+        {% endfor %}
+      </nav>
+      {% endif %}
+    </header>
 
-  {{ <blog.post page={page} /> }}
+    {% if post.teaser %}
+    <div class="post__teaser">{{ <post.media page={page} item={post.teaser} eager={true} /> }}</div>
+    {% elif page.extra.thumbnail %}
+    {% set thumbnail = {"src": page.extra.thumbnail, "alt": page.extra.thumbnail_alt | default(value=page.title)} %}
+    <div class="post__teaser">{{ <post.media page={page} item={thumbnail} eager={true} /> }}</div>
+    {% endif %}
 
+    <div class="post__layout">
+      {% if has_contents or related %}
+      <div class="post__sidebar">
+        <div class="post__sidebar-inner">
+      {% if has_contents %}
+      <aside class="post__contents">
+        <nav aria-label="On this page">
+          <p>On this page</p>
+          <ul>
+            {% if post.abstract %}<li><a href="#post-abstract">Abstract</a></li>{% endif %}
+            {% for heading in page.toc %}<li data-prose-heading><a href="{{ heading.permalink }}">{{ heading.title }}</a></li>{% endfor %}
+            <li data-prose-toc-end hidden></li>
+            {% if post.gallery %}<li><a href="#post-results">{{ post.gallery_title | default(value='Results gallery') }}</a></li>{% endif %}
+            {% if post.video %}<li><a href="#post-video">{{ post.video.title }}</a></li>{% endif %}
+            {% if post.poster %}<li><a href="#post-poster">{{ post.poster.title | default(value='Poster') }}</a></li>{% endif %}
+            {% if post.bibtex %}<li><a href="#post-citation">Citation</a></li>{% endif %}
+            {% if bibliography %}<li><a href="#post-bibliography">Bibliography</a></li>{% endif %}
+          </ul>
+        </nav>
+      </aside>
+      {% endif %}
+        </div>
+      </div>
+      {% endif %}
+      <div class="post__body">
+        {% if post.abstract %}
+        <section class="post__section post__abstract" id="post-abstract" aria-labelledby="post-abstract-title">
+          <h2 id="post-abstract-title">Abstract</h2>
+          {{ post.abstract | markdown | safe }}
+        </section>
+        {% endif %}
+
+        {% if prose %}<div class="post__prose">{{ prose | safe }}</div>{% endif %}
+
+        {% if post.gallery %}
+        <section class="post__section" id="post-results" aria-labelledby="post-results-title">
+          {{ <post.gallery page={page} items={post.gallery} title={post.gallery_title | default(value='Results gallery')} heading_id="post-results-title" /> }}
+        </section>
+        {% endif %}
+
+        {% if post.video %}
+        <section class="post__section" id="post-video" aria-labelledby="post-video-title">
+          <h2 id="post-video-title">{{ post.video.title }}</h2>
+          {{ <post.embed src={post.video.src} title={post.video.title} /> }}
+        </section>
+        {% endif %}
+
+        {% if post.poster %}
+        <section class="post__section" id="post-poster" aria-labelledby="post-poster-title">
+          <h2 id="post-poster-title">{{ post.poster.title | default(value='Poster') }}</h2>
+          {{ <post.poster page={page} src={post.poster.src} title={post.poster.title | default(value='Research poster')} /> }}
+        </section>
+        {% endif %}
+
+        {% if post.bibtex %}
+        <section class="post__section post__citation" id="post-citation" aria-labelledby="post-citation-title">
+          <div class="post__section-heading">
+            <h2 id="post-citation-title">Citation</h2>
+            <button class="post__button" type="button" data-copy-citation aria-controls="post-bibtex" hidden><i class="bi bi-copy" aria-hidden="true"></i> Copy BibTeX</button>
+          </div>
+          <pre tabindex="0" aria-label="BibTeX citation"><code id="post-bibtex">{{ post.bibtex | trim }}</code></pre>
+          <p class="post__copy-status" data-copy-status role="status" aria-live="polite"></p>
+        </section>
+        {% endif %}
+
+        {% if bibliography %}
+        <section class="post__section post__bibliography" id="post-bibliography" aria-label="Bibliography">
+          {{ bibliography | safe }}
+        </section>
+        {% endif %}
+
+      </div>
+      {% if related %}
+      <aside class="post__related sidebar" aria-labelledby="post-related-title">
+        <section class="widget">
+          <h2 class="widget__title" id="post-related-title">Related Posts</h2>
+          <ul class="post__related-list">
+            {% for work in related %}
+            <li><a href="{{ <post.url page={page} path={work.url} /> }}">{{ work.title }}</a>{% if work.date %}<time datetime="{{ work.date | date(format='%Y-%m-%d') }}">{{ work.date | date(format='%b %d, %Y') }}</time>{% endif %}</li>
+            {% endfor %}
+          </ul>
+        </section>
+      </aside>
+      {% endif %}
+    </div>
+  </article>
 {% endblock main %}
-
 
 {% block scripts %}
   {{ super() }}
   <script src="{{ get_url(path='vendor/aos/aos.js') }}"></script>
   <script src="{{ get_url(path='assets/script/home.js') }}"></script>
-  <script src="{{ get_url(path='assets/script/share.js') }}"></script>
+  <script src="{{ get_url(path='assets/script/share.js') }}" defer></script>
+  <script src="{{ get_url(path='assets/script/post.js') }}" defer></script>
 {% endblock scripts %}

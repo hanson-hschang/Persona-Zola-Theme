@@ -150,8 +150,8 @@ LC_ALL=C LANG=C perl -0777 -pi -e \
     's|<h1 class="unnumbered"([^>]*)>(.*?)</h1>\n(<div id="refs"[^>]*>)|$3\n<h2 class="unnumbered"$1>$2</h2>|g' \
     "$RENDERED_TMP"
 
-# Mark the boundary so project.html can place the bibliography after its
-# optional project citation. Legacy post.html simply renders this HTML comment.
+# Mark the boundary so post.html can place the bibliography after its
+# optional Citation section without moving the inline citation anchors.
 LC_ALL=C LANG=C perl -0777 -pi -e \
     's|(?=^<div id="refs"\s)|<!-- persona-bibliography -->\n|m' \
     "$RENDERED_TMP"

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build project fixtures in isolation: python3 tests/test_projects.py.
+"""Build post fixtures in isolation: python3 tests/test_posts.py.
 
 Requires Zola 0.23+. Uses only the Python standard library and skips external
 link checks. Pandoc enables the citation-pipeline fixtures. Media fixtures test
@@ -74,13 +74,13 @@ class Document(HTMLParser):
                        if any(parent is attributes for _, parent in ancestors))
 
 
-class ProjectIntegrationTests(unittest.TestCase):
+class PostIntegrationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         zola = shutil.which("zola")
         if zola is None:
             raise unittest.SkipTest("Zola 0.23+ is required for integration tests")
-        cls.temporary = tempfile.TemporaryDirectory(prefix="persona-project-tests-")
+        cls.temporary = tempfile.TemporaryDirectory(prefix="persona-post-tests-")
         cls.addClassCleanup(cls.temporary.cleanup)
         cls.site = Path(cls.temporary.name)
         shutil.copy2(THEME / "config.toml", cls.site / "config.toml")
@@ -91,20 +91,20 @@ class ProjectIntegrationTests(unittest.TestCase):
         default_config = re.sub(r"(?m)^home_items_limit\s*=.*\n?", "",
                                 (cls.site / "config.toml").read_text(encoding="utf-8"))
         cls.write("config.toml", default_config)
-        shutil.rmtree(cls.site / "content/projects", ignore_errors=True)
-        cls.write("content/projects/_index.md", '''+++
-title = "Fixture projects"
+        shutil.rmtree(cls.site / "content/posts", ignore_errors=True)
+        cls.write("content/posts/_index.md", '''+++
+title = "Fixture posts"
 sort_by = "weight"
-page_template = "project.html"
+page_template = "post.html"
 [extra]
 order = 1
-type = "projects"
+type = "posts"
 icon_class = "bi bi-journal-richtext"
 +++
-A short **project introduction**.
+A short **post introduction**.
 ''')
-        listing_projects = [
-            ("z-explicit", 'path = "research/nested-project"',
+        listing_posts = [
+            ("z-explicit", 'path = "research/nested-post"',
              'description = "Explicit thumbnail description"',
              'thumbnail = "thumb.svg"\nthumbnail_alt = "Explicit thumbnail"\n'
              'teaser = { src = "unused.svg", alt = "Unused teaser" }'),
@@ -114,18 +114,18 @@ A short **project introduction**.
             ("m-video", "", 'description = "Video poster description"',
              'teaser = { type = "video", src = "clip.mp4", '
              'poster = "/test-assets/shared.svg", title = "Video poster" }'),
-            ("b-no-image", "", 'description = "Project without a thumbnail"',
+            ("b-no-image", "", 'description = "Post without a thumbnail"',
              'teaser = { type = "video", src = "clip.mp4", title = "No poster" }'),
             ("c-excerpt", "", "", "draft = false"),
         ]
-        for weight, (folder, location, description, project) in enumerate(listing_projects, 1):
-            title = TITLE if weight == 1 else f"Listing project {weight}"
+        for weight, (folder, location, description, post) in enumerate(listing_posts, 1):
+            title = TITLE if weight == 1 else f"Listing post {weight}"
             date = "date = 2025-03-04" if weight == 1 else ""
             subtitle = ('subtitle = "Shared subtitle should be overridden"' if weight == 1
-                        else 'subtitle = "Shared project subtitle"' if weight == 2 else "")
+                        else 'subtitle = "Shared post subtitle"' if weight == 2 else "")
             if weight == 1:
-                project += "\nsubtitle = " + json.dumps(SUBTITLE)
-            cls.write(f"content/projects/{folder}/index.md", f'''+++
+                post += "\nsubtitle = " + json.dumps(SUBTITLE)
+            cls.write(f"content/posts/{folder}/index.md", f'''+++
 title = {json.dumps(title)}
 weight = {weight * 2}
 {date}
@@ -134,14 +134,14 @@ weight = {weight * 2}
 [extra]
 excerpt = "Fallback listing excerpt {weight}"
 {subtitle}
-[extra.project]
-{project}
+[extra.post]
+{post}
 +++
-Fixture project body.
+Fixture post body.
 ''')
-            cls.write(f"content/projects/{folder}/thumb.svg", SVG)
-            cls.write(f"content/projects/{folder}/unused.svg", SVG)
-            cls.write(f"content/projects/{folder}/clip.mp4", "structural video fixture")
+            cls.write(f"content/posts/{folder}/thumb.svg", SVG)
+            cls.write(f"content/posts/{folder}/unused.svg", SVG)
+            cls.write(f"content/posts/{folder}/clip.mp4", "structural video fixture")
 
         cls.write("content/test-blog/_index.md", '''+++
 title = "Fixture blog"
@@ -149,7 +149,7 @@ sort_by = "date"
 page_template = "post.html"
 [extra]
 order = 2
-type = "blog"
+type = "posts"
 icon_class = "bi bi-journal"
 +++
 ''')
@@ -190,13 +190,13 @@ Another published blog entry.
             cls.write(f"content/test-blog/{folder}.md", f'''+++
 title = "Unlisted blog {folder}"
 date = {date}
-template = "project.html"
+template = "post.html"
 [taxonomies]
 tags = ["Shared fixture", "Draft-only fixture"]
-[extra.project]
+[extra.post]
 draft = true
 +++
-Unlisted project in a normal blog collection.
+Unlisted post in a normal blog collection.
 ''')
 
         cls.write("content/test-category/_index.md", '''+++
@@ -214,37 +214,37 @@ icon_class = "bi bi-collection"
             cls.write(f"content/test-category/{folder}/_index.md", f'''+++
 title = "Card {folder}"
 [extra]
-type = "blog"
+type = "posts"
 thumbnail = "thumb.svg"
 {order_field}
 +++
 ''')
             cls.write(f"content/test-category/{folder}/thumb.svg", SVG)
 
-        # Put drafts before and between published projects so filtering must
+        # Put drafts before and between published posts so filtering must
         # happen before the homepage limit is applied.
         for folder, weight, location in (
                 ("draft-first", 1, 'path = "research/unlisted-first"'),
                 ("draft-middle", 5, 'slug = "unlisted-middle"')):
-            cls.write(f"content/projects/{folder}/index.md", f'''+++
+            cls.write(f"content/posts/{folder}/index.md", f'''+++
 title = "Unlisted {folder}"
 weight = {weight}
 {location}
-[extra.project]
+[extra.post]
 draft = true
-teaser = {{ src = "thumb.svg", alt = "Unlisted project thumbnail" }}
+teaser = {{ src = "thumb.svg", alt = "Unlisted post thumbnail" }}
 +++
-Draft project body remains available through its direct URL.
+Draft post body remains available through its direct URL.
 ''')
-            cls.write(f"content/projects/{folder}/thumb.svg", SVG)
+            cls.write(f"content/posts/{folder}/thumb.svg", SVG)
 
-        cls.write("content/test-minimal.md", '+++\ntitle = "Minimal project"\ntemplate = "project.html"\n+++\nNo extra table.')
+        cls.write("content/test-minimal.md", '+++\ntitle = "Minimal post"\ntemplate = "post.html"\n+++\nNo extra table.')
         cls.write("content/test-ordinary.md", '+++\ntitle = "Ordinary page"\ntemplate = "page.html"\n+++\nOrdinary page body.')
         cls.write("content/test-slug/index.md", '''+++
 title = "Changed slug"
 slug = "changed-slug"
-template = "project.html"
-[extra.project]
+template = "post.html"
+[extra.post]
 teaser = { src = "plot.svg", alt = "Colocated plot" }
 +++
 Slug fixture.
@@ -253,15 +253,15 @@ Slug fixture.
         quote = json.dumps
         cls.write("content/test-full/index.md", f'''+++
 title = {quote(TITLE)}
-description = "Specific project description & metadata"
+description = "Specific post description & metadata"
 date = 2025-03-04
 slug = "ignored-slug"
 path = "research/custom-output"
-template = "project.html"
+template = "post.html"
 [taxonomies]
 tags = ["Research & Methods", "Equations"]
-[extra.project]
-kind = "Research project"
+[extra.post]
+kind = "Research post"
 venue = "Example Conference 2025"
 subtitle = {quote(SUBTITLE)}
 award = "Example award"
@@ -279,9 +279,9 @@ links = [
   {{ name = "External HTTP", url = "http://example.test/code" }},
   {{ name = "Protocol relative", url = "//example.test/code" }},
   {{ name = "Email", url = "mailto:research@example.test" }},
-  {{ name = "Citation", url = "#project-citation" }}
+  {{ name = "Citation", url = "#post-citation" }}
 ]
-related = [{{ title = "Minimal project", url = "@/test-minimal.md" }}]
+related = [{{ title = "Minimal post", url = "@/test-minimal.md" }}]
 abstract = "A **formatted** abstract."
 teaser = {{ src = "plot.svg", alt = "Teaser image", width = 2, height = 2, caption = "A **teaser** caption." }}
 gallery_title = "Research results"
@@ -295,7 +295,7 @@ bibtex = {quote(BIBTEX)}
 +++
 ## Method
 
-The project body supports normal Markdown.
+The post body supports normal Markdown.
 ''')
         cls.write("content/test-full/plot.svg", SVG)
         cls.write("static/test-assets/shared.svg", SVG)
@@ -308,18 +308,18 @@ The project body supports normal Markdown.
         if cls.pandoc:
             for folder, has_bibtex in (("test-citations", True),
                                        ("test-references-only", False)):
-                citation = 'bibtex = "@article{this-project, title={This project}}"' if has_bibtex else ""
+                citation = 'bibtex = "@article{this-post, title={This post}}"' if has_bibtex else ""
                 cls.write(f"content/{folder}/index.src.md", r'''+++
 title = "Citation and math fixture"
 date = 2025-04-05
-template = "project.html"
+template = "post.html"
 [taxonomies]
 tags = ["Equations"]
 [extra]
 bibliography = "references.bib"
 [extra.tex.macros]
 '\RR' = '\mathbb{R}'
-[extra.project]
+[extra.post]
 gallery = [{ src = "/test-assets/shared.svg", alt = "Result after the prose" }]
 ''' + citation + r'''
 +++
@@ -337,7 +337,7 @@ A note preserves the original explanation.[^detail]
 [^detail]: This is the explanatory footnote.
 ''')
                 cls.write(f"content/{folder}/references.bib", '''@article{fixture2025,
-  title = {A cited fixture for project pages},
+  title = {A cited fixture for post pages},
   author = {Example, Ada},
   journal = {Journal of Reproducible Fixtures},
   year = {2025}
@@ -346,7 +346,7 @@ A note preserves the original explanation.[^detail]
                 cls.process_source(folder)
             cls.write("content/test-pandoc-without-references/index.src.md", '''+++
 title = "Pandoc without references"
-template = "project.html"
+template = "post.html"
 +++
 ## Frontmatter example
 
@@ -362,9 +362,9 @@ The explanation after the example must remain in the page.
         # Previously generated pages must remain usable until next preprocessing.
         cls.write("content/test-legacy-bibliography.md", '''+++
 title = "Previously generated citation page"
-template = "project.html"
-[extra.project]
-bibtex = "@misc{legacy, title={Legacy project}}"
+template = "post.html"
+[extra.post]
+bibtex = "@misc{legacy, title={Legacy post}}"
 +++
 <h2 id="old-method">Old method</h2>
 <p>A <span class="citation" data-cites="old"><a href="#ref-old" role="doc-biblioref">citation</a></span>.</p>
@@ -391,15 +391,15 @@ bibtex = "@misc{legacy, title={Legacy project}}"
                 raise AssertionError(f"zola build with limit {limit} failed:\n{result.stdout}")
         cls.write("config.toml", default_config)
 
-        # A normal build must still emit every direct project URL when the
+        # A normal build must still emit every direct post URL when the
         # complete collection is unlisted.
-        for folder, *_ in listing_projects:
-            fixture = cls.site / f"content/projects/{folder}/index.md"
+        for folder, *_ in listing_posts:
+            fixture = cls.site / f"content/posts/{folder}/index.md"
             contents = fixture.read_text(encoding="utf-8")
             if "draft = false" in contents:
                 contents = contents.replace("draft = false", "draft = true")
             else:
-                contents = contents.replace("[extra.project]", "[extra.project]\ndraft = true", 1)
+                contents = contents.replace("[extra.post]", "[extra.post]\ndraft = true", 1)
             fixture.write_text(contents, encoding="utf-8")
         result = subprocess.run(
             [zola, "build", "--base-url", BASE, "--output-dir", "public-all-drafts"],
@@ -424,7 +424,7 @@ bibtex = "@misc{legacy, title={Legacy project}}"
         ], cwd=cls.site, text=True, stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT, timeout=60, check=False)
         if result.returncode:
-            raise AssertionError(f"Pandoc project fixture failed:\n{result.stdout}")
+            raise AssertionError(f"Pandoc post fixture failed:\n{result.stdout}")
 
     def document(self, output, directory="public"):
         return Document((self.site / directory / output / "index.html").read_text(encoding="utf-8"))
@@ -448,34 +448,56 @@ bibtex = "@misc{legacy, title={Legacy project}}"
         return [attrs["href"] for tag, attrs in document.descendants(section)
                 if tag == "a" and document.text_content(attrs).strip().startswith("View all")]
 
-    def test_minimal_project_needs_no_extra_table(self):
+    def test_minimal_post_needs_no_extra_table(self):
         page = self.document("test-minimal")
-        self.single(page, "h1", id="project-title")
-        self.assertIn("Minimal project", page.text)
-        self.assertFalse(page.with_class("project__byline"))
+        self.single(page, "h1", id="post-title")
+        self.assertIn("Minimal post", page.text)
+        self.assertFalse(page.with_class("post__byline"))
         self.assertFalse(page.with_class("article-meta__date"))
-        self.assertFalse(page.with_class("project__subtitle"))
-        self.assertFalse(page.with_class("project__contents"))
-        self.assertFalse(page.find(id="project-citation"))
+        self.assertFalse(page.with_class("post__subtitle"))
+        self.assertFalse(page.with_class("post__contents"))
+        self.assertFalse(page.find(id="post-citation"))
         self.assertFalse(page.find(id="preloader"))
         self.assertEqual(len(page.with_class("nav-toggle")), 1)
         self.single(page, "header", id="header")
-        self.assertFalse(page.with_class("project-bar"))
+        self.assertFalse(page.with_class("post-bar"))
         self.single(page, "nav", **{"aria-label": "Breadcrumb"})
         self.single(page, "script", src=BASE + "assets/script/home.js")
         self.single(page, "script", src=BASE + "vendor/aos/aos.js")
         self.single(page, "link", rel="canonical", href=BASE + "test-minimal/")
-        self.single(page, "link", href=BASE + "assets/stylesheet/page-project.css")
-        self.single(page, "script", src=BASE + "assets/script/project.js")
-        self.assertTrue((self.site / "public/assets/stylesheet/page-project.css").is_file())
+        self.single(page, "link", href=BASE + "assets/stylesheet/page-post.css")
+        self.single(page, "script", src=BASE + "assets/script/post.js")
+        self.assertTrue((self.site / "public/assets/stylesheet/page-post.css").is_file())
+
+    def test_generated_pages_load_only_current_post_assets(self):
+        obsolete = {"project.js", "page-project.css", "post.css", "page-blog.css"}
+        public = self.site / "public"
+        self.assertTrue((public / "assets/script/post.js").is_file())
+        self.assertTrue((public / "assets/stylesheet/page-post.css").is_file())
+        self.assertFalse((public / "assets/script/project.js").exists())
+        self.assertFalse((public / "assets/stylesheet/page-project.css").exists())
+        for path in public.rglob("*.html"):
+            page = Document(path.read_text(encoding="utf-8"))
+            for _, attrs in page.elements:
+                with self.subTest(page=str(path.relative_to(public)), element=attrs):
+                    self.assertNotIn("project", attrs.get("class", ""))
+                    self.assertNotIn("project", attrs.get("id", ""))
+                    self.assertFalse(any(name.startswith("data-project") for name in attrs))
+            loaded = [attrs["src"] for attrs in page.find("script") if "src" in attrs]
+            loaded.extend(attrs["href"] for attrs in page.find("link", rel="stylesheet"))
+            for url in loaded:
+                with self.subTest(page=str(path.relative_to(public)), asset=url):
+                    segments = urlparse(url).path.split("/")
+                    self.assertFalse(any(segment.startswith("__old_") for segment in segments))
+                    self.assertNotIn(segments[-1], obsolete)
 
     def test_full_optional_sections_and_media(self):
         page = self.document("research/custom-output")
-        for section in ("project-abstract", "method", "project-results",
-                        "project-video", "project-poster", "project-citation"):
+        for section in ("post-abstract", "method", "post-results",
+                        "post-video", "post-poster", "post-citation"):
             self.assertTrue(page.find(id=section), section)
-        self.assertEqual(len(page.with_class("project__authors")), 1)
-        self.assertEqual(len(page.with_class("project__slide")), 2)
+        self.assertEqual(len(page.with_class("post__authors")), 1)
+        self.assertEqual(len(page.with_class("post__slide")), 2)
         self.single(page, "img", alt="Teaser image", src=FULL_URL + "plot.svg",
                     loading="eager", width="2", height="2")
         self.single(page, "img", alt="Gallery image", src=BASE + "test-assets/shared.svg",
@@ -500,7 +522,7 @@ bibtex = "@misc{legacy, title={Legacy project}}"
         for expected in (BASE.rstrip("/"), FULL_URL + "paper.pdf", BASE + "test-assets/shared.svg",
                          BASE + "test-ordinary/", BASE + "test-minimal/",
                          "https://example.test/code?a=1&b=2", "http://example.test/code",
-                         "//example.test/code", "mailto:research@example.test", "#project-citation"):
+                         "//example.test/code", "mailto:research@example.test", "#post-citation"):
             self.assertIn(expected, hrefs)
         slug_page = self.document("changed-slug")
         self.single(slug_page, "img", src=BASE + "changed-slug/plot.svg")
@@ -511,7 +533,7 @@ bibtex = "@misc{legacy, title={Legacy project}}"
         self.assertIn(TITLE, page.text)
         self.assertIn(SUBTITLE, page.text)
         self.assertIn(BIBTEX, page.text)
-        self.single(page, "meta", name="description", content="Specific project description & metadata")
+        self.single(page, "meta", name="description", content="Specific post description & metadata")
         self.single(page, "meta", property="og:title", content=TITLE)
         self.single(page, "meta", property="og:image", content=FULL_URL + "plot.svg")
         self.single(page, "meta", name="twitter:card", content="summary_large_image")
@@ -524,10 +546,21 @@ bibtex = "@misc{legacy, title={Legacy project}}"
         self.assertTrue(all("src" in script for script in page.find("script")))
         self.assertFalse(any("onerror" in attributes for _, attributes in page.elements))
 
-    def test_project_metadata_tags_and_share_are_integrated_without_bookmark(self):
+    def test_post_metadata_tags_and_share_are_integrated_without_bookmark(self):
         page = self.document("research/custom-output")
         metadata = page.with_class("article-meta")
         self.assertEqual(len(metadata), 1)
+        hero = page.with_class("post__hero")
+        self.assertEqual(len(hero), 1)
+        children = [attrs for (_, attrs), ancestors in zip(page.elements, page.ancestors)
+                    if ancestors and ancestors[-1][1] is hero[0]]
+        byline = page.with_class("post__byline")[0]
+        resources = page.with_class("post__resources")[0]
+        self.assertIn(metadata[0], children, "Metadata belongs directly to the hero")
+        self.assertLess(children.index(byline), children.index(metadata[0]))
+        self.assertLess(children.index(metadata[0]), children.index(resources))
+        heading = page.with_class("post__heading")[0]
+        self.assertNotIn(metadata[0], [attrs for _, attrs in page.descendants(heading)])
         self.single(page, "time", datetime="2025-03-04")
         reading = page.with_class("article-meta__reading-time")
         self.assertEqual(len(reading), 1)
@@ -556,41 +589,41 @@ bibtex = "@misc{legacy, title={Legacy project}}"
         self.assertFalse(self.document("test-minimal").with_class("article-tags"))
 
     def assert_bibliography_at_end(self, page, preceding_section):
-        bibliography = self.single(page, "section", id="project-bibliography")
+        bibliography = self.single(page, "section", id="post-bibliography")
         refs = self.single(page, "div", id="refs")
         self.single(page, "h2", id="bibliography")
         self.assertIn(("div", refs), page.descendants(bibliography))
-        body = page.with_class("project__body")[0]
+        body = page.with_class("post__body")[0]
         sections = [attrs for tag, attrs in page.descendants(body)
-                    if tag == "section" and "project__section" in attrs.get("class", "").split()]
+                    if tag == "section" and "post__section" in attrs.get("class", "").split()]
         self.assertIs(sections[-1], bibliography)
         previous = self.single(page, "section", id=preceding_section)
         positions = {id(attrs): index for index, (_, attrs) in enumerate(page.elements)}
         self.assertGreater(positions[id(bibliography)], positions[id(previous)])
-        prose = page.with_class("project__prose")[0]
+        prose = page.with_class("post__prose")[0]
         self.assertNotIn(("div", refs), page.descendants(prose))
-        self.assertTrue(page.find("a", href="#project-bibliography"))
+        self.assertTrue(page.find("a", href="#post-bibliography"))
         return refs
 
     def test_citation_pipeline_preserves_math_macros_and_moves_references_after_citation(self):
         if not self.pandoc:
             self.skipTest("Pandoc is required for citation-pipeline fixtures")
-        for output, predecessor in (("test-citations", "project-citation"),
-                                    ("test-references-only", "project-results")):
+        for output, predecessor in (("test-citations", "post-citation"),
+                                    ("test-references-only", "post-results")):
             with self.subTest(output=output):
                 generated = (self.site / "content" / output / "index.md").read_text(encoding="utf-8")
                 self.assertEqual(generated.count("<!-- persona-bibliography -->"), 1)
                 page = self.document(output)
                 refs = self.assert_bibliography_at_end(page, predecessor)
-                self.assertEqual(bool(page.find(id="project-citation")), output == "test-citations")
+                self.assertEqual(bool(page.find(id="post-citation")), output == "test-citations")
                 entry = self.single(page, "div", id="ref-fixture2025")
                 self.assertIn(("div", entry), page.descendants(refs))
-                self.assertIn("A cited fixture for project pages", page.text_content(entry))
+                self.assertIn("A cited fixture for post pages", page.text_content(entry))
                 self.assertTrue(page.find("a", href="#ref-fixture2025"))
                 self.assertNotIn("[@fixture2025]", page.text)
                 self.single(page, "h2", id="cited-method")
                 self.single(page, "h3", id="implementation-details")
-                self.assertEqual(len(page.with_class("project__contents")), 1)
+                self.assertEqual(len(page.with_class("post__contents")), 1)
                 self.single(page, "link", href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css")
                 self.single(page, "script", src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js")
                 self.single(page, "script", src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js")
@@ -600,7 +633,7 @@ bibtex = "@misc{legacy, title={Legacy project}}"
                 macro_data = re.search(r"const katexMacros\s*=\s*(\{.*?\});", initialization[0])
                 self.assertIsNotNone(macro_data)
                 self.assertEqual(json.loads(macro_data[1]), {r"\RR": r"\mathbb{R}"})
-                self.assertIn(r"\RR", page.text_content(page.with_class("project__prose")[0]))
+                self.assertIn(r"\RR", page.text_content(page.with_class("post__prose")[0]))
                 self.assertTrue(page.with_class("math"))
                 # Footnote references and backreferences retain their original IDs.
                 self.single(page, "li", id="fn1")
@@ -609,7 +642,7 @@ bibtex = "@misc{legacy, title={Legacy project}}"
 
     def test_previous_citation_output_is_relocated_without_regenerating(self):
         page = self.document("test-legacy-bibliography")
-        refs = self.assert_bibliography_at_end(page, "project-citation")
+        refs = self.assert_bibliography_at_end(page, "post-citation")
         self.assertIn("Existing reference.", page.text_content(refs))
         self.single(page, "div", id="ref-old")
         self.assertTrue(page.find("a", href="#ref-old"))
@@ -618,7 +651,7 @@ bibtex = "@misc{legacy, title={Legacy project}}"
         if not self.pandoc:
             self.skipTest("Pandoc is required for citation-pipeline fixtures")
         page = self.document("test-pandoc-without-references")
-        self.assertFalse(page.find(id="project-bibliography"))
+        self.assertFalse(page.find(id="post-bibliography"))
         self.assertFalse(page.find(id="refs"))
         code = page.find("code")
         self.assertEqual(len(code), 1)
@@ -627,34 +660,45 @@ bibtex = "@misc{legacy, title={Legacy project}}"
         self.assertIn("The explanation after the example must remain in the page.", page.text)
         self.single(page, "h2", id="frontmatter-example")
 
-    def test_related_projects_include_published_siblings_and_exclude_current_page(self):
-        page = self.document("research/nested-project")
-        related = self.single(page, "aside", **{"aria-labelledby": "project-related-title"})
+    def test_related_posts_include_published_siblings_and_exclude_current_page(self):
+        page = self.document("research/nested-post")
+        related = self.single(page, "aside", **{"aria-labelledby": "post-related-title"})
         links = [attrs["href"] for tag, attrs in page.descendants(related) if tag == "a"]
-        self.assertEqual(links, [BASE + "projects/" + name + "/" for name in
+        self.assertEqual(links, [BASE + "posts/" + name + "/" for name in
                                 ("renamed-image", "m-video", "b-no-image", "c-excerpt")])
-        self.assertEqual(page.text_content(self.single(page, "h2", id="project-related-title")),
-                         "Related Projects")
+        self.assertEqual(page.text_content(self.single(page, "h2", id="post-related-title")),
+                         "Related Posts")
 
         explicit = self.document("research/custom-output")
-        related = self.single(explicit, "aside", **{"aria-labelledby": "project-related-title"})
+        related = self.single(explicit, "aside", **{"aria-labelledby": "post-related-title"})
         self.assertEqual([attrs["href"] for tag, attrs in explicit.descendants(related) if tag == "a"],
                          [BASE + "test-minimal/"])
 
-    def test_migrated_theme_posts_use_project_layout_at_existing_urls(self):
+    def test_theme_content_uses_canonical_post_frontmatter(self):
+        for path in (THEME / "content").rglob("*.md"):
+            source = path.read_text(encoding="utf-8")
+            if not source.startswith("+++"):
+                continue
+            frontmatter = source.split("+++", 2)[1]
+            with self.subTest(content=str(path.relative_to(THEME))):
+                self.assertNotRegex(frontmatter, r"\[extra\.project(?:\.|\])")
+                self.assertNotRegex(frontmatter, r'(?:page_template|template)\s*=\s*"(?:project|__old_post)\.html"')
+                self.assertNotRegex(frontmatter, r'(?m)^type\s*=\s*"(?:blog|projects)"')
+
+    def test_migrated_theme_posts_use_canonical_post_layout_at_existing_urls(self):
         for slug, title in (("begin-with-persona", "Begin with Persona"),
                             ("citation-pipeline-guide", "How to Use Citation in Persona")):
             output = "maps/private-soul/" + slug
             with self.subTest(output=output):
                 page = self.document(output)
-                heading = self.single(page, "h1", id="project-title")
+                heading = self.single(page, "h1", id="post-title")
                 self.assertEqual(page.text_content(heading), title)
                 self.single(page, "link", rel="canonical", href=BASE + output + "/")
-                self.single(page, "article", id="project-main")
+                self.single(page, "article", id="post-main")
                 self.assertFalse(page.with_class("blog-post"))
                 self.assertEqual(len(page.with_class("article-meta")), 1)
                 self.assertTrue(page.with_class("article-tags"))
-                self.single(page, "section", id="project-bibliography")
+                self.single(page, "section", id="post-bibliography")
                 self.single(page, "div", id="refs")
                 self.assertTrue(page.find("a", href="#ref-zolathemes"))
                 self.assertFalse(page.find(id="bookmark-button"))
@@ -668,15 +712,15 @@ bibtex = "@misc{legacy, title={Legacy project}}"
         self.single(page, "header", id="header")
         self.single(page, "meta", name="author", content="Persona, Zola Theme")
         self.single(page, "script", src=BASE + "assets/script/home.js")
-        self.assertFalse(page.with_class("project"))
-        self.assertFalse(page.find("script", src=BASE + "assets/script/project.js"))
+        self.assertFalse(page.with_class("post"))
+        self.assertFalse(page.find("script", src=BASE + "assets/script/post.js"))
 
     def test_home_item_limit_defaults_to_three_and_applies_to_every_list(self):
-        expected_links = [BASE + "research/nested-project/",
-                          BASE + "projects/renamed-image/",
-                          BASE + "projects/m-video/",
-                          BASE + "projects/b-no-image/",
-                          BASE + "projects/c-excerpt/"]
+        expected_links = [BASE + "research/nested-post/",
+                          BASE + "posts/renamed-image/",
+                          BASE + "posts/m-video/",
+                          BASE + "posts/b-no-image/",
+                          BASE + "posts/c-excerpt/"]
         blog_links = [BASE + "test-blog/" + name + "/" for name in
                       ("full", "minimal", "entry-3", "entry-4", "entry-5")]
         card_links = [BASE + "test-category/" + name + "/" for name in
@@ -688,7 +732,7 @@ bibtex = "@misc{legacy, title={Legacy project}}"
                 home = self.document("", directory=directory)
                 self.assertFalse(home.find("nav", **{"aria-label": "Breadcrumb"}))
                 for section_id, path, expected, link_class in (
-                        ("fixture-projects", "projects", expected_links, "post-entry__link"),
+                        ("fixture-posts", "posts", expected_links, "post-entry__link"),
                         ("fixture-blog", "test-blog", blog_links, "post-entry__link"),
                         ("fixture-categories", "test-category", card_links, "post-entry__thumb")):
                     with self.subTest(section=section_id):
@@ -700,30 +744,30 @@ bibtex = "@misc{legacy, title={Legacy project}}"
                         self.assertEqual(self.section_links(archive, section_id, link_class), expected)
                         self.assertFalse(self.view_all_links(archive, section_id))
 
-    def test_project_listing_thumbnails_and_excerpt_fallback(self):
-        archive = self.document("projects")
+    def test_post_listing_thumbnails_and_excerpt_fallback(self):
+        archive = self.document("posts")
         self.assertEqual(len(archive.with_class("post-list")), 1)
-        self.assertIn("Fixture projects", archive.text)
-        self.assertIn("project introduction", archive.text)
+        self.assertIn("Fixture posts", archive.text)
+        self.assertIn("post introduction", archive.text)
         self.assertIn("Explicit thumbnail description", archive.text)
         self.assertNotIn("Fallback listing excerpt 1", archive.text)
         self.assertIn("Fallback listing excerpt 5", archive.text)
         thumbnails = archive.with_class("post-entry__thumbnail")
         self.assertEqual([image["src"] for image in thumbnails], [
-            BASE + "research/nested-project/thumb.svg",
-            BASE + "projects/renamed-image/thumb.svg",
+            BASE + "research/nested-post/thumb.svg",
+            BASE + "posts/renamed-image/thumb.svg",
             BASE + "test-assets/shared.svg",
         ])
         self.assertEqual(thumbnails[0]["alt"], "Explicit thumbnail")
         self.assertTrue(all(image.get("src") for image in thumbnails))
-        self.assertTrue((self.site / "public/research/nested-project/thumb.svg").is_file())
-        self.assertTrue((self.site / "public/projects/renamed-image/thumb.svg").is_file())
+        self.assertTrue((self.site / "public/research/nested-post/thumb.svg").is_file())
+        self.assertTrue((self.site / "public/posts/renamed-image/thumb.svg").is_file())
 
-    def test_draft_projects_are_unlisted_but_keep_direct_urls_and_assets(self):
-        draft_outputs = ("research/unlisted-first", "projects/unlisted-middle")
+    def test_draft_posts_are_unlisted_but_keep_direct_urls_and_assets(self):
+        draft_outputs = ("research/unlisted-first", "posts/unlisted-middle")
         for directory in ("public", "public-limit-2", "public-limit-0", "public-limit-5", "public-limit--1"):
             with self.subTest(directory=directory):
-                for output in ("", "projects"):
+                for output in ("", "posts"):
                     listing = self.document(output, directory=directory)
                     self.assertNotIn("Unlisted draft-first", listing.text)
                     self.assertNotIn("Unlisted draft-middle", listing.text)
@@ -731,12 +775,12 @@ bibtex = "@misc{legacy, title={Legacy project}}"
                         self.assertFalse(listing.find("a", href=BASE + draft_output + "/"))
                 for draft_output in draft_outputs:
                     page = self.document(draft_output, directory=directory)
-                    self.assertIn("Draft project body remains available", page.text)
+                    self.assertIn("Draft post body remains available", page.text)
                     self.single(page, "link", rel="canonical", href=BASE + draft_output + "/")
                     self.single(page, "img", src=BASE + draft_output + "/thumb.svg")
                     self.assertTrue((self.site / directory / draft_output / "thumb.svg").is_file())
 
-    def test_draft_projects_in_blog_collections_stay_out_of_all_automatic_lists(self):
+    def test_draft_posts_in_blog_collections_stay_out_of_all_automatic_lists(self):
         drafts = [BASE + "test-blog/" + name + "/" for name in
                   ("draft-first", "draft-middle")]
         for directory in ("public", "public-limit-2", "public-limit-0", "public-limit-5"):
@@ -749,13 +793,13 @@ bibtex = "@misc{legacy, title={Legacy project}}"
                         self.assertFalse(page.find("a", href=draft))
             for name in ("draft-first", "draft-middle"):
                 page = self.document("test-blog/" + name, directory=directory)
-                self.single(page, "h1", id="project-title")
-                self.assertIn("Unlisted project in a normal blog collection", page.text)
+                self.single(page, "h1", id="post-title")
+                self.assertIn("Unlisted post in a normal blog collection", page.text)
             post = self.document("test-blog/full", directory=directory)
-            recent = self.single(post, "aside", id="sidebar")
+            recent = self.single(post, "aside", **{"aria-labelledby": "post-related-title"})
             links = [attrs["href"] for tag, attrs in post.descendants(recent) if tag == "a"]
             self.assertEqual(links, [BASE + "test-blog/" + name + "/" for name in
-                                    ("full", "minimal", "entry-3", "entry-4", "entry-5")])
+                                    ("minimal", "entry-3", "entry-4", "entry-5")])
 
     def test_taxonomy_overview_counts_only_published_entries_and_hides_draft_only_terms(self):
         overview = self.document("tags")
@@ -771,13 +815,13 @@ bibtex = "@misc{legacy, title={Legacy project}}"
                 fixture_terms[links[0]] = counts
         self.assertEqual(fixture_terms, {shared_url: ["1 item"]})
 
-    def test_example_project_lives_under_public_self(self):
-        self.assertFalse((THEME / "content/projects").exists())
+    def test_example_post_lives_under_public_self(self):
+        self.assertFalse((THEME / "content/posts").exists())
         self.assertTrue((THEME / "content/maps/public-self/field-notes/index.md").is_file())
-        self.assertFalse((self.site / "public/projects/field-notes/index.html").exists())
+        self.assertFalse((self.site / "public/posts/field-notes/index.html").exists())
         output = "maps/public-self/field-notes"
         page = self.document(output)
-        self.single(page, "h1", id="project-title")
+        self.single(page, "h1", id="post-title")
         self.single(page, "link", rel="canonical", href=BASE + output + "/")
         breadcrumbs = self.single(page, "nav", **{"aria-label": "Breadcrumb"})
         links = [attrs["href"] for tag, attrs in page.descendants(breadcrumbs) if tag == "a"]
@@ -786,32 +830,32 @@ bibtex = "@misc{legacy, title={Legacy project}}"
             self.assertTrue(page.find("img", src=BASE + output + "/" + asset))
             self.assertTrue((self.site / "public" / output / asset).is_file())
         header = self.single(page, "header", id="header")
-        self.assertFalse(any(tag == "a" and page.text_content(attrs).strip() == "Projects"
+        self.assertFalse(any(tag == "a" and page.text_content(attrs).strip() == "Posts"
                              for tag, attrs in page.descendants(header)))
         listing = self.document("maps/public-self")
         self.assertIn(BASE + output + "/", self.section_links(listing, "public-self"))
 
-    def test_view_all_counts_only_published_projects(self):
+    def test_view_all_counts_only_published_posts(self):
         home = self.document("", directory="public-limit-5")
-        self.assertEqual(len(self.within_section(home, "fixture-projects", "post-entry--row")), 5)
-        self.assertFalse(self.view_all_links(home, "fixture-projects"))
+        self.assertEqual(len(self.within_section(home, "fixture-posts", "post-entry--row")), 5)
+        self.assertFalse(self.view_all_links(home, "fixture-posts"))
 
     def test_all_draft_collection_has_no_entries_or_view_all(self):
-        for output in ("", "projects"):
+        for output in ("", "posts"):
             with self.subTest(output=output):
                 listing = self.document(output, directory="public-all-drafts")
-                self.assertFalse(self.within_section(listing, "fixture-projects", "post-entry--row"))
-                self.assertFalse(self.within_section(listing, "fixture-projects", "post-entry__link"))
-                self.assertFalse(self.view_all_links(listing, "fixture-projects"))
-        for output in ("research/nested-project", "projects/renamed-image",
-                       "projects/m-video", "projects/b-no-image", "projects/c-excerpt",
-                       "research/unlisted-first", "projects/unlisted-middle"):
+                self.assertFalse(self.within_section(listing, "fixture-posts", "post-entry--row"))
+                self.assertFalse(self.within_section(listing, "fixture-posts", "post-entry__link"))
+                self.assertFalse(self.view_all_links(listing, "fixture-posts"))
+        for output in ("research/nested-post", "posts/renamed-image",
+                       "posts/m-video", "posts/b-no-image", "posts/c-excerpt",
+                       "research/unlisted-first", "posts/unlisted-middle"):
             page = self.document(output, directory="public-all-drafts")
-            self.single(page, "h1", id="project-title")
+            self.single(page, "h1", id="post-title")
             self.assertTrue((self.site / "public-all-drafts" / output / "thumb.svg").is_file())
 
-    def test_project_listing_has_one_link_per_row_wrapping_its_thumbnail(self):
-        archive = self.document("projects")
+    def test_post_listing_has_one_link_per_row_wrapping_its_thumbnail(self):
+        archive = self.document("posts")
         entries = archive.with_class("post-entry--row")
         self.assertEqual(len(entries), 5)
         for entry in entries:
@@ -828,38 +872,38 @@ bibtex = "@misc{legacy, title={Legacy project}}"
         for entry in entries[3:]:
             self.assertFalse(any(tag == "img" for tag, _ in archive.descendants(entry)))
 
-    def test_project_date_and_subtitle_are_consistent_between_detail_and_list(self):
-        detail = self.document("research/nested-project")
+    def test_post_date_and_subtitle_are_consistent_between_detail_and_list(self):
+        detail = self.document("research/nested-post")
         date = detail.with_class("article-meta__date")
         self.assertEqual(len(date), 1)
         self.assertEqual(date[0]["datetime"], "2025-03-04")
         self.assertIn("2025", detail.text_content(date[0]))
-        self.assertEqual(detail.text_content(detail.with_class("project__subtitle")[0]), SUBTITLE)
+        self.assertEqual(detail.text_content(detail.with_class("post__subtitle")[0]), SUBTITLE)
         self.assertNotIn("Shared subtitle should be overridden", detail.text)
 
-        fallback = self.document("projects/renamed-image")
-        self.assertEqual(fallback.text_content(fallback.with_class("project__subtitle")[0]),
-                         "Shared project subtitle")
+        fallback = self.document("posts/renamed-image")
+        self.assertEqual(fallback.text_content(fallback.with_class("post__subtitle")[0]),
+                         "Shared post subtitle")
         self.assertFalse(fallback.with_class("article-meta__date"))
 
-        for output in ("", "projects"):
+        for output in ("", "posts"):
             with self.subTest(output=output):
                 listing = self.document(output)
-                dates = self.within_section(listing, "fixture-projects", "post-entry__date")
+                dates = self.within_section(listing, "fixture-posts", "post-entry__date")
                 self.assertEqual(len(dates), 1)
                 self.assertEqual(dates[0]["datetime"], "2025-03-04")
                 self.assertEqual(listing.text_content(dates[0]), "Mar 04, 2025")
                 self.assertEqual([listing.text_content(subtitle)
                                   for subtitle in self.within_section(
-                                      listing, "fixture-projects", "post-entry__subtitle")],
-                                 [SUBTITLE, "Shared project subtitle"])
+                                      listing, "fixture-posts", "post-entry__subtitle")],
+                                 [SUBTITLE, "Shared post subtitle"])
                 self.assertNotIn("Shared subtitle should be overridden", listing.text)
 
-    def test_blog_project_and_taxonomy_lists_share_row_markup(self):
-        projects = self.document("projects")
+    def test_blog_post_and_taxonomy_lists_share_row_markup(self):
+        posts = self.document("posts")
         blog = self.document("test-blog")
         taxonomy = self.document("tags/shared-fixture")
-        project_row = projects.with_class("post-entry--row")[0]
+        post_row = posts.with_class("post-entry--row")[0]
         blog_row = blog.with_class("post-entry--row")[0]
         taxonomy_row = taxonomy.with_class("post-entry--row")[0]
 
@@ -867,9 +911,9 @@ bibtex = "@misc{legacy, title={Legacy project}}"
             return [(tag, tuple(attrs.get("class", "").split()))
                     for tag, attrs in document.descendants(row)]
 
-        self.assertEqual(shape(projects, project_row), shape(blog, blog_row))
+        self.assertEqual(shape(posts, post_row), shape(blog, blog_row))
         self.assertEqual(shape(blog, blog_row), shape(taxonomy, taxonomy_row))
-        for document, row in ((projects, project_row), (blog, blog_row),
+        for document, row in ((posts, post_row), (blog, blog_row),
                               (taxonomy, taxonomy_row)):
             with self.subTest(row=row):
                 self.assertEqual(set(row["class"].split()),
@@ -893,11 +937,11 @@ bibtex = "@misc{legacy, title={Legacy project}}"
 
     def test_blog_subtitle_is_optional_and_escaped_in_details_and_lists(self):
         detail = self.document("test-blog/full")
-        subtitles = detail.with_class("blog-post__subtitle")
+        subtitles = detail.with_class("post__subtitle")
         self.assertEqual(len(subtitles), 1)
         self.assertEqual(detail.text_content(subtitles[0]), SUBTITLE)
-        self.assertFalse(self.document("test-blog/minimal").with_class("blog-post__subtitle"))
-        for output in ("research/nested-project", "test-blog/full", "projects",
+        self.assertFalse(self.document("test-blog/minimal").with_class("post__subtitle"))
+        for output in ("research/nested-post", "test-blog/full", "posts",
                        "test-blog", "tags/shared-fixture"):
             with self.subTest(output=output):
                 page = self.document(output)
@@ -906,27 +950,27 @@ bibtex = "@misc{legacy, title={Legacy project}}"
                 self.assertFalse(page.find("img", src="x"))
                 self.assertFalse(any("onerror" in attributes for _, attributes in page.elements))
                 self.assertTrue(all("src" in script for script in page.find("script")))
-                if output in ("projects", "test-blog", "tags/shared-fixture"):
+                if output in ("posts", "test-blog", "tags/shared-fixture"):
                     self.assertEqual(page.text_content(page.with_class("post-entry__subtitle")[0]),
                                      SUBTITLE)
 
-    def test_project_breadcrumbs_follow_sections_with_custom_output_paths(self):
-        page = self.document("research/nested-project")
+    def test_post_breadcrumbs_follow_sections_with_custom_output_paths(self):
+        page = self.document("research/nested-post")
         breadcrumbs = self.single(page, "nav", **{"aria-label": "Breadcrumb"})
         links = [attrs["href"] for tag, attrs in page.descendants(breadcrumbs) if tag == "a"]
-        self.assertEqual(links, [BASE.rstrip("/"), BASE + "projects/"])
+        self.assertEqual(links, [BASE.rstrip("/"), BASE + "posts/"])
         self.single(page, "li", **{"aria-current": "page"})
         self.assertFalse(page.find("a", href=BASE + "research/"))
 
         full = self.document("research/custom-output")
-        related = self.single(full, "aside", **{"aria-labelledby": "project-related-title"})
-        body = full.with_class("project__body")[0]
+        related = self.single(full, "aside", **{"aria-labelledby": "post-related-title"})
+        body = full.with_class("post__body")[0]
         self.assertNotIn(("aside", related), full.descendants(body))
         body_index = next(i for i, (_, attrs) in enumerate(full.elements) if attrs is body)
         related_index = next(i for i, (_, attrs) in enumerate(full.elements) if attrs is related)
         self.assertGreater(related_index, body_index)
-        self.assertEqual(len(full.with_class("project__related")), 1)
-        self.assertFalse(full.with_class("project-bar"))
+        self.assertEqual(len(full.with_class("post__related")), 1)
+        self.assertFalse(full.with_class("post-bar"))
 
 
 if __name__ == "__main__":

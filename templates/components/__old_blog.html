@@ -1,10 +1,11 @@
-{% component blog.post_thumbnail(thumbnail, title) %}
+{# Archived blog layout. Active articles use post.html. #}
+{% component __old_blog.post_thumbnail(thumbnail, title) %}
   <figure class="blog-post__img">
     <img src="{{ thumbnail }}" alt="Thumbnail for {{ title }}" class="img-fluid">
   </figure>
-{% endcomponent blog.post_thumbnail %}
+{% endcomponent __old_blog.post_thumbnail %}
 
-{% component blog.post_header(page) %}
+{% component __old_blog.post_header(page) %}
   <header class="blog-post__header">
     <h2 id="blog-post-title" class="blog-post__title">{{ page.title }}</h2>
     {% if page.extra.subtitle %}
@@ -13,19 +14,19 @@
     {{ <render.article_tags page={page} /> }}
     {{ <render.article_meta page={page} /> }}
   </header>
-{% endcomponent blog.post_header %}
+{% endcomponent __old_blog.post_header %}
 
-{% component blog.post_content(content) %}
+{% component __old_blog.post_content(content) %}
   <section class="blog-post__content">{{ content | safe }}</section>
-{% endcomponent blog.post_content %}
+{% endcomponent __old_blog.post_content %}
 
-{% component blog.side_bar(page) %}
+{% component __old_blog.side_bar(page) %}
   {% set parent_section = page.ancestors | last %}
   {% set blog_section = get_section(path=parent_section, paginate_by=false, include_pages=true) %}
   {% set_global entries = [] %}
   {% for entry in blog_section.pages %}
-    {% set project = entry.extra.project | default(value={}) %}
-    {% if not project.draft %}
+    {% set post = entry.extra.post | default(value={}) %}
+    {% if not post.draft %}
       {% set_global entries = [...entries, entry] %}
     {% endif %}
   {% endfor %}
@@ -44,9 +45,9 @@
       </section>
     </section>
   </aside>
-{% endcomponent blog.side_bar %}
+{% endcomponent __old_blog.side_bar %}
 
-{% component blog.post(page) %}
+{% component __old_blog.post(page) %}
   {{ <render.breadcrumbs crumbs={page.components} /> }}
   <article class="container" aria-labelledby="blog-post-title">
     <div class="row">
@@ -54,14 +55,14 @@
         <div class="container" data-aos="fade-up">
           <div class="blog-post__article">
             {% if page.extra.thumbnail %}
-              {{ <blog.post_thumbnail thumbnail={page.extra.thumbnail} title={page.title} /> }}
+              {{ <__old_blog.post_thumbnail thumbnail={page.extra.thumbnail} title={page.title} /> }}
             {% endif %}
-            {{ <blog.post_header page={page} /> }}
-            {{ <blog.post_content content={page.content} /> }}
+            {{ <__old_blog.post_header page={page} /> }}
+            {{ <__old_blog.post_content content={page.content} /> }}
           </div>
         </div>
       </section>
-      {{ <blog.side_bar page={page} /> }}
+      {{ <__old_blog.side_bar page={page} /> }}
     </div>
   </article>
-{% endcomponent blog.post %}
+{% endcomponent __old_blog.post %}

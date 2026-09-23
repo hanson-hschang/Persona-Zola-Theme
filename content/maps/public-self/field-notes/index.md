@@ -2,10 +2,10 @@
 title = "Field Notes: from observations to reproducible results"
 description = "An illustrative academic project showing how to present a research question, a method, and its evidence with Persona."
 date = 2026-09-21
-template = "project.html"
+template = "post.html"
 weight = 1
 
-[extra.project]
+[extra.post]
 draft = false # Set true to hide from automatic lists while keeping this URL available.
 thumbnail = "workflow.svg"
 thumbnail_alt = "Observation-to-evidence workflow"
@@ -18,9 +18,9 @@ authors = [
 affiliations = [{ id = "1", name = "Example Research Lab" }]
 author_note = "* Equal contribution. Illustrative project and authors."
 links = [
-  { name = "Read the overview", url = "#project-abstract", icon_class = "bi bi-file-earmark-text" },
+  { name = "Read the overview", url = "#post-abstract", icon_class = "bi bi-file-earmark-text" },
   { name = "Source", url = "https://github.com/hanson-hschang/Persona-Zola-Theme", icon_class = "bi bi-github" },
-  { name = "Cite", url = "#project-citation", icon_class = "bi bi-quote" },
+  { name = "Cite", url = "#post-citation", icon_class = "bi bi-quote" },
 ]
 related = [{ title = "More from Public Self", url = "@/maps/public-self/_index.md" }]
 abstract = """
@@ -46,7 +46,7 @@ bibtex = """
 }
 """
 
-[extra.project.teaser]
+[extra.post.teaser]
 src = "workflow.svg"
 alt = "A workflow moving from observations through organized records to an explanation, with provenance retained throughout."
 width = 1200
