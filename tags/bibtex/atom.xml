@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Persona - Zola Theme  - bibtex</title>
+    <subtitle>A modern, responsive and lightweight theme for resume, portfolio, and blog.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://hanson-hschang.github.io/Persona-Zola-Theme/tags/bibtex/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://hanson-hschang.github.io/Persona-Zola-Theme/"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-03-19T00:00:00+00:00</updated>
+    <id>https://hanson-hschang.github.io/Persona-Zola-Theme/tags/bibtex/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Writing Citation-Enabled Posts in Persona</title>
+        <published>2025-03-19T00:00:00+00:00</published>
+        <updated>2025-03-19T00:00:00+00:00</updated>
+        
+        <author>
+          <name>Persona, Zola Theme</name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/"/>
+        <id>https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/</id>
+        
+        <content type="html" xml:base="https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/">&lt;p&gt;&lt;code&gt;Persona&lt;/code&gt; uses Pandoc to turn citation keys into linked, formatted citations and a bibliography during the build. This guide covers setup, authoring, and previewing a citation-enabled post &lt;span class=&quot;citation&quot; data-cites=&quot;zolathemes&quot;&gt;(&lt;a href=&quot;#ref-zolathemes&quot; role=&quot;doc-biblioref&quot;&gt;Zola themes&lt;/a&gt;)&lt;/span&gt;. The workflow suits technical, research, and reference-heavy writing.&lt;/p&gt;
+&lt;h2 id=&quot;requirements-and-setup&quot;&gt;Requirements and setup&lt;/h2&gt;
+&lt;p&gt;Install Pandoc and watchexec:&lt;/p&gt;
+&lt;div class=&quot;sourceCode&quot; id=&quot;cb1&quot;&gt;&lt;pre class=&quot;sourceCode bash&quot;&gt;&lt;code class=&quot;sourceCode bash&quot;&gt;&lt;span id=&quot;cb1-1&quot;&gt;&lt;a href=&quot;#cb1-1&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;co&quot;&gt;# macOS&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-2&quot;&gt;&lt;a href=&quot;#cb1-2&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;ex&quot;&gt;brew&lt;/span&gt; install pandoc watchexec&lt;/span&gt;
+&lt;span id=&quot;cb1-3&quot;&gt;&lt;a href=&quot;#cb1-3&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-4&quot;&gt;&lt;a href=&quot;#cb1-4&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;co&quot;&gt;# Ubuntu / Debian&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb1-5&quot;&gt;&lt;a href=&quot;#cb1-5&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;fu&quot;&gt;sudo&lt;/span&gt; apt install pandoc&lt;/span&gt;
+&lt;span id=&quot;cb1-6&quot;&gt;&lt;a href=&quot;#cb1-6&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;ex&quot;&gt;cargo&lt;/span&gt; install watchexec-cli&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;From your site root, copy the build scripts and Makefile from the theme:&lt;/p&gt;
+&lt;div class=&quot;sourceCode&quot; id=&quot;cb2&quot;&gt;&lt;pre class=&quot;sourceCode bash&quot;&gt;&lt;code class=&quot;sourceCode bash&quot;&gt;&lt;span id=&quot;cb2-1&quot;&gt;&lt;a href=&quot;#cb2-1&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;fu&quot;&gt;cp&lt;/span&gt; &lt;span class=&quot;at&quot;&gt;-r&lt;/span&gt; themes/persona/&lt;span class=&quot;dt&quot;&gt;{scripts&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;dt&quot;&gt;Makefile}&lt;/span&gt; .&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Add this to &lt;code&gt;config.toml&lt;/code&gt; so Zola skips the authoring sources and citation data:&lt;/p&gt;
+&lt;div class=&quot;sourceCode&quot; id=&quot;cb3&quot;&gt;&lt;pre class=&quot;sourceCode toml&quot;&gt;&lt;code class=&quot;sourceCode toml&quot;&gt;&lt;span id=&quot;cb3-1&quot;&gt;&lt;a href=&quot;#cb3-1&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;dt&quot;&gt;ignored_content&lt;/span&gt; &lt;span class=&quot;op&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;op&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;st&quot;&gt;&amp;quot;*.src.md&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;*.bib&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;quot;*.csl&amp;quot;&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;]&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&quot;write-a-post&quot;&gt;Write a post&lt;/h2&gt;
+&lt;p&gt;Keep the source, bibliography, and generated Markdown in the same folder:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;index.src.md&lt;/code&gt; is the authoring source.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;references.bib&lt;/code&gt; stores the BibTeX entries.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;index.md&lt;/code&gt; is generated by Pandoc; edit the source instead.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;write-citations-in-.src.md&quot;&gt;Write citations in &lt;code&gt;.src.md&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;Use &lt;a href=&quot;https://pandoc.org/demo/example33/8.20-citation-syntax.html&quot;&gt;Pandoc citation syntax&lt;/a&gt; in Markdown:&lt;/p&gt;
+&lt;div class=&quot;sourceCode&quot; id=&quot;cb4&quot;&gt;&lt;pre class=&quot;sourceCode markdown&quot;&gt;&lt;code class=&quot;sourceCode markdown&quot;&gt;&lt;span id=&quot;cb4-1&quot;&gt;&lt;a href=&quot;#cb4-1&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;Climate change is accelerating&lt;span class=&quot;co&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ot&quot;&gt;@ipcc2021&lt;/span&gt;&lt;span class=&quot;co&quot;&gt;]&lt;/span&gt;.&lt;/span&gt;
+&lt;span id=&quot;cb4-2&quot;&gt;&lt;a href=&quot;#cb4-2&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;Multiple studies confirm this&lt;span class=&quot;co&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ot&quot;&gt;@ipcc2021; @nasa2023&lt;/span&gt;&lt;span class=&quot;co&quot;&gt;]&lt;/span&gt;.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Add citation settings to the post’s &lt;code&gt;[extra]&lt;/code&gt; front matter:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;citation_style = &quot;apa&quot;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bibliography = &quot;references.bib&quot;&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Set the citation style once for the site if you want it to apply to posts by default.&lt;/p&gt;
+&lt;h2 id=&quot;mathematics-and-latex-macros&quot;&gt;Mathematics and LaTeX macros&lt;/h2&gt;
+&lt;p&gt;Define reusable KaTeX macros in &lt;code&gt;[extra.tex.macros]&lt;/code&gt;. TOML literal strings preserve backslashes:&lt;/p&gt;
+&lt;div class=&quot;sourceCode&quot; id=&quot;cb5&quot;&gt;&lt;pre class=&quot;sourceCode toml&quot;&gt;&lt;code class=&quot;sourceCode toml&quot;&gt;&lt;span id=&quot;cb5-1&quot;&gt;&lt;a href=&quot;#cb5-1&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;kw&quot;&gt;[extra.tex.macros]&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb5-2&quot;&gt;&lt;a href=&quot;#cb5-2&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;dt&quot;&gt;&amp;#39;\Real&amp;#39;&lt;/span&gt; &lt;span class=&quot;op&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;#39;&lt;/span&gt;&lt;span class=&quot;vs&quot;&gt;\mathbb{R}^{#1}&lt;/span&gt;&lt;span class=&quot;st&quot;&gt;&amp;#39;&lt;/span&gt;&lt;/span&gt;
+&lt;span id=&quot;cb5-3&quot;&gt;&lt;a href=&quot;#cb5-3&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;dt&quot;&gt;&amp;#39;\norm&amp;#39;&lt;/span&gt; &lt;span class=&quot;op&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;st&quot;&gt;&amp;#39;&lt;/span&gt;&lt;span class=&quot;vs&quot;&gt;\left\lVert #1 \right\rVert&lt;/span&gt;&lt;span class=&quot;st&quot;&gt;&amp;#39;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;For a vector &lt;span class=&quot;math inline&quot;&gt;\(x \in \Real{n}\)&lt;/span&gt;, the Euclidean norm is&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;math display&quot;&gt;\[
+\norm{x}_2 = \sqrt{\sum_{i=1}^{n} x_i^2}.
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Write inline mathematics between &lt;code&gt;$&lt;/code&gt; delimiters and display mathematics between &lt;code&gt;$$&lt;/code&gt; delimiters. Pandoc preserves the expressions for KaTeX, including these page-specific macros. Citation references and mathematics can appear together in the same article &lt;span class=&quot;citation&quot; data-cites=&quot;zolathemes&quot;&gt;(&lt;a href=&quot;#ref-zolathemes&quot; role=&quot;doc-biblioref&quot;&gt;Zola themes&lt;/a&gt;)&lt;/span&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;build-and-preview&quot;&gt;Build and preview&lt;/h2&gt;
+&lt;p&gt;Use the copied Makefile to build or preview your site:&lt;/p&gt;
+&lt;div class=&quot;sourceCode&quot; id=&quot;cb6&quot;&gt;&lt;pre class=&quot;sourceCode bash&quot;&gt;&lt;code class=&quot;sourceCode bash&quot;&gt;&lt;span id=&quot;cb6-1&quot;&gt;&lt;a href=&quot;#cb6-1&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;fu&quot;&gt;make&lt;/span&gt; build&lt;/span&gt;
+&lt;span id=&quot;cb6-2&quot;&gt;&lt;a href=&quot;#cb6-2&quot; aria-hidden=&quot;true&quot; tabindex=&quot;-1&quot;&gt;&lt;/a&gt;&lt;span class=&quot;fu&quot;&gt;make&lt;/span&gt; serve&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;make build&lt;/code&gt; converts changed &lt;code&gt;.src.md&lt;/code&gt; files into &lt;code&gt;.md&lt;/code&gt; files; run &lt;code&gt;zola build&lt;/code&gt; to generate the site. &lt;code&gt;make serve&lt;/code&gt; watches the sources and dependencies, rebuilds when needed, and runs &lt;code&gt;zola serve&lt;/code&gt;. The incremental build checks the scripts, configuration, bibliography, and CSL files. Generated &lt;code&gt;.md&lt;/code&gt; files do not trigger another rebuild.&lt;/p&gt;
+&lt;p&gt;To rerun preprocessing after changing the pipeline, run &lt;code&gt;bash scripts/build.sh&lt;/code&gt; from your site root. If you use the scripts directly from the installed theme, run &lt;code&gt;bash themes/persona/scripts/build.sh&lt;/code&gt; from the site root.&lt;/p&gt;
+&lt;h2 id=&quot;citation-style-resolution-order&quot;&gt;Citation style resolution order&lt;/h2&gt;
+&lt;p&gt;The preprocessor selects a CSL style in this order:&lt;/p&gt;
+&lt;ol type=&quot;1&quot;&gt;
+&lt;li&gt;The post’s &lt;code&gt;[extra].citation_style&lt;/code&gt;, resolved from &lt;code&gt;citation-style/&amp;lt;name&amp;gt;.csl&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;A &lt;code&gt;style.csl&lt;/code&gt; beside the &lt;code&gt;.src.md&lt;/code&gt; file.&lt;/li&gt;
+&lt;li&gt;Site &lt;code&gt;config.toml&lt;/code&gt;: &lt;code&gt;[extra].citation_style&lt;/code&gt; or &lt;code&gt;[extra.persona].citation_style&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Theme &lt;code&gt;themes/persona/theme.toml&lt;/code&gt; &lt;code&gt;[extra].citation_style&lt;/code&gt;, or &lt;code&gt;themes/persona/config.toml&lt;/code&gt; &lt;code&gt;[extra.persona].citation_style&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Persona includes the &lt;code&gt;ieee&lt;/code&gt; and &lt;code&gt;apa&lt;/code&gt; styles. Add custom CSL files to your site’s &lt;code&gt;citation-style/&lt;/code&gt; directory or place a &lt;code&gt;style.csl&lt;/code&gt; beside a post source. If a named post style cannot be found, the preprocessor warns and falls back to the configured default. The build script requires a site or theme default style.&lt;/p&gt;
+&lt;h2 id=&quot;output-and-styling&quot;&gt;Output and styling&lt;/h2&gt;
+&lt;p&gt;Pandoc emits HTML citations and a bibliography with stable classes that the theme styles:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;.citation&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.references&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.csl-entry&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.csl-left-margin&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.csl-right-inline&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Inline citations link to their bibliography entries. The bibliography appears inside the &lt;code&gt;references&lt;/code&gt; container under &lt;strong&gt;Bibliography&lt;/strong&gt;, after the optional &lt;strong&gt;Citation&lt;/strong&gt; section. That section displays the post’s &lt;code&gt;[extra.post].bibtex&lt;/code&gt;; the bibliography lists works cited in the text. This guide includes a sample BibTeX record to demonstrate both.&lt;/p&gt;
+&lt;p&gt;For the complete example, see this guide’s &lt;a href=&quot;https://github.com/hanson-hschang/Persona-Zola-Theme/tree/main/content/maps/private-soul/citation-pipeline-guide/&quot;&gt;source directory&lt;/a&gt;.&lt;/p&gt;
+&lt;!-- persona-bibliography --&gt;
+&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot; data-entry-spacing=&quot;0&quot; data-line-spacing=&quot;2&quot; role=&quot;list&quot;&gt;
+&lt;h2 class=&quot;unnumbered&quot; id=&quot;bibliography&quot;&gt;Bibliography&lt;/h2&gt;
+&lt;div id=&quot;ref-zolathemes&quot; class=&quot;csl-entry&quot; role=&quot;listitem&quot;&gt;
+Zola themes. &lt;a href=&quot;https://www.getzola.org/themes/&quot;&gt;https://www.getzola.org/themes/&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</content>
+        
+    </entry>
+</feed>
