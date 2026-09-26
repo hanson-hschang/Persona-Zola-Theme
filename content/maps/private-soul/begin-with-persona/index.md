@@ -97,6 +97,14 @@ bibliography = "references.bib"
 </ul></li>
 </ul>
 <p>See <code>sass/assets/stylesheet/_variables.scss</code> for the complete list of customizable variables with detailed descriptions (the compiled CSS is emitted under <code>public/assets/stylesheet/</code> at build time).</p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<ul>
+<li><strong>Navigation not working:</strong>
+<ul>
+<li>Ensure <code>[extra].order</code> is set correctly in the section front matter.</li>
+<li>Check that <code>[extra].type</code> is specified correctly in the section front matter.</li>
+</ul></li>
+</ul>
 <h2 id="conclusion">Conclusion</h2>
 <p>Starting a website with the Persona theme is a great way to share your thoughts and ideas with the world. With its user-friendly setup and extensive customization options, you can create a unique and engaging site that reflects your personality and style.</p>
 <!-- persona-bibliography -->

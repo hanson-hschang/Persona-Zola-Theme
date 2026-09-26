@@ -116,6 +116,12 @@ Typography:
 
 See `sass/assets/stylesheet/_variables.scss` for the complete list of customizable variables with detailed descriptions (the compiled CSS is emitted under `public/assets/stylesheet/` at build time).
 
+## Troubleshooting
+
+- **Navigation not working:**
+  - Ensure `[extra].order` is set correctly in the section front matter.
+  - Check that `[extra].type` is specified correctly in the section front matter.
+
 ## Conclusion
 
 Starting a website with the Persona theme is a great way to share your thoughts and ideas with the world.

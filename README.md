@@ -14,17 +14,17 @@
 <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fhanson-hschang.github.io%2FPersona-Zola-Theme">
 <img alt="GitHub Release" src="https://img.shields.io/github/v/release/hanson-hschang/Persona-Zola-Theme">
 
-[Demo](https://hanson-hschang.github.io/Persona-Zola-Theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Posts](#-posts) • [Citation](#-citation-pipeline) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
+[Demo](https://hanson-hschang.github.io/Persona-Zola-Theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
 
 </div>
 
 ## ✨ Features
 
-- 🎨 **Modern Design**: Clean and professional layout easy for customization
+- 🎨 **Modern Design**: Clean, professional, and customizable color palettes
 - 📱 **Fully Responsive**: Optimized for desktop, tablet, and mobile devices
 - ⚡️ **Fast Performance**: Lightweight and optimized for speed
 - 📋 **Resume/CV**: Dedicated page for your resume or CV *(--upcoming feature--)*
-- 🎭 **Portfolio with Posts**: Showcase your work with article previews and blog posts
+- 🎭 **Portfolio with Posts**: Showcase your work with previews and posts
 - 📧 **Contact Forms**: Integrated contact form email support
 - 🔍 **Search Ready**: Built-in search index generation *(--upcoming feature--)*
 
@@ -40,10 +40,10 @@ Submit a Pull Request to add your site to our showcase.
 
 ## 🚀 Installation
 
-This is a Zola theme.
-Make sure you have [Zola 0.23 or newer installed](https://www.getzola.org/documentation/getting-started/installation/) before proceeding.
+This is a theme built with [Zola 0.23 or newer](https://www.getzola.org/documentation/getting-started/installation/).
+Please proceed to install the theme after [initializing your Zola site](https://www.getzola.org/documentation/getting-started/overview/#initialize-site).
 
-After [initializing your Zola site](https://www.getzola.org/documentation/getting-started/overview/#initialize-site), the easiest way to install the theme is to add it as a git submodule to your `themes` directory:
+The easiest way to install the theme is to add it as a git submodule to your `themes` directory:
 
 ```bash
 # Navigate to your Zola site directory
@@ -100,73 +100,6 @@ After completing the setup, build and serve your site with Zola:
 > [!TIP]
 > For a complete walkthrough of configuration and customization, see the [Begin with Persona](https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/begin-with-persona/) post.
 
-## 📚 Citation Pipeline
-
-<div align="center">
-
-[How It Works](#how-it-works) • [Setup](#setup) • [Build & Write](#build--write)
-
-</div>
-
-The pipeline allows you to write naturally using citation keys from the bibliography file while automatically generating properly formatted references during the build process. 
-It integrates seamlessly with the site workflow, so you can focus on content rather than formatting.
-
-### How It Works
-
-- Write your post content in `.src.md` files using [Pandoc citation syntax](https://pandoc.org/demo/example33/8.20-citation-syntax.html)  
-- Store your references in the `references.bib` file in the same directory as your post
-- A build script processes the source files and converts them into final Markdown file `.md` with formatted citations  
-- The output is ready for rendering without any additional steps  
-- `post.html` places generated references after the optional BibTeX Citation section
-
-### Setup
-
-1. Install dependencies:
-    ```bash
-    # macOS
-    brew install pandoc watchexec
-
-    # Ubuntu / Debian
-    sudo apt install pandoc
-    cargo install watchexec-cli
-    ```
-2.	Change directory to your website root and copy the `scripts` folder and `Makefile` from the theme:
-    ```bash
-    cp -r themes/persona/{scripts,Makefile} .
-    ```
-3. Ensure source and bibliography files are ignored by Zola in `config.toml` to prevent them from being processed as regular content:
-    ```toml
-    ignored_content = ["*.src.md", "*.bib", "*.csl"]
-    ```
-4. Create your post with a `.src.md` extension and use citation keys in the content:
-    ```markdown
-    This is a citation example [@cite-key].
-    ```
-5. Add a `references.bib` file in the same directory.
-
-The citation preprocessor resolves CSL files in this priority order:
-
-1. Per-post `[extra].citation_style`, resolved as `citation-style/<value>.csl`
-2. Local `style.csl` in the same directory as the `.src.md` file
-3. Site-level `config.toml` `[extra].citation_style`, or Persona-compatible `[extra.persona].citation_style`
-4. Theme-level `themes/persona/theme.toml` `[extra].citation_style`, or `themes/persona/config.toml` `[extra.persona].citation_style`
-5. Exit with an error when citation processing needs a CSL and none can be resolved
-
-### Build & Write
-Use the provided `Makefile` to build or serve your site locally with automatic processing of `.src.md` files:
-
-| |terminal command| note|
-|---|---|---|
-|Build the site|`make build`|site build under `public/`|
-|Serve the site|`make serve`|locally with live reload|
-
-The incremental build also checks the processing scripts, configuration, bibliography, and CSL files. The watcher monitors these dependencies without rebuilding in response to generated `.md` files. Regenerate existing `.src.md` files with `bash scripts/build.sh` after updating the pipeline. When using the scripts directly from an installed theme, run `bash themes/persona/scripts/build.sh` from your site root.
-
-
-> [!TIP]
-> For a complete example (source + bibliography + generated output), see the [Citation Pipeline Guide](https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/) blog post with the [example source directory](https://github.com/hanson-hschang/Persona-Zola-Theme/tree/main/content/maps/private-soul/citation-pipeline-guide/).
-This pipeline is ideal for writing technical, research-oriented, or reference-heavy content with minimal friction.
-
 ## 🆘 Troubleshooting
 
 ### Common Issues
@@ -175,17 +108,13 @@ This pipeline is ideal for writing technical, research-oriented, or reference-he
   - Ensure `theme = "persona"` is set at the first line of `config.toml`
   - Check that the theme is in the correct directory: `themes/persona/`
 
-- **Navigation not working:**
-  - Ensure `[extra].order` field is set correctly in the front matter
-  - Check `[extra].type` is correctly specified in the front matter
-
 - **Contact form not working:**
   - Verify `web3form_public_key` is set in configuration
   - Check [Web3Forms documentation](https://docs.web3forms.com/) for setup
 
 ### Getting Help
 - Read the [Zola documentation](https://www.getzola.org/documentation/)
-- Check [ARCHITECTURE.md](ARCHITECTURE.md) for detailed theme architecture and organization
+- Check [ARCHITECTURE.md](ARCHITECTURE.md) for detailed theme codebase structure 
 - Report issues or request features by [contributing](CONTRIBUTING.md) on GitHub
 
 
