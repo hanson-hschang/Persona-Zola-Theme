@@ -14,7 +14,7 @@
 <img alt="Website" src="https://img.shields.io/website?url=https%3A%2F%2Fhanson-hschang.github.io%2FPersona-Zola-Theme">
 <img alt="GitHub Release" src="https://img.shields.io/github/v/release/hanson-hschang/Persona-Zola-Theme">
 
-[Demo](https://hanson-hschang.github.io/Persona-Zola-Theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Posts](docs/posts.md) • [Citation](#-citation-pipeline) • [Architecture](ARCHITECTURE.md) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
+[Demo](https://hanson-hschang.github.io/Persona-Zola-Theme/) • [Features](#-features) • [Showcase](#-showcase) • [Installation](#-installation) • [Configuration](#%EF%B8%8F-configuration) • [Posts](#-posts) • [Citation](#-citation-pipeline) • [Troubleshooting](#-troubleshooting) • [Credits](#-credits)
 
 </div>
 
@@ -24,9 +24,7 @@
 - 📱 **Fully Responsive**: Optimized for desktop, tablet, and mobile devices
 - ⚡️ **Fast Performance**: Lightweight and optimized for speed
 - 📋 **Resume/CV**: Dedicated page for your resume or CV *(--upcoming feature--)*
-- 🎭 **Portfolio Showcase**: Showcase your work with article previews and optional thumbnails
-- 🔬 **Research Posts**: Research landing pages with authors, resource links, media galleries, posters, and copyable BibTeX
-- 📝 **Posts with $\TeX$ and Citations**: Built-in article functionality with equation and bibliography support
+- 🎭 **Portfolio with Posts**: Showcase your work with article previews and blog posts
 - 📧 **Contact Forms**: Integrated contact form email support
 - 🔍 **Search Ready**: Built-in search index generation *(--upcoming feature--)*
 
@@ -66,7 +64,7 @@ git submodule update --init --recursive
 
 <div align="center">
 
-[Basic Setup](#basic-setup) • [Segment Front Matter](#segment-front-matter) • [Build & Serve](#build--serve)
+[Basic Setup](#basic-setup) • [Build & Serve](#build--serve)
 
 </div>
 
@@ -90,48 +88,6 @@ git submodule update --init --recursive
     theme = "persona"
     ```
 
-3. **Use Persona media components** inside Markdown content when you need theme-provided image handling.
-   Persona targets Zola 0.23+ and uses Tera 2 components, so component calls use angle-bracket syntax:
-
-    ```tera
-    {{ <media.image page={page} path="img/example.png" width={700} alt="Example image" /> }}
-    ```
-
-### Segment Front Matter
-
-The theme supports three main segment types:
-- **Plain segments** (for static text content like about)
-- **Category segments** (for portfolios and grouped sections)
-- **Post segments** (article lists with optional thumbnails, dates, and subtitles)
-
-<details>
-<summary>
-Each segment is configured with front matter. 
-Expand to see the details. 
-</summary>
-
-```toml
-+++
-title = "Title of the Segment"
-
-[extra]
-# Segment-specific icon for navigation (Bootstrap Icons)
-icon_class = "bi bi-file-earmark-text"
-# Display order (lower numbers appear first)
-order = 1
-# Segment type determines rendering approach
-# options include "plain", "category", or "posts"
-type = "plain"  
-+++
-```
-
-</details>
-
-> [!TIP]
-> For a complete walkthrough of configuration and customization, see the [Begin with Persona](https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/begin-with-persona/) blog post.
-
-
-
 ### Build & Serve
 
 After completing the setup, build and serve your site with Zola:
@@ -141,52 +97,8 @@ After completing the setup, build and serve your site with Zola:
 |Build the site|```zola build```|site build under `public/`|
 |Serve the site|```zola serve```|locally with live reload|
 
-> [!NOTE]
-> If you are using the [Citation Pipeline](#-citation-pipeline), use `make build` and `make serve` instead to also process `.src.md` files.
-
-### Posts and Articles
-
-Use `post.html` as the common layout for all posts and articles. Set `template = "post.html"` on a page, or `page_template = "post.html"` on its parent section. Tags appear with the title; publication date, estimated reading time, and Share sit in a full-width metadata row after the author byline and before the resources. Add optional research details under `[extra.post]`; write the main article in Markdown below the front matter. The former blog layout is archived under filenames prefixed with `__old_` and is no longer used.
-
-```toml
-+++
-title = "Your research post"
-description = "A short summary for search results and link previews."
-date = 2026-09-21
-template = "post.html"
-
-[extra.post]
-subtitle = "A concise statement of the contribution"
-venue = "Conference 2026"
-authors = [{ name = "Alex Researcher", affiliations = "1" }]
-affiliations = [{ id = "1", name = "Example University" }]
-links = [{ name = "Paper", url = "paper.pdf", icon_class = "bi bi-file-earmark-pdf" }]
-abstract = "Explain the research question, approach, and findings."
-+++
-
-## Method
-
-Describe your work here.
-```
-
-Use a page bundle such as `content/maps/public-self/my-post/index.md` and put its images and PDFs alongside it. Existing articles can use this layout without adding any research fields or changing their URLs. Relative resource paths follow the rendered page URL; `/` paths respect the site's configured base URL, including deployment subpaths.
-
-The [post guide](docs/posts.md) covers every field, reusable media components, and URL rules. The [Field Notes example](content/maps/public-self/field-notes/index.md) in [Public Self](content/maps/public-self/_index.md) provides a complete starting point. The layout and Sass are original Persona implementations, using the theme's existing typography, colors, spacing, and breakpoints.
-
-Use `type = "posts"` in the parent section's `[extra]` table to list articles with the shared entry template. The home page shows up to three items in each list and links to the complete section when more are available. This limit applies to category subsection cards and post entry lists. Change it in your site's `config.toml`:
-
-```toml
-[extra.persona]
-home_items_limit = 3
-```
-
-The default is `3` when the setting is omitted or negative. Set it to `0` to show only the **View all** link for each nonempty collection. Full section pages remain unlimited. Set each page's `[extra.post].thumbnail` to a colocated image, or let the listing use its teaser image (or video poster). See the guide for the section setup and ordering.
-
-All posts use one entry template with optional thumbnails, dates, and subtitles. The top-level `date` appears on post pages as well as in their lists. Set `subtitle` under `[extra.post]` or `[extra]` to show it on both the detail page and its list entry. Existing `thumbnail`, `thumbnail_alt`, tags, and `[extra.tex.macros]` settings continue to work. Related Posts automatically shows up to five other listed articles from the same section; use `[extra.post].related` for a custom list, or `related = []` to hide it.
-
-The unified post layout supports `[@cite-key]` preprocessing and KaTeX macros. The generated **Bibliography** follows the optional **Citation** section containing this article's BibTeX. See the [citation and mathematics example](content/maps/private-soul/citation-pipeline-guide/index.src.md).
-
-To keep a post accessible by its URL but hide it from automatic home-page, post, taxonomy, and Related Posts lists, set `draft = true` under `[extra.post]` in its Markdown front matter. Omit it or set it to `false` to list the post. Use this theme flag rather than Zola's top-level draft flag, which excludes a page from normal builds.
+> [!TIP]
+> For a complete walkthrough of configuration and customization, see the [Begin with Persona](https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/begin-with-persona/) post.
 
 ## 📚 Citation Pipeline
 
