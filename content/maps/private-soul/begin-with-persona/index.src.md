@@ -1,4 +1,5 @@
 +++
+template = "post.html"
 title = 'Begin with Persona'
 date = 2025-03-17
 draft = false
@@ -6,6 +7,7 @@ draft = false
 tags = ['website', 'blog']
 categories = ['blogs', 'private-soul']
 [extra]
+subtitle = "From first installation to a personal website"
 excerpt = """
 A step-by-step tutorial on how to start a website using the Persona theme: from installation and configuration to segment setup and full theme customization.
 """
@@ -113,6 +115,12 @@ Typography:
   - `--title-font-size`: Base font size for title (default: 64px)
 
 See `sass/assets/stylesheet/_variables.scss` for the complete list of customizable variables with detailed descriptions (the compiled CSS is emitted under `public/assets/stylesheet/` at build time).
+
+## Troubleshooting
+
+- **Navigation not working:**
+  - Ensure `[extra].order` is set correctly in the section front matter.
+  - Check that `[extra].type` is specified correctly in the section front matter.
 
 ## Conclusion
 

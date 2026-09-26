@@ -1,0 +1,8 @@
+// Unified posts and academic post pages. Compiled by Zola; no external CSS framework additions.
+@use 'variables';
+@use 'layout/navigation';
+@use 'layout/breadcrumbs';
+@use 'components/widgets';
+@use 'components/share';
+@use 'pages/post';
+@use 'custom';

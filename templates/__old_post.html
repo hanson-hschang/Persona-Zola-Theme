@@ -1,0 +1,25 @@
+{# Archived blog layout. Active articles use post.html. #}
+{% extends "base.html" %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/__old_post.css') }}">
+{% endblock head %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/citations.css') }}">
+{% endblock extra_css %}
+
+{% block main %}
+
+  {{ <__old_blog.post page={page} /> }}
+
+{% endblock main %}
+
+
+{% block scripts %}
+  {{ super() }}
+  <script src="{{ get_url(path='vendor/aos/aos.js') }}"></script>
+  <script src="{{ get_url(path='assets/script/home.js') }}"></script>
+  <script src="{{ get_url(path='assets/script/share.js') }}"></script>
+{% endblock scripts %}

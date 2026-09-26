@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # -----------------------------------------------------------------------------
+
+set -euo pipefail
 # SCRIPT: build.sh
 # DESCRIPTION: Converts every *.src.md file in content/ into Zola-renderable 
 #              *.md files. Identifies global settings and delegates work to
@@ -78,14 +80,33 @@ echo "--- Starting Incremental Build ---"
 echo "  [CONFIG] Global Style: $default_csl_style"
 echo "  [CONFIG] Search Paths: $CSL_SEARCH_DIRS"
 
-# Find all .src.md files and check modification times
+# Find all .src.md files and check source and processing dependencies.
 find content/ -name "*.src.md" | while read -r src; do
     # Define the output path (e.g., post.src.md -> post.md)
     out="${src%.src.md}.md"
 
-    # Incrementality Check:
-    # Process only if the output file is missing OR the source is newer (-nt)
-    if [[ ! -f "$out" || "$src" -nt "$out" ]]; then
+    needs_rebuild=false
+    if [[ ! -f "$out" ]]; then
+        needs_rebuild=true
+    else
+        for dependency in "$src" "$WORKER" "$SCRIPT_DIR/utilities.sh" \
+            "$SCRIPT_DIR/build.sh" "$default_csl_path" "${CONFIG_FILES[@]}"; do
+            if [[ -f "$dependency" && "$dependency" -nt "$out" ]]; then
+                needs_rebuild=true
+                break
+            fi
+        done
+        # A bibliography or local/custom CSL can change without touching the
+        # source. Include the configured CSL search paths as dependencies too.
+        for dependency_dir in "$(dirname "$src")" $CSL_SEARCH_DIRS; do
+            if [[ -d "$dependency_dir" ]] && [[ -n "$(find "$dependency_dir" \
+                -type f \( -name '*.bib' -o -name '*.csl' \) -newer "$out" -print -quit)" ]]; then
+                needs_rebuild=true
+                break
+            fi
+        done
+    fi
+    if [[ "$needs_rebuild" == true ]]; then
         echo ""
         "$WORKER" "$src" "$default_csl_path" "$CSL_SEARCH_DIRS"
     fi

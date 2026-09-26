@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 480" width="1200" height="480" role="img" aria-labelledby="title desc">
+  <title id="title">From observation to evidence</title>
+  <desc id="desc">Three connected stages: observe raw material, organize a traceable record, and explain a reproducible result. A shared provenance line connects all three.</desc>
+  <defs>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#0563bb" stroke-opacity=".06"/></pattern>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="m1 1 6 3-6 3" fill="none" stroke="#0563bb" stroke-width="1.5"/></marker>
+  </defs>
+  <rect width="1200" height="480" rx="16" fill="#f4f8fc"/>
+  <rect width="1200" height="480" rx="16" fill="url(#grid)"/>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="64" y="66" fill="#0563bb" font-size="16" letter-spacing="2">FIELD NOTES / WORKFLOW</text>
+    <g fill="#fff" stroke="#cbd9e6"><rect x="64" y="116" width="300" height="232" rx="10"/><rect x="450" y="116" width="300" height="232" rx="10"/><rect x="836" y="116" width="300" height="232" rx="10"/></g>
+    <g fill="#0563bb" font-size="18"><text x="88" y="154">01</text><text x="474" y="154">02</text><text x="860" y="154">03</text></g>
+    <g stroke="#0563bb" stroke-width="2" fill="none" marker-end="url(#arrow)"><path d="M380 232h52"/><path d="M766 232h52"/></g>
+    <g fill="#45505b" font-size="30" font-weight="700"><text x="88" y="212">Observe</text><text x="474" y="212">Organize</text><text x="860" y="212">Explain</text></g>
+    <g fill="#45505b" font-size="18"><text x="88" y="250">Capture the raw material.</text><text x="88" y="279">Keep its context.</text><text x="474" y="250">Build a traceable record.</text><text x="474" y="279">Name each assumption.</text><text x="860" y="250">Connect claims to evidence.</text><text x="860" y="279">Share a reproducible result.</text></g>
+    <path d="M214 365v30H986v-30M600 365v30" fill="none" stroke="#7d9ebd" stroke-width="2"/>
+    <rect x="452" y="380" width="296" height="32" rx="16" fill="#0563bb"/>
+    <text x="600" y="402" text-anchor="middle" fill="#fff" font-size="16">Provenance retained at every stage</text>
+  </g>
+</svg>

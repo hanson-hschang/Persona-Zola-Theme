@@ -25,18 +25,22 @@ It serves as a guide for contributors to understand how the theme is structured 
 │           ├── pages/
 │           │   ├── _hero.scss        # Hero section styles (home page)
 │           │   ├── _contact.scss     # Contact section styles
+│           │   ├── _post.scss        # Article page styles
 │           │   └── _plain.scss       # Plain section content styles
 │           ├── components/
 │           │   ├── _category.scss    # Category section styles
-│           │   ├── _blog.scss        # Blog listing styles
-│           │   ├── _post.scss        # Blog post content styles
-│           │   └── _widgets.scss     # Sidebar widget styles
+│           │   ├── _post.scss        # Shared post listing styles
+│           │   ├── __old_post.scss   # Archived former blog article styles
+│           │   ├── __old_widgets.scss # Archived former blog widget styles
+│           │   ├── _share.scss       # Article metadata and sharing controls
+│           │   └── _widgets.scss     # Shared sidebar widget shell
 │           ├── main.scss             # Entry point: all pages -> main.css
 │           ├── home.scss             # Entry point: home page -> home.css
 │           ├── page-plain.scss       # Entry point: plain sections -> page-plain.css
 │           ├── page-category.scss    # Entry point: category sections -> page-category.css
-│           ├── page-blog.scss        # Entry point: blog sections -> page-blog.css
-│           ├── post.scss             # Entry point: blog posts -> post.css
+│           ├── page-post-list.scss   # Entry point: post lists -> page-post-list.css
+│           ├── page-post.scss        # Entry point: all articles -> page-post.css
+│           ├── __old_post.scss       # Archived entry point; no compiled CSS
 │           ├── citations.scss        # Entry point: Pandoc citation output -> citations.css
 │           └── page-404.scss         # Entry point: 404 error page -> page-404.css
 ├── static/                           # Static assets
@@ -54,7 +58,8 @@ It serves as a guide for contributors to understand how the theme is structured 
 │   ├── index.html                    # Home page template
 │   ├── section.html                  # Section page template
 │   ├── page.html                     # Single page template
-│   ├── post.html                     # Blog post template
+│   ├── post.html                     # Unified post template
+│   ├── __old_post.html               # Archived former blog post template
 │   ├── 404.html                      # Error page template
 │   ├── components/                   # Tera 2 reusable components
 │   ├── partials/                     # Reusable template partials
@@ -85,7 +90,7 @@ Located in `templates/` root:
   - Shows contact section
 
 - **section.html**: Section page template
-  - Handles three section types: plain, category, blog
+  - Handles plain, category, and posts section types
   - Conditionally loads type-specific CSS and components
   - Contains the logic that previously lived in the root `segment.html` page template
 
@@ -93,11 +98,21 @@ Located in `templates/` root:
   - For standalone pages
   - Plain content rendering
 
-- **post.html**: Post template
-  - Dedicated template for blog and portfolio posts
-  - Includes breadcrumbs, widgets, metadata
-  - Supports KaTeX for mathematical expressions
-  - Loads `citations.css` for Pandoc citeproc output
+- **__old_post.html**: Archived former blog post template
+  - Preserved for reference; not selected or loaded by current pages
+
+- **post.html**: Unified post template
+  - Selected with `template = "post.html"` or the section's `page_template`; reads optional `page.extra.post` data
+  - Shows linked tags with the title; publication date, reading time, and Share occupy a separate full-width row after the author byline and before resources, with no Save action
+  - Renders authors, affiliations, resource links, teaser, abstract, article, gallery, video, poster, and BibTeX; article images are centered by default
+  - Separates Pandoc's appended bibliography at `<!-- persona-bibliography -->` and renders it after the BibTeX Citation section, preserving all citation anchors; legacy `<div id="refs">` output is also supported
+  - Generates page metadata and scholarly citation tags
+  - Inherits standard navigation and mobile toggle, with breadcrumbs based on section ancestry
+  - Displays Related Posts below the left contents navigation; below the content under the `lg` breakpoint. Defaults to up to five other listed pages from the parent section; explicit `post.related` overrides the list and `[]` disables it
+  - Overrides the base `preloader` block so research content is available without JavaScript
+  - Loads `page-post.css`, `citations.css`, AOS, `home.js`, `share.js`, and `post.js`; retains shared footer and conditional KaTeX support with the existing `[extra.tex.macros]` configuration
+  - See the [front matter and component guide](docs/posts.md)
+  - The [Field Notes example](content/maps/public-self/field-notes/index.md) lives in Public Self; both demo article sections default to this layout
 
 - **404.html**: Error page template
   - Custom 404 not found page
@@ -109,7 +124,8 @@ Located in `templates/components/`:
 Tera 2 components are globally registered by component name. They do not need imports. Call them with syntax such as `{{ <render.section_title title={title} /> }}`.
 
 - **render.html**: Core rendering utilities
-  - `render.post_entry`: Renders blog post entries
+  - `render.post_entry(page)`: Shared section and taxonomy post entries, with optional thumbnail, date, subtitle, and description
+  - `render.article_tags(page)` and `render.article_meta(page)`: Article tags and metadata / sharing controls
   - `render.section_title`: Renders section titles
   - `render.text_content`: Renders text content
   - `render.cards`: Renders card layouts
@@ -118,16 +134,26 @@ Tera 2 components are globally registered by component name. They do not need im
 - **segment.html**: Segment rendering logic
   - `segment.populate`: Populates section content
   - `segment.plain`: Renders plain sections
-  - `segment.category`: Renders category sections
-  - `segment.blog`: Renders blog sections
+  - `segment.category(pos, preview=false, limit=3)`: Renders subsection cards, with an optional limited home-page preview
+  - `segment.posts(pos, preview=false, limit=3)`: Renders shared post page lists, with an optional limited home-page preview
+  - The index passes `config.extra.persona.home_items_limit` (default `3`) through `segment.populate` to both category and page lists; Tera components receive the setting explicitly
+  - Preview limits apply after eligibility filtering. Zero shows only a View all link for a nonempty collection; negative limits use the default of three. Full section pages are unlimited
+  - `extra.post.draft` pages remain buildable but are excluded from automatic post, taxonomy, and Related Posts lists
 
-- **blog.html**: Blog-specific components
-  - Blog listing and pagination logic
+- **__old_blog.html**: Archived former blog article components
+  - Preserved for reference; current pages use `render.*`, `segment.*`, and `post.*` instead
 
 - **media.html**: Content media components
   - `media.image`: Resizes and renders colocated images
   - `media.block`: Renders image/text media rows
   - Content usage example: `{{ <media.image page={page} path="img/example.png" width={700} alt="Example" /> }}`
+
+- **post.html**: Post components
+  - `post.url(page, path)`: Resolves page-relative, site-root, and content URLs while preserving external links and fragments
+  - `post.media(page, item, eager=false)`: Renders an image or native video with optional caption
+  - `post.gallery(page, items, id="post-gallery", title="Results gallery")`: Renders a scrollable media gallery
+  - `post.embed(src, title)`: Renders a responsive iframe using a provider embed URL
+  - `post.poster(page, src, title="Research poster")`: Renders a PDF object with a direct-link fallback
 
 - **debug.html**: Debug utilities
   - Development helpers
@@ -200,21 +226,24 @@ stylesheet/
 ├── pages/
 │   ├── _hero.scss               # Hero section (home page only)
 │   ├── _contact.scss            # Contact form and info
+│   ├── _post.scss               # Unified post layout
 │   └── _plain.scss              # Plain section content
 │
 ├── components/
 │   ├── _category.scss           # Category card listing
-│   ├── _blog.scss               # Blog post listing
-│   ├── _post.scss               # Individual blog post
-│   └── _widgets.scss            # Sidebar widgets
+│   ├── _post.scss               # Shared post entries
+│   ├── __old_post.scss          # Archived former blog article styles
+│   ├── __old_widgets.scss       # Archived former blog widgets
+│   ├── _share.scss              # Article metadata and sharing controls
+│   └── _widgets.scss            # Shared sidebar widget shell
 │
 └── [entry points — no _ prefix; each compiles to public/assets/stylesheet/<name>.css]
     ├── main.scss                 # All pages
     ├── home.scss                 # Home / index page
     ├── page-plain.scss           # Plain section + page template
     ├── page-category.scss        # Category section pages
-    ├── page-blog.scss            # Blog listing section pages
-    ├── post.scss                 # Individual blog post pages
+    ├── page-post-list.scss       # Post listing section pages
+    ├── page-post.scss            # All post pages
     ├── citations.scss            # Citation styling for post pages
     └── page-404.scss             # 404 error page
 ```
@@ -226,14 +255,16 @@ Each template loads only the CSS it needs:
 | Template | Entry point loaded | Contents |
 |---|---|---|
 | `base.html` (all pages) | `main.css` | variables, base, footer, preloader, custom |
-| `index.html` | `home.css` | nav-index, hero, segment, plain, category, contact |
+| `index.html` | `home.css` | nav-index, hero, segment, plain, category, shared page lists, contact |
 | `section.html` (plain) | `page-plain.css` | navigation, segment, plain |
 | `section.html` (category) | `page-category.css` | navigation, segment, category |
-| `section.html` (blog) | `page-blog.css` | navigation, segment, blog, breadcrumbs |
-| `post.html` | `post.css` | navigation, breadcrumbs, post, widgets |
+| `section.html` (posts) | `page-post-list.css` | navigation, segment, post lists, breadcrumbs |
+| `post.html` | `page-post.css` | variables, navigation, breadcrumbs, sidebar widgets, article layout/media, sharing, custom |
 | `post.html` | `citations.css` | Pandoc citation and bibliography styles |
 | `page.html` | `page-plain.css` | navigation, segment, plain |
 | `404.html` | `page-404.css` | navigation, segment, plain, contact |
+
+Archived files use the `__old_` prefix and are not referenced by current templates or Sass entry points. The retired Sass entry point, `__old_post.scss`, starts with `_`, so Zola does not compile it. Shared `home.js` navigation and `share.js` controls remain active; neither depends on the archived blog layout. Active article features use `[extra.post]` front matter, `.post` CSS classes, and `post-` fragment IDs. All current templates, components, and content use these post identifiers.
 
 ### Design Tokens
 
@@ -268,7 +299,18 @@ JavaScript files in `static/assets/script/`:
   - Generates share URLs for Twitter, Facebook, LinkedIn
   - Opens share menu when share button is clicked
 
+- **post.js**: Progressive enhancements for all post pages
+  - Enables BibTeX clipboard copying with selection and status-message fallback
+  - Adds gallery navigation, keyboard controls, and announced slide positions
+  - Respects reduced-motion preferences and pauses videos on inactive slides
+  - Builds the contents navigation from Pandoc HTML headings and highlights the current section as the reader scrolls
+  - Uses native browser APIs; post content, PDF links, video controls, and gallery scrolling remain available without JavaScript
+
 ## Development Workflow
+
+For citation-enabled content, author `.src.md` and run `bash scripts/build.sh` before Zola. `scripts/process_post.sh` preserves front matter and mathematical expressions, resolves the bibliography and CSL, runs Pandoc citeproc, moves the bibliography heading inside the references container, and inserts the stable bibliography boundary used by `post.html`. Generated `.md` files remain ordinary Zola content.
+
+The incremental build checks source files, preprocessing scripts, configuration, and bibliography/CSL dependencies. `scripts/watch.sh` watches these inputs while excluding generated Markdown to avoid rebuild loops. When calling the pipeline from an installed theme, use `bash themes/persona/scripts/build.sh` from the site root. Existing article URLs, taxonomy data, and math macros are unaffected by changing their template.
 
 1. **Check theme**: `zola check`
 2. **Build**: `zola build`
@@ -320,6 +362,7 @@ JavaScript files in `static/assets/script/`:
 ## Related Documentation
 
 - [README.md](README.md) - Main theme documentation
+- [Posts and academic articles](docs/posts.md) - Front matter, URL rules, media components, and customization
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
 - [theme.toml](theme.toml) - Theme metadata and configuration
 - [config.toml](config.toml) - Configuration template for user site

@@ -3,14 +3,16 @@
   Render page or section objects as landing page segments or listing pages.
 #}
 
-{% component segment.populate(poss) %}
+{% component segment.populate(poss, home_items_limit=3) %}
   {% for pos in poss | sort(attribute="extra.order") %}
     {% if pos.extra and pos.extra.type %}
       {% set section_type = pos.extra.type %}
       {% if section_type == "plain" %}
         {{ <segment.plain pos={pos} /> }}
       {% elif section_type == "category" %}
-        {{ <segment.category pos={pos} /> }}
+        {{ <segment.category pos={pos} preview={true} limit={home_items_limit} /> }}
+      {% elif section_type == "posts" %}
+        {{ <segment.posts pos={pos} preview={true} limit={home_items_limit} /> }}
       {% else %}
         {{ <debug.print object={"Unknown section type: " ~ pos.extra.type} /> }}
         {{ <debug.print object={pos} /> }}
@@ -40,7 +42,7 @@
   </section>
 {% endcomponent segment.plain %}
 
-{% component segment.category(pos) %}
+{% component segment.category(pos, preview=false, limit=3) %}
   <section id="{{ pos.title | slugify }}" class="category segment">
     {{ <render.section_title title={pos.title} /> }}
 
@@ -52,22 +54,55 @@
       {% endif %}
     {% endfor %}
 
-    {{ <render.cards sections={subsections} /> }}
+    {% if not preview %}
+      {% set limit = subsections | length %}
+    {% elif limit < 0 %}
+      {% set limit = 3 %}
+    {% endif %}
+
+    {% if subsections and limit > 0 %}
+      {{ <render.cards sections={subsections} limit={limit} /> }}
+    {% endif %}
+    {% if preview and subsections | length > limit %}
+      <div class="container"><p class="listing__more"><a href="{{ pos.permalink }}">View all {{ pos.title | lower }} <i class="bi bi-arrow-right" aria-hidden="true"></i></a></p></div>
+    {% endif %}
   </section>
 {% endcomponent segment.category %}
 
-{% component segment.blog(pos) %}
-  {{ <render.breadcrumbs crumbs={pos.components} /> }}
-
-  <section id="{{ pos.title | slugify }}" class="category segment">
-    {{ <render.section_title title={pos.title} /> }}
-  </section>
-
-  {% if pos.pages %}
-    <ol id="post-entries" class="container" data-aos="fade-up">
-      {% for page in pos.pages %}
-        {{ <render.post_entry title={page.title} date={page.date | date(format="%b %d, %Y")} datetime={page.date | date(format="%Y-%m-%d")} link={page.permalink} excerpt={page.extra.excerpt} /> }}
-      {% endfor %}
-    </ol>
+{% component segment.posts(pos, preview=false, limit=3) %}
+  {% if not preview %}
+    {{ <render.breadcrumbs crumbs={pos.components} /> }}
   {% endif %}
-{% endcomponent segment.blog %}
+
+  {# Theme drafts remain buildable at their URL but never consume listing slots. #}
+  {% set_global entries = [] %}
+  {% for entry in pos.pages %}
+    {% set post = entry.extra.post | default(value={}) %}
+    {% if not post.draft %}
+      {% set_global entries = [...entries, entry] %}
+    {% endif %}
+  {% endfor %}
+
+  {% if not preview %}
+    {% set limit = entries | length %}
+  {% elif limit < 0 %}
+    {% set limit = 3 %}
+  {% endif %}
+
+  <section id="{{ pos.title | slugify }}" class="listing segment">
+    {{ <render.section_title title={pos.title} /> }}
+      {% if pos.content %}<div class="container listing__intro">{{ pos.content | safe }}</div>{% endif %}
+      {% if entries and limit > 0 %}
+      <ol class="container post-list">
+        {% for entry in entries %}
+          {% if loop.index <= limit %}
+            {{ <render.post_entry page={entry} /> }}
+          {% endif %}
+        {% endfor %}
+      </ol>
+      {% endif %}
+      {% if preview and entries | length > limit %}
+      <div class="container"><p class="listing__more"><a href="{{ pos.permalink }}">View all {{ pos.title | lower }} <i class="bi bi-arrow-right" aria-hidden="true"></i></a></p></div>
+      {% endif %}
+  </section>
+{% endcomponent segment.posts %}

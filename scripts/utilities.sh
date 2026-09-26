@@ -109,7 +109,7 @@ split_source() {
 
     # Run awk and capture its exit status
     if ! awk -v body_file="$body_tmp" '
-        /^\+\+\+/ { c++; next }
+        /^\+\+\+\r?$/ && c < 2 { c++; next }
         c == 1 { print }
         c >= 2 { print > body_file }
         END { if (c < 2) exit 1 }

@@ -3,12 +3,29 @@ name: Build and Deploy GH Pages
 on: 
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
-  build:
+  # Job 1: Runs ONLY on Pull Requests to verify the site builds successfully
+  test-build:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: test_build
+        uses: shalzz/zola-deploy-action@v0.23.4
+        env:
+          BUILD_ONLY: true
+
+  # Job 2: Runs ONLY on merges/pushes to main (or manual triggers) to deploy
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     permissions:
       contents: write
     steps:

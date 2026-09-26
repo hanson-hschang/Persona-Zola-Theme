@@ -1,0 +1,68 @@
+{# Archived blog layout. Active articles use post.html. #}
+{% component __old_blog.post_thumbnail(thumbnail, title) %}
+  <figure class="blog-post__img">
+    <img src="{{ thumbnail }}" alt="Thumbnail for {{ title }}" class="img-fluid">
+  </figure>
+{% endcomponent __old_blog.post_thumbnail %}
+
+{% component __old_blog.post_header(page) %}
+  <header class="blog-post__header">
+    <h2 id="blog-post-title" class="blog-post__title">{{ page.title }}</h2>
+    {% if page.extra.subtitle %}
+      <p class="blog-post__subtitle">{{ page.extra.subtitle }}</p>
+    {% endif %}
+    {{ <render.article_tags page={page} /> }}
+    {{ <render.article_meta page={page} /> }}
+  </header>
+{% endcomponent __old_blog.post_header %}
+
+{% component __old_blog.post_content(content) %}
+  <section class="blog-post__content">{{ content | safe }}</section>
+{% endcomponent __old_blog.post_content %}
+
+{% component __old_blog.side_bar(page) %}
+  {% set parent_section = page.ancestors | last %}
+  {% set blog_section = get_section(path=parent_section, paginate_by=false, include_pages=true) %}
+  {% set_global entries = [] %}
+  {% for entry in blog_section.pages %}
+    {% set post = entry.extra.post | default(value={}) %}
+    {% if not post.draft %}
+      {% set_global entries = [...entries, entry] %}
+    {% endif %}
+  {% endfor %}
+  <aside id="sidebar" class="sidebar col-lg-4">
+    <section class="sidebar__widgets" aria-label="Sidebar widgets">
+      <section class="recent-posts-widget widget" aria-labelledby="recent-posts-title">
+        <h3 id="recent-posts-title" class="widget__title">Recent Posts</h3>
+        <ul id="post-entries">
+          {% for page in entries[:5] %}
+            <li class="recent-posts-widget__item">
+              <h4><a href="{{ page.permalink | safe }}">{{ page.title }}</a></h4>
+              <time datetime="{{ page.date | date(format='%Y-%m-%d') }}">{{ page.date | date(format="%b %d, %Y") }}</time>
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+    </section>
+  </aside>
+{% endcomponent __old_blog.side_bar %}
+
+{% component __old_blog.post(page) %}
+  {{ <render.breadcrumbs crumbs={page.components} /> }}
+  <article class="container" aria-labelledby="blog-post-title">
+    <div class="row">
+      <section id="blog-post" class="blog-post segment col-lg-8">
+        <div class="container" data-aos="fade-up">
+          <div class="blog-post__article">
+            {% if page.extra.thumbnail %}
+              {{ <__old_blog.post_thumbnail thumbnail={page.extra.thumbnail} title={page.title} /> }}
+            {% endif %}
+            {{ <__old_blog.post_header page={page} /> }}
+            {{ <__old_blog.post_content content={page.content} /> }}
+          </div>
+        </div>
+      </section>
+      {{ <__old_blog.side_bar page={page} /> }}
+    </div>
+  </article>
+{% endcomponent __old_blog.post %}

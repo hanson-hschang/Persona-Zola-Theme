@@ -1,17 +1,37 @@
 {#
   Render Components
-  Shared presentation components used by page, segment, and blog templates.
+  Shared presentation components used by page, segment, and post templates.
 #}
 
-{% component render.post_entry(title, date, link, excerpt, datetime="") %}
-<li class="container post-entry border-bottom">
-  <div class="post-entry__meta d-flex justify-content-between align-items-center">
-    <h4 class="post-entry__title">
-      <a href="{{ link }}">{{ title }}</a>
-    </h4>
-    <time class="post-entry__date"{% if datetime %} datetime="{{ datetime }}"{% endif %}>{{ date }}</time>
-  </div>
-  <p class="mb-4 d-block">{{ excerpt }}</p>
+{% component render.post_entry(page) %}
+{% set post = page.extra.post | default(value={}) %}
+{% set subtitle = post.subtitle | default(value=page.extra.subtitle | default(value="")) %}
+{% set thumbnail = post.thumbnail | default(value=page.extra.thumbnail | default(value="")) %}
+{% if not thumbnail and post.teaser %}
+  {% if post.teaser.type is defined and post.teaser.type == "video" %}
+    {% set thumbnail = post.teaser.poster | default(value="") %}
+  {% else %}
+    {% set thumbnail = post.teaser.src %}
+  {% endif %}
+{% endif %}
+{% set excerpt = page.description %}
+{% if not excerpt %}{% set excerpt = page.extra.excerpt | default(value="") %}{% endif %}
+<li class="container post-entry post-entry--row border-bottom">
+  <a class="post-entry__link{% if thumbnail %} post-entry__link--with-thumbnail{% endif %}" href="{{ page.permalink }}">
+    {% if thumbnail %}
+    <figure class="post-entry__figure">
+      <img class="post-entry__thumbnail" src="{{ <post.url page={page} path={thumbnail} /> }}" alt="{{ post.thumbnail_alt | default(value=page.extra.thumbnail_alt | default(value='')) }}" width="160" height="120" loading="lazy" decoding="async">
+    </figure>
+    {% endif %}
+    <div class="post-entry__content">
+      <div class="post-entry__meta">
+        <h4 class="post-entry__title">{{ page.title }}</h4>
+        {% if page.date %}<time class="post-entry__date" datetime="{{ page.date | date(format='%Y-%m-%d') }}">{{ page.date | date(format='%b %d, %Y') }}</time>{% endif %}
+      </div>
+      {% if subtitle %}<p class="post-entry__subtitle">{{ subtitle }}</p>{% endif %}
+      {% if excerpt %}<p class="post-entry__excerpt">{{ excerpt }}</p>{% endif %}
+    </div>
+  </a>
 </li>
 {% endcomponent render.post_entry %}
 
@@ -36,36 +56,66 @@
 </div>
 {% endcomponent render.text_content %}
 
+{% component render.article_tags(page) %}
+{% if page.taxonomies.tags %}
+<ul class="article-tags" aria-label="Tags">
+  {% for tag in page.taxonomies.tags %}
+  <li class="article-tags__item"><a href="{{ get_taxonomy_url(kind='tags', term=tag) }}">{{ tag }}</a></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endcomponent render.article_tags %}
+
+{% component render.article_meta(page) %}
+<div class="article-meta">
+  <ul class="article-meta__details" aria-label="Article information">
+    {% if page.date %}
+    <li><i class="bi bi-calendar-event" aria-hidden="true"></i><time class="article-meta__date" datetime="{{ page.date | date(format='%Y-%m-%d') }}">{{ page.date | date(format='%B %d, %Y') }}</time></li>
+    {% endif %}
+    <li><i class="bi bi-hourglass-split" aria-hidden="true"></i><span class="article-meta__reading-time">{% if page.reading_time > 0 %}{{ page.reading_time }}{% else %}1{% endif %} min read</span></li>
+  </ul>
+  {{ <render.share_menu title={page.title} permalink={page.permalink} /> }}
+</div>
+{% endcomponent render.article_meta %}
+
 {% component render.share_menu(title, permalink) %}
-<nav id="share-menu" class="share-menu" aria-label="Share this post">
-  <a id="share-link" class="share-menu__item" href="#" >
-    <i class="bi bi-link-45deg" aria-hidden="true"></i>
-    <span>Get link</span>
-  </a>
-  <div class="share-menu__divider"></div>
-  <a id="share-linkedin" class="share-menu__item" href="https://www.linkedin.com/sharing/share-offsite/?url={{ permalink }}" target="_blank" rel="noopener noreferrer">
-    <i class="bi bi-linkedin" aria-hidden="true"></i>
-    <span>Share on LinkedIn</span>
-  </a>
-  <a id="share-facebook" class="share-menu__item" href="https://www.facebook.com/sharer/sharer.php?u={{ permalink }}" target="_blank" rel="noopener noreferrer">
-    <i class="bi bi-facebook" aria-hidden="true"></i>
-    <span>Share on Facebook</span>
-  </a>
-  <a id="share-x" class="share-menu__item" href="https://x.com/intent/tweet?url={{ permalink }}" target="_blank" rel="noopener noreferrer">
-    <i class="bi bi-twitter-x" aria-hidden="true"></i>
-    <span>Share on X</span>
-  </a>
-  <a id="share-email" class="share-menu__item" href="mailto:?subject={{ title }}&body={{ permalink }}">
-    <i class="bi bi-envelope-fill" aria-hidden="true"></i>
-    <span>Email</span>
-  </a>
-</nav>
+<aside class="share" data-share aria-label="Article sharing">
+  <button class="share__button" data-share-toggle type="button" aria-expanded="false" aria-controls="article-share-menu" hidden>
+    <i class="bi bi-box-arrow-up" aria-hidden="true"></i><span>Share</span>
+  </button>
+  <nav id="article-share-menu" class="share-menu" aria-label="Share this article">
+    <button class="share-menu__item" data-share-copy data-share-url="{{ permalink }}" type="button" hidden>
+      <i class="bi bi-copy" aria-hidden="true"></i><span>Copy link</span>
+    </button>
+    <a class="share-menu__item" href="{{ permalink }}">
+      <i class="bi bi-link-45deg" aria-hidden="true"></i><span>Permalink</span>
+    </a>
+    <a class="share-menu__item" href="https://www.linkedin.com/sharing/share-offsite/?url={{ permalink | urlencode }}" target="_blank" rel="noopener noreferrer">
+      <i class="bi bi-linkedin" aria-hidden="true"></i>
+      <span>Share on LinkedIn</span>
+    </a>
+    <a class="share-menu__item" href="https://www.facebook.com/sharer/sharer.php?u={{ permalink | urlencode }}" target="_blank" rel="noopener noreferrer">
+      <i class="bi bi-facebook" aria-hidden="true"></i>
+      <span>Share on Facebook</span>
+    </a>
+    <a class="share-menu__item" href="https://x.com/intent/tweet?url={{ permalink | urlencode }}&text={{ title | urlencode }}" target="_blank" rel="noopener noreferrer">
+      <i class="bi bi-twitter-x" aria-hidden="true"></i>
+      <span>Share on X</span>
+    </a>
+    <a class="share-menu__item" href="mailto:?subject={{ title | urlencode }}&body={{ permalink | urlencode }}">
+      <i class="bi bi-envelope-fill" aria-hidden="true"></i>
+      <span>Email</span>
+    </a>
+    <p class="share__status" role="status" aria-live="polite"></p>
+  </nav>
+</aside>
 {% endcomponent render.share_menu %}
 
-{% component render.cards(sections) %}
+{% component render.cards(sections, limit=-1) %}
 <div class="container" data-aos="fade-up" data-aos-delay="200">
   <div class="row m-0 justify-content-center">
     {% for section in sections | sort(attribute="extra.order") %}
+      {% if limit < 0 or loop.index <= limit %}
       <div class="col-sm-6 col-md-6 mb-4 mb-lg-0 col-lg-4">
         <div class="post-entry" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
           <a href="{{ section.permalink }}" class="post-entry__thumb d-block">
@@ -77,18 +127,29 @@
           </div>
         </div>
       </div>
+      {% endif %}
     {% endfor %}
   </div>
 </div>
 {% endcomponent render.cards %}
 
-{% component render.breadcrumbs(crumbs) %}
-<header class="page-title d-flex align-items-center">
+{% component render.breadcrumbs(crumbs=[], page={}, class_name="") %}
+<header class="page-title d-flex align-items-center{% if class_name %} {{ class_name }}{% endif %}">
   <div class="container" data-aos="fade">
     <nav class="breadcrumbs" aria-label="Breadcrumb">
       <ol>
         {% set_global path = "" %}
         <li><a href="{{ get_url(path='/') }}">Home</a></li>
+        {% if page %}
+          {# Section ancestry remains valid when a page uses a custom output path. #}
+          {% for ancestor in page.ancestors %}
+            {% set ancestor_section = get_section(path=ancestor) %}
+            {% if ancestor_section.path != "/" %}
+            <li><a href="{{ ancestor_section.permalink }}">{{ ancestor_section.title }}</a></li>
+            {% endif %}
+          {% endfor %}
+          <li class="current" aria-current="page">{{ page.title }}</li>
+        {% else %}
         {% for crumb in crumbs %}
           {% set_global path = path ~ crumb ~ "/" %}
           {% if loop.last %}
@@ -97,6 +158,7 @@
             <li><a href="{{ get_url(path=path) }}">{{ crumb | capitalize }}</a></li>
           {% endif %}
         {% endfor %}
+        {% endif %}
       </ol>
     </nav>
   </div>
