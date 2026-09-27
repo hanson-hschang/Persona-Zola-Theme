@@ -24,6 +24,7 @@ TITLE = 'Research <script>alert("title")</script> & "quotes"'
 SUBTITLE = 'A subtitle <img src=x onerror=alert(2)> & "quotes"'
 AUTHOR = 'A <img src=x onerror=alert(1)> & B'
 BIBTEX = '@misc{example, title={<script>alert("citation")</script> & Research}}'
+OUTLINE_TITLE = 'Sections <img src=x onerror=alert("outline")> & "details"'
 SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2"></svg>'
 
 
@@ -87,8 +88,8 @@ class PostIntegrationTests(unittest.TestCase):
         for directory in ("templates", "sass", "static", "content"):
             shutil.copytree(THEME / directory, cls.site / directory)
 
-        # Exercise the runtime default independently of the sample config value.
-        default_config = re.sub(r"(?m)^home_items_limit\s*=.*\n?", "",
+        # Exercise runtime defaults independently of sample config values.
+        default_config = re.sub(r"(?m)^(?:home_items_limit|outline_title)\s*=.*\n?", "",
                                 (cls.site / "config.toml").read_text(encoding="utf-8"))
         cls.write("config.toml", default_config)
         shutil.rmtree(cls.site / "content/posts", ignore_errors=True)
@@ -239,6 +240,15 @@ Draft post body remains available through its direct URL.
             cls.write(f"content/posts/{folder}/thumb.svg", SVG)
 
         cls.write("content/test-minimal.md", '+++\ntitle = "Minimal post"\ntemplate = "post.html"\n+++\nNo extra table.')
+        for name, bibtex in (("empty", ""), ("whitespace", " \n\t ")):
+            cls.write(f"content/test-bibtex-{name}.md", f'''+++
+title = "Post with {name} BibTeX"
+template = "post.html"
+[extra.post]
+bibtex = {json.dumps(bibtex)}
++++
+No usable citation has been provided.
+''')
         cls.write("content/test-ordinary.md", '+++\ntitle = "Ordinary page"\ntemplate = "page.html"\n+++\nOrdinary page body.')
         cls.write("content/test-slug/index.md", '''+++
 title = "Changed slug"
@@ -281,7 +291,7 @@ links = [
   {{ name = "Email", url = "mailto:research@example.test" }},
   {{ name = "Citation", url = "#post-citation" }}
 ]
-related = [{{ title = "Minimal post", url = "@/test-minimal.md" }}]
+related = [{{ title = "Minimal post", url = "@/test-minimal.md", date = "2024-11-09" }}]
 abstract = "A **formatted** abstract."
 teaser = {{ src = "plot.svg", alt = "Teaser image", width = 2, height = 2, caption = "A **teaser** caption." }}
 gallery_title = "Research results"
@@ -381,8 +391,13 @@ bibtex = "@misc{legacy, title={Legacy post}}"
             if result.returncode:
                 raise AssertionError(f"zola {' '.join(arguments)} failed:\n{result.stdout}")
         for limit in (2, 0, 5, -1):
+            # Reuse the limit builds to exercise site-wide outline labels.
+            outline_titles = {2: "  Contents & context  ", 0: " \t ", 5: OUTLINE_TITLE}
+            settings = f"home_items_limit = {limit}"
+            if limit in outline_titles:
+                settings += "\noutline_title = " + json.dumps(outline_titles[limit])
             cls.write("config.toml", default_config.replace(
-                "[extra.persona]", f"[extra.persona]\nhome_items_limit = {limit}", 1))
+                "[extra.persona]", f"[extra.persona]\n{settings}", 1))
             result = subprocess.run(
                 [zola, "build", "--base-url", BASE, "--output-dir", f"public-limit-{limit}"],
                 cwd=cls.site, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
@@ -491,6 +506,27 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                     self.assertFalse(any(segment.startswith("__old_") for segment in segments))
                     self.assertNotIn(segments[-1], obsolete)
 
+    def test_outline_title_uses_site_config_with_an_accessible_plain_text_label(self):
+        for directory, expected in (("public", "Outline"),
+                                    ("public-limit-2", "Contents & context"),
+                                    ("public-limit-0", "Outline"),
+                                    ("public-limit-5", OUTLINE_TITLE)):
+            with self.subTest(directory=directory):
+                page = self.document("research/custom-output", directory)
+                navigation = self.single(page, "nav", **{"aria-labelledby": "post-outline-title"})
+                disclosure = self.single(page, "details", **{"data-post-outline": None})
+                toggle = self.single(page, "summary", **{"class": "post__outline-toggle"})
+                title = self.single(page, "span", id="post-outline-title")
+                self.assertNotIn("open", disclosure, "The native outline starts folded without JavaScript")
+                self.assertIn(("summary", toggle), page.descendants(disclosure))
+                self.assertIn(("nav", navigation), page.descendants(disclosure))
+                self.assertIn(("span", title), page.descendants(toggle))
+                self.assertEqual(page.text_content(title).strip(), expected)
+                self.assertFalse(page.descendants(title), "Outline titles must remain plain text")
+                self.assertIn(FULL_URL + "#method", [attrs.get("href") for tag, attrs in
+                                                   page.descendants(navigation) if tag == "a"])
+                self.assertFalse(any("onerror" in attrs for _, attrs in page.elements))
+
     def test_full_optional_sections_and_media(self):
         page = self.document("research/custom-output")
         for section in ("post-abstract", "method", "post-results",
@@ -511,7 +547,10 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                     title="Presentation video", loading="lazy")
         self.single(page, "object", data=FULL_URL + "poster.pdf", type="application/pdf")
         self.single(page, "div", **{"data-gallery-controls": None, "hidden": None})
-        self.single(page, "button", **{"data-copy-citation": None, "hidden": None})
+        copy_buttons = page.find("button", **{"data-copy-citation": None, "hidden": None})
+        self.assertEqual(len(copy_buttons), 2)
+        self.assertTrue(all(button.get("aria-controls") == "post-bibtex"
+                            for button in copy_buttons))
         for asset in ("plot.svg", "clip.mp4", "captions.vtt", "paper.pdf", "poster.pdf"):
             self.assertTrue((self.site / "public/research/custom-output" / asset).is_file(), asset)
 
@@ -587,6 +626,35 @@ bibtex = "@misc{legacy, title={Legacy post}}"
         self.assertEqual(query["text"], [TITLE])
         self.assertTrue(any(link["href"] == FULL_URL for link in links))
         self.assertFalse(self.document("test-minimal").with_class("article-tags"))
+
+    def test_share_menu_copies_available_bibtex_and_otherwise_starts_with_permalink(self):
+        for output, has_bibtex in (("research/custom-output", True),
+                                   ("test-minimal", False),
+                                   ("test-bibtex-empty", False),
+                                   ("test-bibtex-whitespace", False)):
+            with self.subTest(output=output):
+                page = self.document(output)
+                menu = page.with_class("share-menu")[0]
+                actions = [(tag, attrs) for tag, attrs in page.descendants(menu)
+                           if tag in {"a", "button"}]
+                first_tag, first = actions[0]
+                self.assertEqual(page.text_content(first).strip(),
+                                 "Copy BibTeX" if has_bibtex else "Permalink")
+                self.assertEqual(first_tag, "button" if has_bibtex else "a")
+                copies = page.find("button", **{"data-copy-citation": None})
+                self.assertEqual(len(copies), 2 if has_bibtex else 0)
+                self.assertFalse(page.find(**{"data-share-copy": None}))
+                self.assertNotIn("Copy link", page.text_content(menu))
+                if has_bibtex:
+                    self.assertIn("hidden", first, "Copy needs JavaScript; links do not")
+                    self.assertEqual(first.get("aria-controls"), "post-bibtex")
+                    code = self.single(page, "code", id="post-bibtex")
+                    self.assertEqual(page.text_content(code).strip(), BIBTEX)
+                    self.assertEqual(page.text_content(actions[1][1]).strip(), "Permalink")
+                else:
+                    self.assertEqual(first["href"], BASE + output + "/")
+                    self.assertFalse(page.find(id="post-citation"))
+                    self.assertFalse(page.find("a", href="#post-citation"))
 
     def assert_bibliography_at_end(self, page, preceding_section):
         bibliography = self.single(page, "section", id="post-bibliography")
@@ -673,6 +741,30 @@ bibtex = "@misc{legacy, title={Legacy post}}"
         related = self.single(explicit, "aside", **{"aria-labelledby": "post-related-title"})
         self.assertEqual([attrs["href"] for tag, attrs in explicit.descendants(related) if tag == "a"],
                          [BASE + "test-minimal/"])
+
+    def test_related_dates_share_article_format_and_style(self):
+        for output, expected in (
+                ("test-blog/full", (("2025-03-03", "March 03, 2025"),
+                                    ("2025-03-02", "March 02, 2025"),
+                                    ("2025-03-01", "March 01, 2025"),
+                                    ("2025-02-28", "February 28, 2025"))),
+                ("research/custom-output", (("2024-11-09", "November 09, 2024"),))):
+            with self.subTest(output=output):
+                page = self.document(output)
+                related = self.single(page, "aside", **{"aria-labelledby": "post-related-title"})
+                dates = [attrs for tag, attrs in page.descendants(related) if tag == "time"]
+                self.assertEqual([(date["datetime"], page.text_content(date)) for date in dates],
+                                 list(expected))
+                self.assertTrue(all("date-text" in date.get("class", "").split()
+                                    for date in dates))
+
+        timestamp = self.document("test-blog/draft-middle")
+        dates = timestamp.with_class("article-meta__date")
+        self.assertEqual(len(dates), 1)
+        date = dates[0]
+        self.assertEqual(date["datetime"], "2025-03-03")
+        self.assertEqual(timestamp.text_content(date), "March 03, 2025")
+        self.assertIn("date-text", date.get("class", "").split())
 
     def test_theme_content_uses_canonical_post_frontmatter(self):
         for path in (THEME / "content").rglob("*.md"):
@@ -877,7 +969,7 @@ bibtex = "@misc{legacy, title={Legacy post}}"
         date = detail.with_class("article-meta__date")
         self.assertEqual(len(date), 1)
         self.assertEqual(date[0]["datetime"], "2025-03-04")
-        self.assertIn("2025", detail.text_content(date[0]))
+        self.assertEqual(detail.text_content(date[0]), "March 04, 2025")
         self.assertEqual(detail.text_content(detail.with_class("post__subtitle")[0]), SUBTITLE)
         self.assertNotIn("Shared subtitle should be overridden", detail.text)
 
@@ -892,12 +984,30 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                 dates = self.within_section(listing, "fixture-posts", "post-entry__date")
                 self.assertEqual(len(dates), 1)
                 self.assertEqual(dates[0]["datetime"], "2025-03-04")
-                self.assertEqual(listing.text_content(dates[0]), "Mar 04, 2025")
+                self.assertEqual(listing.text_content(dates[0]), "March 04, 2025")
                 self.assertEqual([listing.text_content(subtitle)
                                   for subtitle in self.within_section(
                                       listing, "fixture-posts", "post-entry__subtitle")],
                                  [SUBTITLE, "Shared post subtitle"])
                 self.assertNotIn("Shared subtitle should be overridden", listing.text)
+
+    def test_post_and_listing_dates_share_format_and_style_without_calendar_icons(self):
+        for output in ("research/nested-post", "test-blog/full", "", "posts",
+                       "test-blog", "tags/shared-fixture"):
+            with self.subTest(output=output):
+                page = self.document(output)
+                dates = page.find("time", datetime="2025-03-04")
+                self.assertTrue(dates, "Published dates must remain semantic time elements")
+                self.assertTrue(all(page.text_content(date) == "March 04, 2025"
+                                    for date in dates))
+                self.assertTrue(all("date-text" in date.get("class", "").split()
+                                    for date in dates))
+                self.assertFalse(any("calendar" in name
+                                     for _, attrs in page.elements
+                                     for name in attrs.get("class", "").split()))
+                if output in ("research/nested-post", "test-blog/full"):
+                    self.assertEqual(len(page.with_class("bi-hourglass-split")), 1,
+                                     "The reading-time icon is unrelated to publication dates")
 
     def test_blog_post_and_taxonomy_lists_share_row_markup(self):
         posts = self.document("posts")

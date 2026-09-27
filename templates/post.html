@@ -42,6 +42,7 @@
 
 {% block main %}
   {% set post = page.extra.post | default(value={}) %}
+  {% set bibtex = post.bibtex | default(value="") | trim %}
   {# Separate Pandoc's appended bibliography without changing citation anchors.
      The fallback also supports pages generated before the marker was added. #}
   {% set body_parts = page.content | split(pat="<!-- persona-bibliography -->") %}
@@ -65,7 +66,9 @@
       {% endif %}
     {% endfor %}
   {% endif %}
-  {% set has_contents = post.abstract or page.toc or post.gallery or post.video or post.poster or post.bibtex or bibliography or prose is containing(pat='<h1') or prose is containing(pat='<h2') %}
+  {% set has_contents = post.abstract or page.toc or post.gallery or post.video or post.poster or bibtex or bibliography or prose is containing(pat='<h1') or prose is containing(pat='<h2') %}
+  {% set outline_title = config.extra.persona.outline_title | default(value="Outline") | trim %}
+  {% if not outline_title %}{% set outline_title = "Outline" %}{% endif %}
   {{ <render.breadcrumbs page={page} class_name="post-breadcrumbs" /> }}
   <article class="post container" id="post-main" aria-labelledby="post-title" tabindex="-1">
     <header class="post__hero">
@@ -123,19 +126,24 @@
         <div class="post__sidebar-inner">
       {% if has_contents %}
       <aside class="post__contents">
-        <nav aria-label="On this page">
-          <p>On this page</p>
-          <ul>
-            {% if post.abstract %}<li><a href="#post-abstract">Abstract</a></li>{% endif %}
-            {% for heading in page.toc %}<li data-prose-heading><a href="{{ heading.permalink }}">{{ heading.title }}</a></li>{% endfor %}
-            <li data-prose-toc-end hidden></li>
-            {% if post.gallery %}<li><a href="#post-results">{{ post.gallery_title | default(value='Results gallery') }}</a></li>{% endif %}
-            {% if post.video %}<li><a href="#post-video">{{ post.video.title }}</a></li>{% endif %}
-            {% if post.poster %}<li><a href="#post-poster">{{ post.poster.title | default(value='Poster') }}</a></li>{% endif %}
-            {% if post.bibtex %}<li><a href="#post-citation">Citation</a></li>{% endif %}
-            {% if bibliography %}<li><a href="#post-bibliography">Bibliography</a></li>{% endif %}
-          </ul>
-        </nav>
+        <details class="post__outline" data-post-outline>
+          <summary class="post__outline-toggle">
+            <span id="post-outline-title">{{ outline_title }}</span>
+            <i class="bi bi-chevron-down" aria-hidden="true"></i>
+          </summary>
+          <nav aria-labelledby="post-outline-title">
+            <ul>
+              {% if post.abstract %}<li><a href="#post-abstract">Abstract</a></li>{% endif %}
+              {% for heading in page.toc %}<li data-prose-heading><a href="{{ heading.permalink }}">{{ heading.title }}</a></li>{% endfor %}
+              <li data-prose-toc-end hidden></li>
+              {% if post.gallery %}<li><a href="#post-results">{{ post.gallery_title | default(value='Results gallery') }}</a></li>{% endif %}
+              {% if post.video %}<li><a href="#post-video">{{ post.video.title }}</a></li>{% endif %}
+              {% if post.poster %}<li><a href="#post-poster">{{ post.poster.title | default(value='Poster') }}</a></li>{% endif %}
+              {% if bibtex %}<li><a href="#post-citation">Citation</a></li>{% endif %}
+              {% if bibliography %}<li><a href="#post-bibliography">Bibliography</a></li>{% endif %}
+            </ul>
+          </nav>
+        </details>
       </aside>
       {% endif %}
         </div>
@@ -171,13 +179,13 @@
         </section>
         {% endif %}
 
-        {% if post.bibtex %}
+        {% if bibtex %}
         <section class="post__section post__citation" id="post-citation" aria-labelledby="post-citation-title">
           <div class="post__section-heading">
             <h2 id="post-citation-title">Citation</h2>
             <button class="post__button" type="button" data-copy-citation aria-controls="post-bibtex" hidden><i class="bi bi-copy" aria-hidden="true"></i> Copy BibTeX</button>
           </div>
-          <pre tabindex="0" aria-label="BibTeX citation"><code id="post-bibtex">{{ post.bibtex | trim }}</code></pre>
+          <pre tabindex="0" aria-label="BibTeX citation"><code id="post-bibtex">{{ bibtex }}</code></pre>
           <p class="post__copy-status" data-copy-status role="status" aria-live="polite"></p>
         </section>
         {% endif %}
@@ -195,7 +203,7 @@
           <h2 class="widget__title" id="post-related-title">Related Posts</h2>
           <ul class="post__related-list">
             {% for work in related %}
-            <li><a href="{{ <post.url page={page} path={work.url} /> }}">{{ work.title }}</a>{% if work.date %}<time datetime="{{ work.date | date(format='%Y-%m-%d') }}">{{ work.date | date(format='%b %d, %Y') }}</time>{% endif %}</li>
+            <li><a href="{{ <post.url page={page} path={work.url} /> }}">{{ work.title }}</a>{% if work.date %}{{ <render.date value={work.date | date(format='%Y-%m-%d')} /> }}{% endif %}</li>
             {% endfor %}
           </ul>
         </section>

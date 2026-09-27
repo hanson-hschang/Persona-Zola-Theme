@@ -4,6 +4,34 @@
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const printMedia = window.matchMedia('print');
 
+  const entryLayouts = Array.from(document.querySelectorAll('.resume__entry-header')).map(header => {
+    const row = header.querySelector('.resume__entry-heading');
+    const heading = row?.querySelector('h3');
+    const period = row?.querySelector('.resume__period');
+    return heading && period ? { header, row, heading, period } : null;
+  }).filter(Boolean);
+
+  if (entryLayouts.length) {
+    function updateEntryLayouts() {
+      // Follow the actual date wrap, including font and column-width changes.
+      const wrapped = entryLayouts.map(({ heading, period }) =>
+        period.getBoundingClientRect().top >= heading.getBoundingClientRect().bottom - 1);
+      entryLayouts.forEach(({ header }, index) => {
+        header.classList.toggle('resume__entry-header--stacked', wrapped[index]);
+      });
+    }
+    if ('ResizeObserver' in window) {
+      const observer = new ResizeObserver(updateEntryLayouts);
+      entryLayouts.forEach(({ row }) => observer.observe(row));
+    } else {
+      window.addEventListener('resize', updateEntryLayouts);
+    }
+    document.fonts?.ready.then(updateEntryLayouts);
+    window.addEventListener('beforeprint', updateEntryLayouts);
+    window.addEventListener('afterprint', updateEntryLayouts);
+    updateEntryLayouts();
+  }
+
   document.querySelectorAll('[data-badge-marquee]').forEach(root => {
     const viewport = root.querySelector('.resume__badges-viewport');
     const track = root.querySelector('.resume__badges-track');
@@ -229,20 +257,72 @@
     });
     root.setAttribute('data-tabs-ready', '');
 
+    const narrowScreen = window.matchMedia('(max-width: 767px)');
+    let selectedIndex = -1;
+    let scrollFrame = null;
+    let revealedScrollLeft = null;
+
+    function cancelScrollSelection() {
+      if (scrollFrame !== null) window.cancelAnimationFrame(scrollFrame);
+      scrollFrame = null;
+    }
+
     function select(index, reveal = false) {
-      tabs.forEach((tab, current) => {
-        const selected = current === index;
-        tab.setAttribute('aria-selected', String(selected));
-        tab.tabIndex = selected ? 0 : -1;
-        panels[current].hidden = !selected;
-      });
+      // Repeated scroll events inside one category should not restart its animation.
+      if (index !== selectedIndex) {
+        selectedIndex = index;
+        tabs.forEach((tab, current) => {
+          const selected = current === index;
+          tab.setAttribute('aria-selected', String(selected));
+          tab.tabIndex = selected ? 0 : -1;
+          panels[current].hidden = !selected;
+        });
+      }
       if (reveal) {
+        cancelScrollSelection();
         const bounds = rail.getBoundingClientRect();
         const tabBounds = tabs[index].getBoundingClientRect();
         if (tabBounds.left < bounds.left) rail.scrollLeft -= bounds.left - tabBounds.left;
         else if (tabBounds.right > bounds.right) rail.scrollLeft += tabBounds.right - bounds.right;
+        // Clicks and keyboard navigation remain authoritative when revealing a tab
+        // places a different category nearer the center. Native scroll events are async.
+        revealedScrollLeft = rail.scrollLeft;
       }
     }
+
+    function selectCenteredTab() {
+      scrollFrame = null;
+      const limit = rail.scrollWidth - rail.clientWidth;
+      if (!narrowScreen.matches || limit <= 1 || rail.scrollLeft === revealedScrollLeft) return;
+      revealedScrollLeft = null;
+      let nearest = 0;
+      if (rail.scrollLeft >= limit - 1) nearest = tabs.length - 1;
+      else if (rail.scrollLeft > 1) {
+        const bounds = rail.getBoundingClientRect();
+        const center = (bounds.left + bounds.right) / 2;
+        let distance = Infinity;
+        tabs.forEach((tab, index) => {
+          const tabBounds = tab.getBoundingClientRect();
+          const nextDistance = Math.abs((tabBounds.left + tabBounds.right) / 2 - center);
+          if (nextDistance < distance) { nearest = index; distance = nextDistance; }
+        });
+      }
+      // Change only the panel, never the scroll position or keyboard focus.
+      select(nearest);
+    }
+
+    rail.addEventListener('scroll', () => {
+      if (narrowScreen.matches && scrollFrame === null) {
+        scrollFrame = window.requestAnimationFrame(selectCenteredTab);
+      }
+    }, { passive: true });
+
+    function preserveSelection() {
+      cancelScrollSelection();
+      select(selectedIndex, true);
+    }
+    narrowScreen.addEventListener('change', preserveSelection);
+    window.addEventListener('resize', preserveSelection);
 
     tabs.forEach((tab, index) => {
       tab.addEventListener('pointerenter', event => {

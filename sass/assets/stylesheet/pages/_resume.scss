@@ -513,7 +513,7 @@
     gap: var(--spacing-xs) var(--spacing-sm);
 
     h3 {
-      flex: 1 1 14rem;
+      flex: 1 1 auto;
       min-width: 0;
       margin: 0;
       color: var(--color-accent);
@@ -526,14 +526,10 @@
   &__period {
     display: inline-flex;
     align-items: baseline;
-    gap: var(--spacing-xs);
+    flex: 0 1 auto;
     max-width: 100%;
-    margin: 0 0 0 auto;
-    color: color-mix(in srgb, var(--color-default) 75%, var(--color-background));
-    font-size: 0.875rem;
-    font-variant-numeric: tabular-nums;
-    line-height: 1.6;
-    text-align: right;
+    margin: 0;
+    text-align: left;
 
     time {
       white-space: nowrap;
@@ -544,23 +540,37 @@
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
+    justify-content: space-between;
     gap: var(--spacing-xxs) var(--spacing-sm);
-    margin-top: var(--spacing-xs);
+    margin: var(--spacing-xs) 0 0;
     color: var(--color-heading);
     font-size: 0.9375rem;
     font-style: italic;
     line-height: 1.6;
   }
 
-  &__organization {
-    flex: 1 1 12rem;
-    min-width: 0;
-    margin: 0;
+  &__details-separator {
+    display: none;
   }
 
   &__location {
-    margin: 0 0 0 auto;
+    margin-left: auto;
     text-align: right;
+  }
+
+  &__entry-header--stacked {
+    .resume__details {
+      display: block;
+    }
+
+    .resume__details-separator {
+      display: inline;
+    }
+
+    .resume__location {
+      margin-left: 0;
+      text-align: left;
+    }
   }
 
   &__entry-content > :last-child,

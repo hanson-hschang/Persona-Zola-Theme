@@ -38,7 +38,7 @@
           {% for page in entries[:5] %}
             <li class="recent-posts-widget__item">
               <h4><a href="{{ page.permalink | safe }}">{{ page.title }}</a></h4>
-              <time datetime="{{ page.date | date(format='%Y-%m-%d') }}">{{ page.date | date(format="%b %d, %Y") }}</time>
+              {% if page.date %}{{ <render.date value={page.date | date(format='%Y-%m-%d')} /> }}{% endif %}
             </li>
           {% endfor %}
         </ul>

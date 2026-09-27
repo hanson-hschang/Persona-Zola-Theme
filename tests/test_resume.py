@@ -46,6 +46,7 @@ BADGE_LINK_CASES = (
     ("HTTPS URL with backslash", "https://example.org\\award", None),
 )
 BUTTON_TEXT = 'Explore <img src=x onerror=alert(1)> & experience'
+LOCATION_SEPARATOR = '<img src=x onerror=alert(1)> & "place"'
 HARD_BREAK = "  "
 
 
@@ -328,6 +329,34 @@ template = "resume.html"
 ## Experience
 
 ''' + "\n".join(combinations))
+        for kind in ("section", "page"):
+            for variant, separator in (("custom", "in"), ("empty", ""),
+                                       ("blank", "  "), ("escaped", LOCATION_SEPARATOR)):
+                output = f"separator-{kind}-{variant}"
+                path = f"{output}/_index.md" if kind == "section" else f"{output}.md"
+                template = "" if kind == "section" else 'template = "resume.html"'
+                cls.write(f"content/{path}", f'''+++
+title = "Location separator"
+{template}
+[extra]
+type = "resume"
+location_separator = {json.dumps(separator)}
++++
+## Experience
+
+### Both fields
+
+> Organization: [Lab](@/about/_index.md){HARD_BREAK}
+> Location: Remote
+
+### Organization only
+
+> Organization: [Lab](@/about/_index.md)
+
+### Location only
+
+> Location: Remote
+''')
         cls.build_site(zola)
         cls.home_without_resume = (cls.site / "public/index.html").read_text(encoding="utf-8")
         for output, title, order, landing, summary_title, button in (
@@ -677,10 +706,16 @@ items = [{{ label = "Research award", icon_class = "bi bi-trophy", link = {json.
                 entry = self.entry(document, title)
                 period = self.descendants_with_class(document, entry, "resume__period")
                 self.assertEqual(len(period), 1)
+                self.assertIn("date-text", period[0].get("class", "").split(),
+                              "Range separators and Present share the date typography")
                 period_text = document.text_content(period[0])
                 for label in labels:
                     self.assertIn(label, period_text)
-                self.assertTrue(self.descendants_with_class(document, period[0], "bi-calendar-event"))
+                self.assertFalse(any(tag == "i" for tag, _ in document.descendants(period[0])))
+                dates = [attrs for tag, attrs in document.descendants(period[0]) if tag == "time"]
+                self.assertTrue(dates)
+                self.assertTrue(all("date-text" in date.get("class", "").split()
+                                    for date in dates))
                 self.assertNotIn("Period:", document.text_content(entry))
         self.assertTrue(document.find("time", datetime="2020-01-02"))
         self.assertTrue(document.find("time", datetime="2024-05-31"))
@@ -713,8 +748,45 @@ items = [{{ label = "Research award", icon_class = "bi bi-trophy", link = {json.
                                         for tag, attrs in document.descendants(entry)))
                 if mask & 4:
                     self.assertIn("Room: 204, Urbana", text)
+                if details:
+                    self.assertTrue(any(attrs is details[0] for attrs in document.find("p")))
+                    self.assertFalse(any(tag == "p" for tag, _ in document.descendants(details[0])))
+                    for field in (*organization, *location):
+                        self.assertTrue(any(attrs is field for attrs in document.find("span")))
+                    expected = []
+                    if mask & 2:
+                        expected.append("Group: Controls")
+                    if (mask & 6) == 6:
+                        expected.append("@")
+                    if mask & 4:
+                        expected.append("Room: 204, Urbana")
+                    self.assertEqual(" ".join(document.text_content(details[0]).split()),
+                                     " ".join(expected))
                 for label in ("Period:", "Organization:", "Location:"):
                     self.assertNotIn(label, text)
+
+    def test_location_separator_is_customizable_plain_text_on_sections_and_pages(self):
+        section = self.document("resume")
+        details = self.descendants_with_class(section, self.entry(section, LABEL), "resume__details")
+        self.assertEqual(" ".join(section.text_content(details[0]).split()),
+                         "Lab: Robotics @ Urbana, IL")
+        for kind in ("section", "page"):
+            for variant, separator in (("custom", "in"), ("empty", ""),
+                                       ("blank", ""), ("escaped", LOCATION_SEPARATOR)):
+                with self.subTest(kind=kind, variant=variant):
+                    document = self.document(f"separator-{kind}-{variant}")
+                    for title, expected in (
+                            ("Both fields", " ".join(filter(None, ("Lab", separator, "Remote")))),
+                            ("Organization only", "Lab"), ("Location only", "Remote")):
+                        entry = self.entry(document, title)
+                        details = self.descendants_with_class(document, entry, "resume__details")
+                        self.assertEqual(len(details), 1)
+                        self.assertTrue(any(attrs is details[0] for attrs in document.find("p")))
+                        self.assertEqual(" ".join(document.text_content(details[0]).split()), expected)
+                        self.assertFalse(any(tag == "p" for tag, _ in document.descendants(details[0])))
+                    self.assertTrue(document.find("a", href=BASE + "about/"))
+                    self.assertFalse(document.find("img", src="x"))
+                    self.assertFalse(any("onerror" in attrs for _, attrs in document.elements))
 
     def test_unrecognized_quotes_and_metadata_after_prose_are_preserved(self):
         document = self.document("cv")

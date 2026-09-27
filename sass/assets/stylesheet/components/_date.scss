@@ -1,0 +1,11 @@
+// Shared typography for visible dates and complete resume date ranges.
+.date-text {
+  color: color-mix(in srgb, var(--color-default) 75%, var(--color-background));
+  font-family: var(--font-default);
+  font-size: var(--font-size-date);
+  font-style: normal;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.6;
+  letter-spacing: normal;
+}

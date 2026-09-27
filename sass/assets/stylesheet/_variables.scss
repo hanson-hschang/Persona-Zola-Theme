@@ -16,6 +16,7 @@ $font-nav:        "Poppins", sans-serif;
 
 // ── Font Sizes ───────────────────────────────────────────────────────────────
 $font-size-footer:    14px;   // Footer text
+$font-size-date:      0.875rem; // Dates and resume periods
 $font-size-normal:    16px;   // Base body font size
 $font-size-subtitle:  24px;   // Section subtitles
 $font-size-heading:   32px;   // Section headings
@@ -88,6 +89,7 @@ $transparency-almost: 95%;
   --font-nav:           #{$font-nav};
 
   --font-size-footer:   #{$font-size-footer};
+  --font-size-date:     #{$font-size-date};
   --font-size-normal:   #{$font-size-normal};
   --font-size-subtitle: #{$font-size-subtitle};
   --font-size-heading:  #{$font-size-heading};

@@ -52,6 +52,9 @@ light_theme = "github-light"
 # Full section pages remain unlimited. Set to 0 to show only the View all link.
 home_items_limit = 3
 
+# Label for the navigation through each post's sections.
+outline_title = "Outline"
+
 # Citation style
 # This configuration controls how references are formatted and displayed throughout the site.
 #

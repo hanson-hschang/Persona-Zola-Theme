@@ -167,9 +167,6 @@
 
     time {
       display: block;
-      font-style: italic;
-      font-size: 14px;
-      color: color-mix(in srgb, var(--color-default), transparent variables.$transparency-medium);
     }
   }
 }

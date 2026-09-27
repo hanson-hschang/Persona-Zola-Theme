@@ -18,7 +18,7 @@
     {% if body %}
     <div class="resume__columns{% if columns | length > 1 %} resume__columns--split{% endif %}">
       {% for column in columns %}
-      <div class="resume__column">{{ <resume.column content={column} /> }}</div>
+      <div class="resume__column">{{ <resume.column content={column} location_separator={pos.extra.location_separator | default(value="@") | trim} /> }}</div>
       {% endfor %}
     </div>
     {% endif %}
@@ -129,18 +129,18 @@
   {% endif %}
 {% endcomponent resume.summary %}
 
-{% component resume.column(content) %}
+{% component resume.column(content, location_separator="@") %}
   {% set groups = content | split(pat="<h2") %}
   {% for group in groups %}
     {% if loop.first %}
       {% if group | trim %}<div class="resume__prose">{{ group | safe }}</div>{% endif %}
     {% else %}
-      {{ <resume.group content={group} /> }}
+      {{ <resume.group content={group} location_separator={location_separator} /> }}
     {% endif %}
   {% endfor %}
 {% endcomponent resume.column %}
 
-{% component resume.group(content) %}
+{% component resume.group(content, location_separator="@") %}
   {% set parts = content | split(pat="</h2>") %}
   {% set heading = parts | first %}
   {% set body = parts[1:] | join(sep="</h2>") %}
@@ -151,14 +151,14 @@
     {% if entries | length > 1 %}
     <ol class="resume__timeline">
       {% for entry in entries[1:] %}
-      {{ <resume.entry content={entry} /> }}
+      {{ <resume.entry content={entry} location_separator={location_separator} /> }}
       {% endfor %}
     </ol>
     {% endif %}
   </section>
 {% endcomponent resume.group %}
 
-{% component resume.entry(content) %}
+{% component resume.entry(content, location_separator="@") %}
   {% set parts = content | split(pat="</h3>") %}
   {% set heading = parts | first %}
   {% set body = parts[1:] | join(sep="</h3>") | trim %}
@@ -193,10 +193,11 @@
         {% if metadata and period %}{{ <resume.period value={period} /> }}{% endif %}
       </div>
       {% if metadata and (organization or location) %}
-      <div class="resume__details">
-        {% if organization %}<p class="resume__organization">{{ organization | safe }}</p>{% endif %}
-        {% if location %}<p class="resume__location">{{ location | safe }}</p>{% endif %}
-      </div>
+      <p class="resume__details">
+        {% if organization %}<span class="resume__organization">{{ organization | safe }}</span>{% endif %}
+        {% if organization and location and location_separator %}<span class="resume__details-separator">{{ location_separator }}</span>{% endif %}
+        {% if location %}<span class="resume__location">{{ location | safe }}</span>{% endif %}
+      </p>
       {% endif %}
     </header>
     {% if body %}<div class="resume__entry-content">{{ body | safe }}</div>{% endif %}
@@ -204,14 +205,14 @@
 {% endcomponent resume.entry %}
 
 {% component resume.period(value) %}
-  <p class="resume__period"><i class="bi bi-calendar-event" aria-hidden="true"></i><span>{% for endpoint in value | split(pat=" / ") %}{% if not loop.first %} – {% endif %}{{ <resume.date value={endpoint} /> }}{% endfor %}</span></p>
+  <p class="resume__period date-text"><span>{% for endpoint in value | split(pat=" / ") %}{% if not loop.first %} – {% endif %}{{ <resume.date value={endpoint} /> }}{% endfor %}</span></p>
 {% endcomponent resume.period %}
 
 {% component resume.date(value) -%}
   {%- set value = value | trim -%}
   {%- set iso = value | regex_replace(pattern="^[0-9]{4}(-[0-9]{2}){0,2}$", rep="") -%}
   {%- if iso == "" -%}
-    <time datetime="{{ value }}">{%- if value | length == 10 -%}{{ value | date(format="%B %d, %Y") }}{%- elif value | length == 7 -%}{{ (value ~ "-01") | date(format="%B %Y") }}{%- else -%}{{ value }}{%- endif -%}</time>
+    {{- <render.date value={value} /> -}}
   {%- else -%}
     {{- value | safe -}}
   {%- endif -%}

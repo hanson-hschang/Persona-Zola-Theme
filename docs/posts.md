@@ -69,13 +69,15 @@ thumbnail_alt = "Overview of the proposed method"
 
 Thumbnails follow the resource URL rules below. If `extra.post.thumbnail` is omitted, the listing tries `extra.thumbnail`, then the teaser image or a video teaser's `poster`. An entry without an image uses the full text width. `thumbnail_alt` defaults to empty because the adjacent title already names the linked post. Entry descriptions use the page's `description`, falling back to `extra.excerpt` when empty.
 
-The top-level `date` appears in the full-width metadata row after the author byline on the detail page and beside the title in listings. Omit it to hide the date. Post subtitles appear on both the detail page and listings; `extra.post.subtitle` takes precedence over `extra.subtitle`.
+The top-level `date` appears in the full-width metadata row after the author byline on the detail page and beside the title in listings. Omit it to hide the date. Dates use the same full-month format everywhere, such as **September 21, 2026**, including home previews, section and taxonomy lists, and Related Posts. They share the theme's muted body font at normal weight and 0.875rem, with tabular numerals and no calendar icon. Post subtitles appear on both the detail page and listings; `extra.post.subtitle` takes precedence over `extra.subtitle`.
 
 Existing optional fields under `[extra]` remain supported: `subtitle`, `thumbnail`, and `thumbnail_alt`. A subtitle also appears below the title on the detail page. Use the top-level `description` or the existing `extra.excerpt` for a separate summary. Thumbnails are optional; an `extra.thumbnail` also supplies the article's hero image when no teaser is configured.
 
 ### Tags, metadata, citations, and mathematics
 
 Keep tags in the standard `[taxonomies]` table and the date at the top level. Linked tags appear with the title. The publication date, estimated reading time, and Share menu occupy a separate row after the author byline and before the resource buttons, aligned to the same full width as the resources. The row still appears when authors or resources are omitted. It has no Save action.
+
+Share starts with **Copy BibTeX** when `[extra.post].bibtex` contains a citation, followed by **Permalink** and the social sharing links. Without a citation, or when the field contains only whitespace, it starts with **Permalink**. Both the Share action and the Citation section's copy button copy the same literal BibTeX; Permalink remains the direct link to the article.
 
 ```toml
 date = 2026-09-21
@@ -136,17 +138,28 @@ All fields below belong to `[extra.post]` unless another location is shown. Omit
 | `gallery_title` | String | Gallery heading; defaults to `Results gallery`. |
 | `video` | Embed table | Embedded video after the gallery. |
 | `poster` | Poster table | PDF viewer and a direct link after the video. |
-| `related` | Array of related-work tables | Related Posts widget below On this page on the left; below the article on screens narrower than 992px. When omitted, shows up to five other listed pages from the parent section. Set `[]` to hide it. |
-| `bibtex` | String | Literal BibTeX displayed in a code block with a copy button. |
+| `related` | Array of related-work tables | Related Posts widget below Outline on the left; below the article on screens narrower than 992px. When omitted, shows up to five other listed pages from the parent section. Set `[]` to hide it. |
+| `bibtex` | String | Literal BibTeX displayed in a code block with a copy button and a Copy BibTeX action in Share. Empty or whitespace-only values hide both. |
 | `paper` | URL string | PDF URL for `citation_pdf_url` metadata. Add a resource link separately to show a Paper button. |
 | `doi` | String | DOI for citation metadata. |
 | `social_image` | URL string | Open Graph image; enables the large-image Twitter card. |
 
-The main Markdown content appears after the abstract and before the gallery. Its top-level table-of-contents headings appear in `On this page`, alongside configured sections. JavaScript also adds headings from Pandoc-generated HTML. Bibliography appears after Citation, with its original citation anchors preserved. Avoid custom heading IDs beginning with `post-`, which are reserved for the template.
+The main Markdown content appears after the abstract and before the gallery. Its top-level table-of-contents headings appear in Outline, alongside configured sections. JavaScript also adds headings from Pandoc-generated HTML. Bibliography appears after Citation, with its original citation anchors preserved. Avoid custom heading IDs beginning with `post-`, which are reserved for the template.
+
+Set the outline heading for all posts in the site's `config.toml`:
+
+```toml
+[extra.persona]
+outline_title = "Outline"
+```
+
+The title is plain text and also names the outline navigation for assistive technology. Leading and trailing spaces are trimmed; an omitted or blank value uses `Outline`.
 
 All posts use the same responsive container widths: 540px from 576px, 720px from 768px, 960px from 992px, 1140px from 1200px, and 1320px from 1400px. Below 576px, the container fills the available width with space at both edges.
 
-On screens at least 992px wide, `On this page` and Related Posts stick together below the main navigation as the reader scrolls. Long sidebars scroll within the available window height. JavaScript highlights the current section and groups the related widget with the contents; on smaller screens, it restores Related Posts below the article and citation. Without JavaScript, the links remain usable and the related widget keeps its static responsive placement.
+On screens at least 992px wide, Outline starts expanded and sticks with Related Posts below the main navigation as the reader scrolls. Long sidebars scroll within the available window height. Below 992px, Outline starts folded; click its tinted heading or use Enter or Space to expand it. The arrow sits beside the label, and the links open in a distinct shaded panel with a rounded border. The expanded mobile outline uses a single vertical list with full-width links, 16px text, comfortable touch targets, naturally wrapping labels, and a blue left rail matching the desktop accent. Hovering or focusing a link gives it the same emphasis as the current section at every screen size.
+
+Readers can fold or expand Outline at any size. JavaScript preserves that choice while the viewport stays on the same side of the 992px breakpoint; crossing the breakpoint restores the corresponding expanded or folded default. It also highlights the current section and groups Related Posts with Outline on desktop, restoring Related Posts below the article and citation on smaller screens. Without JavaScript, Outline remains a usable native disclosure, initially folded, and the related widget keeps its static responsive placement.
 
 ### Authors, affiliations, and links
 
@@ -252,7 +265,7 @@ bibtex = '''
 
 The template provides a canonical URL, description, Open Graph tags, Twitter card type, and scholarly citation tags for the title, authors, date, venue, DOI, and paper URL when supplied. The page description falls back to `config.description`.
 
-BibTeX is rendered as text, without a citation-processing dependency. Long lines wrap to fit the screen while preserving the original citation text and line breaks for copying. JavaScript enables its copy button; if clipboard access fails, it selects the citation for manual copying and announces the fallback. Without JavaScript, the code block remains selectable. Use the separate [Citation Pipeline](../README.md#-citation-pipeline) if you need formatted references within the article itself.
+BibTeX is rendered as text, without a citation-processing dependency. Long lines wrap to fit the screen while preserving the original citation text and line breaks for copying; surrounding whitespace is trimmed. JavaScript enables both copy buttons. Copying from Share announces success inside that menu, while copying from Citation announces it beside the code block. If clipboard access fails, either button selects and focuses the citation for manual copying, with the fallback announced in the Citation section. Without JavaScript, the code block remains selectable and Share's ordinary links remain available. Use the separate [Citation Pipeline](../README.md#-citation-pipeline) if you need formatted references within the article itself.
 
 ## Resource URL rules
 
@@ -292,4 +305,4 @@ The [Academic Project Page Template](https://github.com/eliahuhorwitz/Academic-p
 
 ## Development checks
 
-From the theme directory, run `python3 tests/test_posts.py` to build isolated minimal and populated examples and check their rendered output. The tests require Zola and Python 3, and leave the theme's content unchanged. They cover template rendering and URL handling; check actual media playback and responsive interactions in a browser when changing the media components or script.
+From the theme directory, run `python3 tests/test_posts.py` to build isolated minimal and populated examples and check their rendered output. The tests require Zola and Python 3, and leave the theme's content unchanged. Run `node --test tests/test_post_outline.cjs` for the outline's breakpoint and disclosure behavior. These checks cover template rendering, URL handling, and scripted state changes; check actual media playback and responsive interactions in a browser when changing the media components or script.

@@ -126,6 +126,10 @@ Located in `templates/` root:
   - Separates Pandoc's appended bibliography at `<!-- persona-bibliography -->` and renders it after the BibTeX Citation section, preserving all citation anchors; legacy `<div id="refs">` output is also supported
   - Generates page metadata and scholarly citation tags
   - Inherits standard navigation and mobile toggle, with breadcrumbs based on section ancestry
+  - Names its contents navigation with `config.extra.persona.outline_title`, defaulting to `Outline` for omitted or blank values; the trimmed, escaped plain-text title labels the navigation through `aria-labelledby`
+  - Uses native `details`/`summary` for Outline: folded by default below 992px, with a full-width vertical list, 16px links, wrapping labels, and the desktop blue rail; expanded in the compact sticky sidebar at larger widths
+  - Styles the mobile outline with a tinted toggle, an arrow beside its label, and a distinct shaded panel with a rounded border instead of a horizontal rule beneath it
+  - Gives hovered and keyboard-focused outline links the same accent and background as the current section
   - Displays Related Posts below the left contents navigation; below the content under the `lg` breakpoint. Defaults to up to five other listed pages from the parent section; explicit `post.related` overrides the list and `[]` disables it
   - Overrides the base `preloader` block so research content is available without JavaScript
   - Loads `page-post.css`, `citations.css`, AOS, `home.js`, `share.js`, and `post.js`; retains shared footer and conditional KaTeX support with the existing `[extra.tex.macros]` configuration
@@ -142,6 +146,7 @@ Located in `templates/components/`:
 Tera 2 components are globally registered by component name. They do not need imports. Call them with syntax such as `{{ <render.section_title title={title} /> }}`.
 
 - **render.html**: Core rendering utilities
+  - `render.date(value, class_name="")`: Shared semantic date rendering for article metadata, listings, Related Posts, and resume periods; full dates use `%B %d, %Y`, while year and month values retain their precision. The shared `.date-text` class supplies consistent body-font typography without icons.
   - `render.post_entry(page)`: Shared section and taxonomy post entries, with optional thumbnail, date, subtitle, and description
   - `render.article_tags(page)` and `render.article_meta(page)`: Article tags and metadata / sharing controls
   - `render.section_title`: Renders section titles
@@ -181,8 +186,8 @@ Tera 2 components are globally registered by component name. They do not need im
   - Renders the nested summary with a customizable heading, Markdown description, and optional badge list with configurable decorative icons; normalizes string/object badge items and omits empty labels, and retains the full summary when skills are absent or empty
   - Supports optional badge `link` values as full-card native anchors with `target="_blank"` and `rel="noopener noreferrer"`; HTTP(S) URLs and site/content paths are accepted, internal paths retain the base URL prefix, and unsupported schemes, protocol-relative URLs, or backslashes leave the badge unlinked
   - Gives the badge strip a named, keyboard-focusable scroll region containing the original list
-  - Reads optional period, organization, and location metadata from an entry blockquote; normal Markdown links handle organizations
-  - Formats periods with the article calendar icon and long-month date convention while preserving year-only and month-only precision
+  - Reads optional period, organization, and location metadata from an entry blockquote; organization aligns left and location right in one italic paragraph by default, joining inline only when that entry's period wraps below its heading; the inline separator defaults to `@` and is customizable through plain-text `extra.location_separator`, with no separator for a missing field; normal Markdown links handle organizations
+  - Uses `render.date` and `.date-text` for periods without icons, sharing the date format and typography with article metadata, listings, and Related Posts while preserving year-only and month-only precision; periods align right beside an entry heading and left when wrapped below it
 
 - **debug.html**: Debug utilities
   - Development helpers
@@ -329,18 +334,21 @@ JavaScript files in `static/assets/script/`:
   - AOS initialization
   - Typed.js for text animation
 
-- **share.js**: Social sharing functionality
-  - Generates share URLs for Twitter, Facebook, LinkedIn
-  - Opens share menu when share button is clicked
+- **share.js**: Share menu disclosure
+  - Opens the menu and closes it on Escape, outside clicks, or focus leaving the menu
+  - Enhances the template's Permalink and social links even when no BibTeX copy action is present; links remain available without JavaScript
 
 - **post.js**: Progressive enhancements for all post pages
-  - Enables BibTeX clipboard copying with selection and status-message fallback
+  - Sets Outline's expanded state when crossing the 992px breakpoint, preserving manual disclosure choices while staying within the same breakpoint; native disclosure remains usable without JavaScript
+  - Enables both Citation and Share's BibTeX copy buttons when nonblank `[extra.post].bibtex` is provided; Share otherwise starts with Permalink
+  - Copies the citation's literal text, reports success next to the chosen control, and selects/focuses Citation with an announced manual-copy fallback when clipboard access fails
   - Adds gallery navigation, keyboard controls, and announced slide positions
   - Respects reduced-motion preferences and pauses videos on inactive slides
   - Builds the contents navigation from Pandoc HTML headings and highlights the current section as the reader scrolls
   - Uses native browser APIs; post content, PDF links, video controls, and gallery scrolling remain available without JavaScript
 
-- **resume.js**: Progressive enhancement for resume badges and skill tabs
+- **resume.js**: Progressive enhancement for resume badges, skill tabs, and entry layout
+  - Uses `ResizeObserver` to detect each period wrapping below its heading and synchronize inline organization/location layout with that actual wrap; entries without a period retain separate alignment
   - Loops multiple badges horizontally, with duplicates hidden from assistive technology and duplicate links excluded from the tab order while preserving pointer access and hover animations
   - Pauses on hover, click, touch interaction, or keyboard focus; pointer exit, an outside click, or keyboard focus leaving the strip resumes scrolling
   - Preserves native horizontal scrolling for reduced motion, a single badge, and pages without JavaScript
@@ -348,6 +356,7 @@ JavaScript files in `static/assets/script/`:
   - Preserves linked badge keyboard activation while suppressing accidental pointer activation after dragging, scrolling, or holding for at least 500 milliseconds
   - Adds single-panel skill tabs with hover/click selection, arrow/Home/End navigation, and linked ARIA roles
   - Keeps the category row manually scrollable without automatic movement or duplication; the active rounded tab joins its content panel
+  - Selects the skill category nearest the visible row's center during manual scrolling on small screens, while retaining desktop hover/click selection
 
 ## Development Workflow
 
