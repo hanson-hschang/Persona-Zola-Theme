@@ -1,0 +1,222 @@
+{# Work with Zola-rendered Markdown so links, lists, and heading IDs survive.
+   # name; ## section; ### entry; --- column break; leading quote = metadata. #}
+{% component resume.document(pos) %}
+  {% set body = pos.content | trim %}
+  {% set name = "" %}
+  {% if body is starting_with(pat="<h1 ") or body is starting_with(pat="<h1>") %}
+    {% set parts = body | split(pat="</h1>") %}
+    {% set name = (parts | first | split(pat=">"))[1:] | join(sep=">") %}
+    {% set body = parts[1:] | join(sep="</h1>") | trim %}
+  {% endif %}
+  {% set columns = body | split(pat="<hr />") %}
+  <article class="resume container" id="resume-main" aria-labelledby="resume-title" tabindex="-1">
+    <header class="resume__header">
+      <h1 id="resume-title">{% if name %}{{ name | safe }}{% else %}{{ pos.title }}{% endif %}</h1>
+      {% if pos.extra.subtitle %}<p class="resume__subtitle">{{ pos.extra.subtitle }}</p>{% endif %}
+    </header>
+    {{ <resume.skills groups={pos.extra.skills | default(value=[])} summary={pos.extra.summary | default(value={})} /> }}
+    {% if body %}
+    <div class="resume__columns{% if columns | length > 1 %} resume__columns--split{% endif %}">
+      {% for column in columns %}
+      <div class="resume__column">{{ <resume.column content={column} /> }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </article>
+{% endcomponent resume.document %}
+
+{% component resume.skills(groups, summary, heading_level=2, badges_id="resume-badges-track") %}
+  {% set_global categories = [] %}
+  {% for group in groups %}
+    {% set_global items = [] %}
+    {% for item in group.items | default(value=[]) %}
+      {% if item | trim %}{% set_global items = [...items, item | trim] %}{% endif %}
+    {% endfor %}
+    {% if group.category and group.category | trim and items %}
+      {% set_global categories = [...categories, {"category": group.category | trim, "items": items, "icon_class": group.icon_class | default(value="") | trim}] %}
+    {% endif %}
+  {% endfor %}
+  {% set description = summary.description | default(value="") | trim %}
+  {% set summary_title = summary.title | default(value="Professional Summary") | trim %}
+  {% set badge_options = summary.badges | default(value={}) %}
+  {% set badges_title = badge_options.title | default(value="") | trim %}
+  {% set_global badges = [] %}
+  {% for badge in badge_options.items | default(value=[]) %}
+    {% set link = "" %}
+    {% if badge is string %}
+      {% set label = badge | trim %}
+      {% set icon_class = "bi bi-award" %}
+    {% else %}
+      {% set label = badge.label | default(value="") | trim %}
+      {% set icon_class = badge.icon_class | default(value="bi bi-award") | trim %}
+      {% set link = badge.link | default(value="") | trim %}
+    {% endif %}
+    {% if link %}
+      {% set lower_link = link | lower %}
+      {% if link | replace(from="\\", to="") != link %}
+        {% set link = "" %}
+      {% elif lower_link is starting_with(pat="https://") or lower_link is starting_with(pat="http://") %}
+        {# External web links keep their original spelling and query strings. #}
+      {% elif link | split(pat=":") | length == 1 and not link is starting_with(pat="//") %}
+        {% if link is ending_with(pat="/") %}{% set link = get_url(path=link, trailing_slash=true) %}{% else %}{% set link = get_url(path=link) %}{% endif %}
+      {% else %}
+        {% set link = "" %}
+      {% endif %}
+    {% endif %}
+    {% if label %}{% set_global badges = [...badges, {"label": label, "icon_class": icon_class, "link": link}] %}{% endif %}
+  {% endfor %}
+  {% if categories %}
+  <div class="resume__skills">
+    <div class="resume__skills-layout">
+      {% if description or badges %}
+      <div class="resume__skills-summary">
+        {{ <resume.summary title={summary_title} description={description} badges_title={badges_title} badges={badges} heading_level={heading_level} badges_id={badges_id} /> }}
+      </div>
+      {% endif %}
+      <div class="resume__skills-grid" data-skill-tabs>
+        <nav class="resume__skill-tabs" aria-label="Skill categories">
+          {% for group in categories %}
+          <a class="resume__skill-tab" id="resume-skill-{{ loop.index }}" href="#resume-skill-panel-{{ loop.index }}">
+              {% if group.icon_class %}<i class="resume__skill-icon {{ group.icon_class }}" aria-hidden="true"></i>{% endif %}
+              <span>{{ group.category }}</span>
+          </a>
+          {% endfor %}
+        </nav>
+        <div class="resume__skill-panels">
+          {% for group in categories %}
+          <section class="resume__skill-card" id="resume-skill-panel-{{ loop.index }}" aria-labelledby="resume-skill-{{ loop.index }}">
+            <h2 class="resume__skill-panel-title">{{ group.category }}</h2>
+            <ul class="resume__skill-items" role="list">
+              {% for item in group.items %}<li>{{ item }}</li>{% endfor %}
+            </ul>
+          </section>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% elif description or badges %}
+  <div class="resume__summary">
+    {{ <resume.summary title={summary_title} description={description} badges_title={badges_title} badges={badges} heading_level={heading_level} badges_id={badges_id} /> }}
+  </div>
+  {% endif %}
+{% endcomponent resume.skills %}
+
+{% component resume.summary(title, description, badges_title, badges, heading_level=2, badges_id="resume-badges-track") %}
+  {% if title %}<h{{ heading_level }} class="resume__summary-title">{{ title }}</h{{ heading_level }}>{% endif %}
+  {% if description %}{{ description | markdown | safe }}{% endif %}
+  {% if badges %}
+  <div class="resume__summary-highlights" data-badge-marquee>
+    {% if badges_title %}
+      {% set badge_heading_level = heading_level %}
+      {% if title %}{% set badge_heading_level = heading_level + 1 %}{% endif %}
+      <h{{ badge_heading_level }} class="resume__badges-title">{{ badges_title }}</h{{ badge_heading_level }}>
+    {% endif %}
+    <div class="resume__badges-viewport" id="{{ badges_id }}" role="region" aria-label="{% if badges_title %}{{ badges_title }}{% else %}Resume highlights{% endif %}" tabindex="0">
+      <div class="resume__badges-track">
+        <ul class="resume__summary-badges" role="list">
+          {% for badge in badges %}
+          <li>
+            {% if badge.link %}<a class="resume__badge" href="{{ badge.link }}" target="_blank" rel="noopener noreferrer" draggable="false" title="Opens in a new tab">{% else %}<div class="resume__badge">{% endif %}
+              {% if badge.icon_class %}<i class="{{ badge.icon_class }}" aria-hidden="true"></i>{% endif %}<span>{{ badge.label }}</span>
+            {% if badge.link %}</a>{% else %}</div>{% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+{% endcomponent resume.summary %}
+
+{% component resume.column(content) %}
+  {% set groups = content | split(pat="<h2") %}
+  {% for group in groups %}
+    {% if loop.first %}
+      {% if group | trim %}<div class="resume__prose">{{ group | safe }}</div>{% endif %}
+    {% else %}
+      {{ <resume.group content={group} /> }}
+    {% endif %}
+  {% endfor %}
+{% endcomponent resume.column %}
+
+{% component resume.group(content) %}
+  {% set parts = content | split(pat="</h2>") %}
+  {% set heading = parts | first %}
+  {% set body = parts[1:] | join(sep="</h2>") %}
+  {% set entries = body | split(pat="<h3") %}
+  <section class="resume__section">
+    {{ ('<h2 class="resume__section-title"' ~ heading ~ '</h2>') | safe }}
+    {% if entries | first | trim %}<div class="resume__prose">{{ entries | first | safe }}</div>{% endif %}
+    {% if entries | length > 1 %}
+    <ol class="resume__timeline">
+      {% for entry in entries[1:] %}
+      {{ <resume.entry content={entry} /> }}
+      {% endfor %}
+    </ol>
+    {% endif %}
+  </section>
+{% endcomponent resume.group %}
+
+{% component resume.entry(content) %}
+  {% set parts = content | split(pat="</h3>") %}
+  {% set heading = parts | first %}
+  {% set body = parts[1:] | join(sep="</h3>") | trim %}
+  {% set_global period = "" %}
+  {% set_global organization = "" %}
+  {% set_global location = "" %}
+  {% set_global metadata = false %}
+  {% if body is starting_with(pat="<blockquote>") %}
+    {% set quote_parts = body | split(pat="</blockquote>") %}
+    {% set lines = quote_parts | first | replace(from="<blockquote>", to="") | replace(from="<p>", to="") | replace(from="</p>", to="\n") | replace(from="<br />", to="\n") | split(pat="\n") %}
+    {% set_global metadata = true %}
+    {% for raw_line in lines %}
+      {% set line = raw_line | trim %}
+      {% set value = (line | split(pat=": "))[1:] | join(sep=": ") | trim %}
+      {% if line == "Period:" or line is starting_with(pat="Period: ") %}
+        {% set_global period = value %}
+      {% elif line == "Organization:" or line is starting_with(pat="Organization: ") %}
+        {% set_global organization = value %}
+      {% elif line == "Location:" or line is starting_with(pat="Location: ") %}
+        {% set_global location = value %}
+      {% elif line %}
+        {# Ordinary or mixed blockquotes stay intact as entry prose. #}
+        {% set_global metadata = false %}
+      {% endif %}
+    {% endfor %}
+    {% if metadata %}{% set body = quote_parts[1:] | join(sep="</blockquote>") | trim %}{% endif %}
+  {% endif %}
+  <li class="resume__entry">
+    <header class="resume__entry-header">
+      <div class="resume__entry-heading">
+        {{ ('<h3' ~ heading ~ '</h3>') | safe }}
+        {% if metadata and period %}{{ <resume.period value={period} /> }}{% endif %}
+      </div>
+      {% if metadata and (organization or location) %}
+      <div class="resume__details">
+        {% if organization %}<p class="resume__organization">{{ organization | safe }}</p>{% endif %}
+        {% if location %}<p class="resume__location">{{ location | safe }}</p>{% endif %}
+      </div>
+      {% endif %}
+    </header>
+    {% if body %}<div class="resume__entry-content">{{ body | safe }}</div>{% endif %}
+  </li>
+{% endcomponent resume.entry %}
+
+{% component resume.period(value) %}
+  <p class="resume__period"><i class="bi bi-calendar-event" aria-hidden="true"></i><span>{% for endpoint in value | split(pat=" / ") %}{% if not loop.first %} – {% endif %}{{ <resume.date value={endpoint} /> }}{% endfor %}</span></p>
+{% endcomponent resume.period %}
+
+{% component resume.date(value) -%}
+  {%- set value = value | trim -%}
+  {%- set iso = value | regex_replace(pattern="^[0-9]{4}(-[0-9]{2}){0,2}$", rep="") -%}
+  {%- if iso == "" -%}
+    <time datetime="{{ value }}">{%- if value | length == 10 -%}{{ value | date(format="%B %d, %Y") }}{%- elif value | length == 7 -%}{{ (value ~ "-01") | date(format="%B %Y") }}{%- else -%}{{ value }}{%- endif -%}</time>
+  {%- else -%}
+    {{- value | safe -}}
+  {%- endif -%}
+{%- endcomponent resume.date %}
+
+{% component resume.navigation_toggle() %}
+  <button class="nav-toggle d-lg-none bi bi-list" type="button" aria-label="Toggle navigation" aria-controls="navmenu" aria-expanded="false"></button>
+{% endcomponent resume.navigation_toggle %}

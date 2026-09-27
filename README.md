@@ -23,7 +23,7 @@
 - 🎨 **Modern Design**: Clean, professional, and customizable color palettes
 - 📱 **Fully Responsive**: Optimized for desktop, tablet, and mobile devices
 - ⚡️ **Fast Performance**: Lightweight and optimized for speed
-- 📋 **Resume/CV**: Dedicated page for your resume or CV *(--upcoming feature--)*
+- 📋 **Resume/CV**: [Markdown-driven resume](docs/resume.md) with responsive columns and a print layout
 - 🎭 **Portfolio with Posts**: Showcase your work with previews and posts
 - 📧 **Contact Forms**: Integrated contact form email support
 - 🔍 **Search Ready**: Built-in search index generation *(--upcoming feature--)*
@@ -64,7 +64,7 @@ git submodule update --init --recursive
 
 <div align="center">
 
-[Basic Setup](#basic-setup) • [Build & Serve](#build--serve)
+[Basic Setup](#basic-setup) • [Resume/CV](docs/resume.md) • [Build & Serve](#build--serve)
 
 </div>
 

@@ -1,5 +1,14 @@
 {% extends "base.html" %}
 
+{% block metadata %}
+  {% if section.extra.type == "resume" %}
+    {% set summary = section.extra.summary | default(value={}) %}
+    {% set summary_description = summary.description | default(value="") | trim %}
+    <meta name="description" content="{% if section.description %}{{ section.description | markdown | striptags | trim }}{% elif summary_description %}{{ summary_description | markdown | striptags | trim }}{% else %}{{ config.description }}{% endif %}">
+    <meta name="author" content="{{ config.author }}">
+  {% else %}{{ super() }}{% endif %}
+{% endblock metadata %}
+
 {% block head %}
   {{ super() }}
 
@@ -11,12 +20,26 @@
     <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/page-category.css') }}">
   {% elif section_type == "posts" %}
     <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/page-post-list.css') }}">
+  {% elif section_type == "resume" %}
+    <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/page-resume.css') }}">
   {% else %}
     {# Return to 404 #}
   {% endif %}
 
 {% endblock head %}
 
+{% block header %}
+  {% if section.extra.type == "resume" %}<a class="resume__skip" href="#resume-main">Skip to resume</a>{% endif %}
+  {{ super() }}
+{% endblock header %}
+
+{% block navigation_toggle %}
+  {% if section.extra.type == "resume" %}{{ <resume.navigation_toggle /> }}{% else %}{{ super() }}{% endif %}
+{% endblock navigation_toggle %}
+
+{% block preloader %}
+  {% if section.extra.type != "resume" %}{{ super() }}{% endif %}
+{% endblock preloader %}
 
 {% block main %}
 
@@ -28,6 +51,8 @@
     {{ <segment.category pos={section} /> }}
   {% elif section_type == "posts" %}
     {{ <segment.posts pos={section} /> }}
+  {% elif section_type == "resume" %}
+    {{ <resume.document pos={section} /> }}
   {% else %}
     {# Return to 404 #}
   {% endif %}
@@ -39,4 +64,5 @@
   {{ super() }}
   <script src="{{ get_url(path='vendor/aos/aos.js') }}"></script>
   <script src="{{ get_url(path='assets/script/home.js') }}"></script>
+  {% if section.extra.type == "resume" %}<script src="{{ get_url(path='assets/script/resume.js') }}" defer></script>{% endif %}
 {% endblock scripts %}

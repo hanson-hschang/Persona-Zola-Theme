@@ -161,6 +161,9 @@
         header.classList.toggle('header__navmenu__show');
         headerToggleBtn.classList.toggle('bi-list');
         headerToggleBtn.classList.toggle('bi-x');
+        if (headerToggleBtn.hasAttribute('aria-expanded')) {
+          headerToggleBtn.setAttribute('aria-expanded', String(header.classList.contains('header__navmenu__show')));
+        }
       };
 
       headerToggleBtn.addEventListener('click', toggleHeader);

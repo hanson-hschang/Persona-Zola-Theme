@@ -35,12 +35,12 @@
 </li>
 {% endcomponent render.post_entry %}
 
-{% component render.section_title(title, subtitle="") %}
+{% component render.section_title(title, subtitle="", subtitle_html=true) %}
 <div class="container" data-aos="fade-up">
   <header class="segment__title">
     <h2>{{ title }}</h2>
     {% if subtitle %}
-      <em>{{ subtitle | safe }}</em>
+      <em>{% if subtitle_html %}{{ subtitle | safe }}{% else %}{{ subtitle }}{% endif %}</em>
     {% endif %}
   </header>
 </div>

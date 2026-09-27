@@ -13,6 +13,8 @@
         {{ <segment.category pos={pos} preview={true} limit={home_items_limit} /> }}
       {% elif section_type == "posts" %}
         {{ <segment.posts pos={pos} preview={true} limit={home_items_limit} /> }}
+      {% elif section_type == "resume" %}
+        {{ <segment.resume pos={pos} /> }}
       {% else %}
         {{ <debug.print object={"Unknown section type: " ~ pos.extra.type} /> }}
         {{ <debug.print object={pos} /> }}
@@ -41,6 +43,21 @@
     {{ <render.text_content content={pos.content} /> }}
   </section>
 {% endcomponent segment.plain %}
+
+{% component segment.resume(pos) %}
+  {% set summary = pos.extra.summary | default(value={}) %}
+  {% set button_text = summary.button_text | default(value="View full resume") | trim %}
+  {% if not button_text %}{% set button_text = "View full resume" %}{% endif %}
+  <section id="{{ pos.title | slugify }}" class="resume-preview segment">
+    {{ <render.section_title title={pos.title} subtitle={pos.extra.subtitle | default(value="")} subtitle_html={false} /> }}
+    <div class="resume resume--preview container">
+      <div class="resume-preview__card">
+        {{ <resume.skills groups={[]} summary={summary} heading_level={3} badges_id={"resume-badges-" ~ (pos.permalink | slugify)} /> }}
+        <p class="resume-preview__more"><a href="{{ pos.permalink }}">{{ button_text }} <i class="bi bi-arrow-right" aria-hidden="true"></i></a></p>
+      </div>
+    </div>
+  </section>
+{% endcomponent segment.resume %}
 
 {% component segment.category(pos, preview=false, limit=3) %}
   <section id="{{ pos.title | slugify }}" class="category segment">

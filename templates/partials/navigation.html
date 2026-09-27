@@ -15,7 +15,7 @@
         <li><a href="#hero" class="active" aria-label="Link to Home"><i class="{{ home_section.extra.icon_class }}"></i><span>Home</span></a></li> 
         {% for subsection in subsections | sort(attribute="extra.order") %}
           {% if subsection.extra.landing_page is not defined or subsection.extra.landing_page == true %}
-            <li><a href="#{{ subsection.title | lower }}" aria-label="Link to {{ subsection.title }}"><i class="{{ subsection.extra.icon_class }}"></i><span>{{ subsection.title }}</span></a></li>
+            <li><a href="#{{ subsection.title | slugify }}" aria-label="Link to {{ subsection.title }}"><i class="{{ subsection.extra.icon_class }}"></i><span>{{ subsection.title }}</span></a></li>
           {% endif %}
         {% endfor %}
         {% if config.extra.persona.contact_infos is defined %}
