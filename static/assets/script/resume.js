@@ -262,6 +262,23 @@
     let scrollFrame = null;
     let revealedScrollLeft = null;
 
+    function updateClippedCorners() {
+      const bounds = rail.getBoundingClientRect();
+      if (selectedIndex < 0 || bounds.right <= bounds.left) return;
+      const limit = rail.scrollWidth - rail.clientWidth;
+      // Keep the outer corner caps attached to the end tabs while they scroll.
+      root.style.setProperty('--resume-tabs-scroll-left', Math.max(0, rail.scrollLeft) + 'px');
+      root.style.setProperty('--resume-tabs-scroll-right', Math.max(0, limit - rail.scrollLeft) + 'px');
+      root.toggleAttribute('data-skill-scroll-left', rail.scrollLeft > 1);
+      root.toggleAttribute('data-skill-scroll-right', rail.scrollLeft < limit - 1);
+      const tab = tabs[selectedIndex];
+      const tabBounds = tab.getBoundingClientRect();
+      // The outward corners overlap the tab border by 1px; allow 1px for rounding.
+      const cornerWidth = Math.max(0, (Number.parseFloat(window.getComputedStyle(tab, '::before').width) || 0) - 1);
+      root.toggleAttribute('data-skill-clipped-left', tabBounds.left - cornerWidth < bounds.left - 1);
+      root.toggleAttribute('data-skill-clipped-right', tabBounds.right + cornerWidth > bounds.right + 1);
+    }
+
     function cancelScrollSelection() {
       if (scrollFrame !== null) window.cancelAnimationFrame(scrollFrame);
       scrollFrame = null;
@@ -288,12 +305,16 @@
         // places a different category nearer the center. Native scroll events are async.
         revealedScrollLeft = rail.scrollLeft;
       }
+      updateClippedCorners();
     }
 
     function selectCenteredTab() {
       scrollFrame = null;
       const limit = rail.scrollWidth - rail.clientWidth;
-      if (!narrowScreen.matches || limit <= 1 || rail.scrollLeft === revealedScrollLeft) return;
+      if (!narrowScreen.matches || limit <= 1 || rail.scrollLeft === revealedScrollLeft) {
+        updateClippedCorners();
+        return;
+      }
       revealedScrollLeft = null;
       let nearest = 0;
       if (rail.scrollLeft >= limit - 1) nearest = tabs.length - 1;
@@ -312,7 +333,7 @@
     }
 
     rail.addEventListener('scroll', () => {
-      if (narrowScreen.matches && scrollFrame === null) {
+      if (scrollFrame === null) {
         scrollFrame = window.requestAnimationFrame(selectCenteredTab);
       }
     }, { passive: true });
@@ -344,6 +365,12 @@
     });
     const linkedPanel = panels.findIndex(panel => '#' + panel.id === window.location.hash);
     select(linkedPanel < 0 ? 0 : linkedPanel);
+    if ('ResizeObserver' in window) {
+      const observer = new ResizeObserver(updateClippedCorners);
+      observer.observe(rail);
+      tabs.forEach(tab => observer.observe(tab));
+    }
+    document.fonts?.ready.then(updateClippedCorners);
 
     rail.addEventListener('wheel', event => {
       if (event.ctrlKey || rail.scrollWidth <= rail.clientWidth + 1) return;
