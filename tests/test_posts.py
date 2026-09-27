@@ -779,7 +779,7 @@ bibtex = "@misc{legacy, title={Legacy post}}"
 
     def test_migrated_theme_posts_use_canonical_post_layout_at_existing_urls(self):
         for slug, title in (("begin-with-persona", "Begin with Persona"),
-                            ("citation-pipeline-guide", "How to Use Citation in Persona")):
+                            ("citation-pipeline-guide", "Writing Citation-Enabled Posts in Persona")):
             output = "maps/private-soul/" + slug
             with self.subTest(output=output):
                 page = self.document(output)

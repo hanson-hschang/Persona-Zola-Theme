@@ -182,6 +182,43 @@ template = "resume.html"
 +++
 A **body-only resume** without extra data.
 ''')
+        cls.write("content/icon-bullets.md", '''+++
+title = "Resume icon bullets"
+template = "resume.html"
++++
+- ["bi bi-person"] An introductory highlight.
+
+## Experience
+
+- ["bi bi-lightbulb"] A section highlight.
+
+### Tight bullets
+
+- A regular achievement.
+- ["bi bi-pencil-square"] [Introductory blog post](@/about/_index.md).
+- ["bi bi-code-slash"] A **bold result** with `code` and *emphasis*.
+
+### Loose and nested bullets
+
+- ["bi bi-journal-text"] A first paragraph.
+
+  A second paragraph with a [reference](https://example.org/work).
+
+  - ["bi bi-check-circle"] A nested result.
+  - An ordinary nested result.
+
+- An ordinary loose result.
+
+### Ordinary bracketed text
+
+- [Draft] A bracketed label.
+- [An ordinary link](@/about/_index.md).
+- ["bi bi-book"](@/about/_index.md) is a link label.
+- ["not-an-icon"] A quoted label.
+- ["bi bi-star" onclick="alert(1)"] An invalid class declaration.
+- A marker ["bi bi-star"] later in the sentence.
+- `["bi bi-star"]` is inline code.
+''')
         cls.write("content/skills.md", f'''+++
 title = "Skills CV"
 template = "resume.html"
@@ -454,6 +491,82 @@ items = [{{ label = "Research award", icon_class = "bi bi-trophy", link = {json.
         self.assertTrue(any(tag == "code" and document.text_content(attrs) == "code"
                             for tag, attrs in children))
         self.assertTrue(document.find("a", href="https://example.org/work"))
+
+    def test_bullet_icons_replace_only_the_prefix_and_preserve_inline_markdown(self):
+        document = self.document("icon-bullets")
+        entry = self.entry(document, "Tight bullets")
+        items = [attrs for tag, attrs in document.descendants(entry) if tag == "li"]
+        self.assertEqual(len(items), 3)
+        self.assertNotIn("resume__icon-item", items[0].get("class", "").split())
+        self.assertFalse(self.descendants_with_class(document, items[0], "resume__bullet-icon"))
+        for item, icon_class, label in zip(items[1:], ("bi-pencil-square", "bi-code-slash"),
+                                           ("Introductory blog post.",
+                                            "A bold result with code and emphasis.")):
+            with self.subTest(icon=icon_class):
+                self.assertIn("resume__icon-item", item.get("class", "").split())
+                icons = self.descendants_with_class(document, item, "resume__bullet-icon")
+                self.assertEqual(len(icons), 1)
+                self.assertEqual(icons[0].get("class"), "resume__bullet-icon bi " + icon_class)
+                self.assertEqual(icons[0].get("aria-hidden"), "true")
+                self.assertEqual(document.text_content(item).strip(), label)
+        self.assertTrue(any(tag == "a" and attrs.get("href") == BASE + "about/"
+                            for tag, attrs in document.descendants(items[1])))
+        self.assertEqual([(tag, document.text_content(attrs))
+                          for tag, attrs in document.descendants(items[2])
+                          if tag in ("strong", "code", "em")],
+                         [("strong", "bold result"), ("code", "code"), ("em", "emphasis")])
+
+    def test_bullet_icons_also_render_in_introductory_and_section_prose(self):
+        document = self.document("icon-bullets")
+        prose_items = [item for prose in document.with_class("resume__prose")
+                       for item in self.descendants_with_class(document, prose, "resume__icon-item")]
+        self.assertEqual([document.text_content(item).strip() for item in prose_items],
+                         ["An introductory highlight.", "A section highlight."])
+        self.assertEqual([icon.get("class") for item in prose_items
+                          for icon in self.descendants_with_class(document, item, "resume__bullet-icon")],
+                         ["resume__bullet-icon bi bi-person", "resume__bullet-icon bi bi-lightbulb"])
+
+    def test_bullet_icons_preserve_loose_paragraphs_and_nested_lists(self):
+        document = self.document("icon-bullets")
+        entry = self.entry(document, "Loose and nested bullets")
+        items = [attrs for tag, attrs in document.descendants(entry) if tag == "li"]
+        self.assertEqual(len(items), 4)
+        outer, nested, ordinary_nested, ordinary_loose = items
+        self.assertIn("resume__icon-item", outer.get("class", "").split())
+        self.assertIn("resume__icon-item", nested.get("class", "").split())
+        paragraphs = [document.text_content(attrs).strip()
+                      for tag, attrs in document.descendants(outer) if tag == "p"]
+        self.assertEqual(paragraphs, ["A first paragraph.", "A second paragraph with a reference."])
+        self.assertTrue(any(tag == "ul" for tag, _ in document.descendants(outer)))
+        self.assertTrue(any(attrs is nested for _, attrs in document.descendants(outer)))
+        self.assertEqual(document.text_content(nested).strip(), "A nested result.")
+        for item in (ordinary_nested, ordinary_loose):
+            self.assertNotIn("resume__icon-item", item.get("class", "").split())
+            self.assertFalse(self.descendants_with_class(document, item, "resume__bullet-icon"))
+        self.assertEqual([icon.get("class")
+                          for icon in self.descendants_with_class(document, outer, "resume__bullet-icon")],
+                         ["resume__bullet-icon bi bi-journal-text", "resume__bullet-icon bi bi-check-circle"])
+        self.assertTrue(any(tag == "a" and attrs.get("href") == "https://example.org/work"
+                            for tag, attrs in document.descendants(outer)))
+
+    def test_ordinary_brackets_links_and_invalid_icon_prefixes_remain_unchanged(self):
+        document = self.document("icon-bullets")
+        entry = self.entry(document, "Ordinary bracketed text")
+        self.assertFalse(self.descendants_with_class(document, entry, "resume__icon-item"))
+        self.assertFalse(self.descendants_with_class(document, entry, "resume__bullet-icon"))
+        items = [attrs for tag, attrs in document.descendants(entry) if tag == "li"]
+        self.assertEqual([document.text_content(item).strip() for item in items], [
+            "[Draft] A bracketed label.",
+            "An ordinary link.",
+            '"bi bi-book" is a link label.',
+            '["not-an-icon"] A quoted label.',
+            '["bi bi-star" onclick="alert(1)"] An invalid class declaration.',
+            'A marker ["bi bi-star"] later in the sentence.',
+            '["bi bi-star"] is inline code.',
+        ])
+        self.assertEqual(len([attrs for tag, attrs in document.descendants(entry)
+                              if tag == "a" and attrs.get("href") == BASE + "about/"]), 2)
+        self.assertFalse(any("onclick" in attrs for _, attrs in document.descendants(entry)))
 
     def test_skills_integrate_summary_once_and_support_a_custom_title(self):
         document = self.document("skills")
