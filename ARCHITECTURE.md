@@ -26,6 +26,7 @@ It serves as a guide for contributors to understand how the theme is structured 
 │           │   ├── _hero.scss        # Hero section styles (home page)
 │           │   ├── _contact.scss     # Contact section styles
 │           │   ├── _post.scss        # Article page styles
+│           │   ├── _resume.scss      # Resume layout and print styles
 │           │   └── _plain.scss       # Plain section content styles
 │           ├── components/
 │           │   ├── _category.scss    # Category section styles
@@ -40,6 +41,8 @@ It serves as a guide for contributors to understand how the theme is structured 
 │           ├── page-category.scss    # Entry point: category sections -> page-category.css
 │           ├── page-post-list.scss   # Entry point: post lists -> page-post-list.css
 │           ├── page-post.scss        # Entry point: all articles -> page-post.css
+│           ├── page-resume.scss      # Entry point: resumes -> page-resume.css
+│           ├── resume-preview.scss   # Entry point: home resume previews -> resume-preview.css
 │           ├── __old_post.scss       # Archived entry point; no compiled CSS
 │           ├── citations.scss        # Entry point: Pandoc citation output -> citations.css
 │           └── page-404.scss         # Entry point: 404 error page -> page-404.css
@@ -59,6 +62,7 @@ It serves as a guide for contributors to understand how the theme is structured 
 │   ├── section.html                  # Section page template
 │   ├── page.html                     # Single page template
 │   ├── post.html                     # Unified post template
+│   ├── resume.html                   # Standalone resume page template
 │   ├── __old_post.html               # Archived former blog post template
 │   ├── 404.html                      # Error page template
 │   ├── components/                   # Tera 2 reusable components
@@ -86,17 +90,31 @@ Located in `templates/` root:
 - **index.html**: Home/landing page template
   - Extends base.html
   - Displays hero section
-  - Renders all sections with `order > 0` from front matter
+  - Renders sections with `order > 0` from front matter unless `extra.landing_page = false`
+  - Omits sections with `extra.landing_page = false` from both home content and home navigation; positive-order sections remain in ordinary page navigation
+  - Renders visible resume sections as compact previews using the front matter title, subtitle, and summary with badges; skills and Markdown entries remain on the full resume page
+  - Links each resume preview to its section permalink using `extra.summary.button_text`, defaulting to "View full resume"; loads `resume-preview.css` and `resume.js` only when a preview is visible, keeping full-page navigation styles out of the home page
   - Shows contact section
 
 - **section.html**: Section page template
-  - Handles plain, category, and posts section types
+  - Handles plain, category, posts, and resume section types
   - Conditionally loads type-specific CSS and components
   - Contains the logic that previously lived in the root `segment.html` page template
 
 - **page.html**: Single page template
   - For standalone pages
   - Plain content rendering
+
+- **resume.html**: Standalone resume page template
+  - Selected with `template = "resume.html"`, or inherited by child pages through section `page_template = "resume.html"`; section resumes use the canonical `section.html` with `extra.type = "resume"`
+  - Uses the first Markdown `#` heading as the visible title and native `##`/`###` headings and bullet lists for experience and education
+  - Shows optional `extra.skills` categories with `icon_class` and `items` in one tabbed section before the Markdown columns, without an overall Skills heading; hovering or selecting a category reveals its items below
+  - Configures the visible summary through `extra.summary.title` and Markdown `description`, with optional `badges.title` and `badges.items` rendered as recognition badges in the theme's accent color; each item accepts a plain label or a `label`/`icon_class` object, with a default award icon and explicit blank icons hidden; the summary appears once at full width above the skill cards
+  - Keeps badges in a horizontally scrollable strip, progressively enhanced into a continuous loop that pauses during interaction; reduced-motion preferences and single badges use the static strip, while print wraps each badge once
+  - Uses the top-level `description` for search metadata, falling back to `extra.summary.description` and then `config.description`
+  - Uses primary and optional secondary columns on desktop, stacking into one column on mobile and in print
+  - Loads `page-resume.css` and `resume.js` and omits the page preloader
+  - See the [resume Markdown guide](docs/resume.md) and [example resume](content/resume/_index.md)
 
 - **__old_post.html**: Archived former blog post template
   - Preserved for reference; not selected or loaded by current pages
@@ -154,6 +172,17 @@ Tera 2 components are globally registered by component name. They do not need im
   - `post.gallery(page, items, id="post-gallery", title="Results gallery")`: Renders a scrollable media gallery
   - `post.embed(src, title)`: Renders a responsive iframe using a provider embed URL
   - `post.poster(page, src, title="Research poster")`: Renders a PDF object with a direct-link fallback
+
+- **resume.html**: Resume components
+  - Shared rendering for section and standalone resume pages
+  - Shares summary rendering with the compact home preview, adjusting heading levels and badge region IDs for multiple sections; the preview uses the front matter title and a customizable link to the full resume
+  - Splits rendered Markdown into the document, optional columns, groups, and entries without requiring resume data in front matter
+  - Renders optional front matter skills as category links and complete labelled panels, preserving category/item order and omitting empty categories; JavaScript enhances these into tabs, while no-script and print layouts retain every list
+  - Renders the nested summary with a customizable heading, Markdown description, and optional badge list with configurable decorative icons; normalizes string/object badge items and omits empty labels, and retains the full summary when skills are absent or empty
+  - Supports optional badge `link` values as full-card native anchors with `target="_blank"` and `rel="noopener noreferrer"`; HTTP(S) URLs and site/content paths are accepted, internal paths retain the base URL prefix, and unsupported schemes, protocol-relative URLs, or backslashes leave the badge unlinked
+  - Gives the badge strip a named, keyboard-focusable scroll region containing the original list
+  - Reads optional period, organization, and location metadata from an entry blockquote; normal Markdown links handle organizations
+  - Formats periods with the article calendar icon and long-month date convention while preserving year-only and month-only precision
 
 - **debug.html**: Debug utilities
   - Development helpers
@@ -227,6 +256,7 @@ stylesheet/
 │   ├── _hero.scss               # Hero section (home page only)
 │   ├── _contact.scss            # Contact form and info
 │   ├── _post.scss               # Unified post layout
+│   ├── _resume.scss             # Resume layout and print styles
 │   └── _plain.scss              # Plain section content
 │
 ├── components/
@@ -244,6 +274,8 @@ stylesheet/
     ├── page-category.scss        # Category section pages
     ├── page-post-list.scss       # Post listing section pages
     ├── page-post.scss            # All post pages
+    ├── page-resume.scss          # Resume sections and standalone resume pages
+    ├── resume-preview.scss       # Home resume previews, without page navigation styles
     ├── citations.scss            # Citation styling for post pages
     └── page-404.scss             # 404 error page
 ```
@@ -256,9 +288,11 @@ Each template loads only the CSS it needs:
 |---|---|---|
 | `base.html` (all pages) | `main.css` | variables, base, footer, preloader, custom |
 | `index.html` | `home.css` | nav-index, hero, segment, plain, category, shared page lists, contact |
+| `index.html` (visible resume preview) | `resume-preview.css` | shared resume styles, summary, badge strip, and preview link; no page navigation overrides |
 | `section.html` (plain) | `page-plain.css` | navigation, segment, plain |
 | `section.html` (category) | `page-category.css` | navigation, segment, category |
 | `section.html` (posts) | `page-post-list.css` | navigation, segment, post lists, breadcrumbs |
+| `section.html` (resume), `resume.html` | `page-resume.css` | shared design tokens, navigation, resume layout and print styles |
 | `post.html` | `page-post.css` | variables, navigation, breadcrumbs, sidebar widgets, article layout/media, sharing, custom |
 | `post.html` | `citations.css` | Pandoc citation and bibliography styles |
 | `page.html` | `page-plain.css` | navigation, segment, plain |
@@ -305,6 +339,15 @@ JavaScript files in `static/assets/script/`:
   - Respects reduced-motion preferences and pauses videos on inactive slides
   - Builds the contents navigation from Pandoc HTML headings and highlights the current section as the reader scrolls
   - Uses native browser APIs; post content, PDF links, video controls, and gallery scrolling remain available without JavaScript
+
+- **resume.js**: Progressive enhancement for resume badges and skill tabs
+  - Loops multiple badges horizontally, with duplicates hidden from assistive technology and duplicate links excluded from the tab order while preserving pointer access and hover animations
+  - Pauses on hover, click, touch interaction, or keyboard focus; pointer exit, an outside click, or keyboard focus leaving the strip resumes scrolling
+  - Preserves native horizontal scrolling for reduced motion, a single badge, and pages without JavaScript
+  - Keeps the original list as the accessible and printable content; print styles hide copies
+  - Preserves linked badge keyboard activation while suppressing accidental pointer activation after dragging, scrolling, or holding for at least 500 milliseconds
+  - Adds single-panel skill tabs with hover/click selection, arrow/Home/End navigation, and linked ARIA roles
+  - Keeps the category row manually scrollable without automatic movement or duplication; the active rounded tab joins its content panel
 
 ## Development Workflow
 
@@ -363,6 +406,7 @@ The incremental build checks source files, preprocessing scripts, configuration,
 
 - [README.md](README.md) - Main theme documentation
 - [Posts and academic articles](docs/posts.md) - Front matter, URL rules, media components, and customization
+- [Resume and CV](docs/resume.md) - Markdown headings, optional entry metadata, navigation, and printing
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
 - [theme.toml](theme.toml) - Theme metadata and configuration
 - [config.toml](config.toml) - Configuration template for user site

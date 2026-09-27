@@ -1,15 +1,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-  {{ super() }}
-  <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/home.css') }}">
-{% endblock head %}
-
-
-{% block main %}
-
-  {% include "partials/hero.html" %}
-
+  {# Use the same visible sections for both previews and their assets. #}
   {% set_global poss = [] %}
   {% for subsection_path in section.subsections %}
     {% set subsection = get_section(path=subsection_path) %}
@@ -23,6 +15,20 @@
     {% endif %}
   {% endfor %}
   {% set_global poss = poss | sort(attribute="extra.order") %}
+  {% set_global has_resume_preview = false %}
+  {% for pos in poss %}
+    {% if pos.extra.type == "resume" %}{% set_global has_resume_preview = true %}{% endif %}
+  {% endfor %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/home.css') }}">
+  {% if has_resume_preview %}<link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/resume-preview.css') }}">{% endif %}
+{% endblock head %}
+
+
+{% block main %}
+
+  {% include "partials/hero.html" %}
+
   {{ <segment.populate poss={poss} home_items_limit={config.extra.persona.home_items_limit | default(value=3)} /> }}
 
   {% include "partials/contact.html" %}
@@ -35,4 +41,5 @@
   <script src="{{ get_url(path='vendor/aos/aos.js') }}"></script>
   <script src="{{ get_url(path='vendor/typed.js/typed.umd.js') }}"></script>
   <script src="{{ get_url(path='assets/script/home.js') }}"></script>
+  {% if has_resume_preview %}<script src="{{ get_url(path='assets/script/resume.js') }}" defer></script>{% endif %}
 {% endblock scripts %}

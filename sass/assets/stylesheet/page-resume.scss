@@ -1,0 +1,22 @@
+// Resume pages only. Compiles to assets/stylesheet/page-resume.css.
+@use 'layout/navigation';
+@use 'pages/resume';
+
+.nav-toggle {
+  border: 0;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+  }
+}
+
+@media print {
+  .header,
+  .nav-toggle,
+  .footer,
+  .resume__skip,
+  #preloader {
+    display: none !important;
+  }
+}

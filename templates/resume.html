@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block metadata %}
+  {% set summary = page.extra.summary | default(value={}) %}
+  {% set summary_description = summary.description | default(value="") | trim %}
+  <meta name="description" content="{% if page.description %}{{ page.description | markdown | striptags | trim }}{% elif summary_description %}{{ summary_description | markdown | striptags | trim }}{% else %}{{ config.description }}{% endif %}">
+  <meta name="author" content="{{ config.author }}">
+{% endblock metadata %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/page-resume.css') }}">
+{% endblock extra_css %}
+
+{% block header %}
+  <a class="resume__skip" href="#resume-main">Skip to resume</a>
+  {{ super() }}
+{% endblock header %}
+
+{% block navigation_toggle %}
+  {{ <resume.navigation_toggle /> }}
+{% endblock navigation_toggle %}
+
+{# The resume remains readable without JavaScript or animation libraries. #}
+{% block preloader %}{% endblock preloader %}
+
+{% block main %}
+  {{ <resume.document pos={page} /> }}
+{% endblock main %}
+
+{% block scripts %}
+  {{ super() }}
+  <script src="{{ get_url(path='vendor/aos/aos.js') }}"></script>
+  <script src="{{ get_url(path='assets/script/home.js') }}"></script>
+  <script src="{{ get_url(path='assets/script/resume.js') }}" defer></script>
+{% endblock scripts %}
