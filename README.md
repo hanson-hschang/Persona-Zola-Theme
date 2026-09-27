@@ -64,7 +64,7 @@ git submodule update --init --recursive
 
 <div align="center">
 
-[Basic Setup](#basic-setup) • [Resume/CV](docs/resume.md) • [Build & Serve](#build--serve)
+[Basic Setup](#basic-setup) • [Build & Serve](#build--serve)
 
 </div>
 
@@ -139,7 +139,7 @@ After completing the setup, build and serve your site with Zola:
 | [**Anthropic**](https://www.anthropic.com/) | [Claude](https://claude.ai/) • [Claude Code](https://code.claude.com/docs/en/overview) |
 | [**Google**](https://cloud.google.com/ai/gemini) | [Gemini](https://gemini.google.com/) • [Gemini CLI](https://geminicli.com/) |
 | [**OpenAI**](https://openai.com/) | [ChatGPT](https://chat.openai.com/) • [Codex](https://openai.com/codex/) |
-| [**BootstrapMade Templates**](https://bootstrapmade.com/) | [Active](https://bootstrapmade.com/demo/Active) • [MyResume](https://bootstrapmade.com/demo/MyResume) • [UpConstruction](https://bootstrapmade.com/demo/UpConstruction) |
+| [**BootstrapMade Templates**](https://bootstrapmade.com/) | [Active](https://bootstrapmade.com/demo/Active) • [MyResume](https://bootstrapmade.com/demo/MyResume) • [UpConstruction](https://bootstrapmade.com/demo/UpConstruction) • [Style](https://bootstrapmade.com/demo/Style/) |
 | [**Zola Themes**](https://www.getzola.org/themes/) | [Mabuya](https://mabuya.vercel.app/) • [Vonge](https://pascal-berrang.de/vonge-zola-theme/) • [Zluinav](https://harrymkt.github.io/zluinav/) |
 | [**Academic Project Page Template**](https://github.com/eliahuhorwitz/Academic-project-page-template) | Post layout inspiration |
 
