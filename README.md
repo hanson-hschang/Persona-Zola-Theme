@@ -20,10 +20,10 @@
 
 ## ✨ Features
 
-- 🎨 **Modern Design**: Clean, professional, and customizable color palettes
+- 🎨 **Modern Design**: Clean, professional, and minimalist aesthetic
 - 📱 **Fully Responsive**: Optimized for desktop, tablet, and mobile devices
 - ⚡️ **Fast Performance**: Lightweight and optimized for speed
-- 📋 **Resume/CV**: [Markdown-driven resume](docs/resume.md) with responsive columns and a print layout
+- 📋 **Resume/CV**: Build-in structure designed for customization
 - 🎭 **Portfolio with Posts**: Showcase your work with previews and posts
 - 📧 **Contact Forms**: Integrated contact form email support
 - 🔍 **Search Ready**: Built-in search index generation *(--upcoming feature--)*
