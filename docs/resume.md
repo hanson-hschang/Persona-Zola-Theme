@@ -18,6 +18,7 @@ type = "resume"
 subtitle = "Research and education"
 icon_class = "bi bi-file-earmark-person"
 order = 15
+location_separator = "@"
 
 [extra.summary]
 title = "Professional Summary"
@@ -106,7 +107,7 @@ items = [
 
 Keep `skills` and other direct `[extra]` settings **before** the nested table headers. In TOML, settings after `[extra.summary]` belong to that table until another table header appears.
 
-Each category has a `category` heading and an `items` list. Add or remove categories and items as needed; their order in the array is their display order. Each category becomes a tab, with the first category selected initially. Hover over or click a tab to show its items in the shared content area below. Only one category is visible at a time. Keyboard users can switch with Left/Right Arrow, Home, and End, then press Tab to enter the selected panel. When the category row overflows, visitors can scroll it manually with a wheel, trackpad, touch gesture, or keyboard navigation. It never scrolls automatically or repeats categories. There are no percentages, progress bars, or overall Skills heading. Categories and items are plain text, so Markdown or HTML formatting is not needed.
+Each category has a `category` heading and an `items` list. Add or remove categories and items as needed; their order in the array is their display order. Each category becomes a tab, with the first category selected initially. Hover over or click a tab to show its items in the shared content area below. Only one category is visible at a time. Keyboard users can switch with Left/Right Arrow, Home, and End, then press Tab to enter the selected panel. When the category row overflows, visitors can scroll it manually with a wheel, trackpad, touch gesture, or keyboard navigation. On small screens, scrolling selects the category nearest the center of the visible row and updates its items below. The row never scrolls automatically or repeats categories. There are no percentages, progress bars, or overall Skills heading. Categories and items are plain text, so Markdown or HTML formatting is not needed.
 
 Use the optional `icon_class` on each category to choose an icon from the theme's included icon fonts, such as `"bi bi-code-slash"` or `"bi bi-tools"`. Omit it or set it to an empty string to show that category without an icon. Category icons are decorative; the category heading supplies their meaning.
 
@@ -141,7 +142,9 @@ An optional blockquote immediately below a `###` entry heading supplies its deta
 - An entry can also consist of just a heading and bullet points.
 ```
 
-Organizations support either plain text or a normal Markdown link. Organization and location appear on one italic line, aligned left and right when space allows. Either can appear on its own. Long text wraps on narrow screens.
+Organizations support either plain text or a normal Markdown link. The organization aligns left and the location aligns right in an italic paragraph by default. When that entry's period wraps onto a row below its heading, the organization and location join inline as **Example Lab @ Remote**. This change follows the actual wrapping of each entry, so it also responds to long headings and dates. Entries without a period keep the separate alignment. Either field can appear on its own, with no separator.
+
+Set `location_separator` in `[extra]` to change the separator used when the fields join inline. For example, `location_separator = "·"` displays **Example Lab · Remote**. The default is `"@"`; use `location_separator = ""` to omit it. The separator is plain text, so HTML is displayed literally. Keep this setting before the nested `[extra.summary]` table, alongside the other direct `[extra]` settings.
 
 Write periods with ISO-style dates. Use only the precision you know: `2024` for a year, `2024-07` for a month, or `2024-07-15` for a full date. Separate range endpoints with ` / `, and use `Present` for an ongoing role. A single date is also supported.
 
@@ -152,7 +155,7 @@ Write periods with ISO-style dates. Use only the precision you know: `2024` for 
 | `2024-07-15 / Present` | July 15, 2024 – Present |
 | `2024-07` | July 2024 |
 
-Periods use the same calendar icon and long-month date convention as article metadata. Full dates use the article format `%B %d, %Y`; month-only and year-only values retain their original precision. Do not add an arbitrary day to a date when you know only its month. The entry title aligns left and the period aligns right on the same row when there is room, with wrapping for smaller screens.
+Periods use the same date format and typography as article metadata, listings, and Related Posts, without a calendar icon. Full dates use `%B %d, %Y` (for example, **January 02, 2020**); month-only and year-only values retain their original precision. All date text uses the theme's muted body font at normal weight and 0.875rem, with tabular numerals. Do not add an arbitrary day to a date when you know only its month. The entry title aligns left and the period aligns right on the same row when there is room. If the period needs another row, it moves below the title and aligns left.
 
 Use normal Markdown link syntax for organizations and content. Zola content references such as `[About](@/about/_index.md)` resolve to the content permalink; relative links can point to colocated assets. Avoid filesystem prefixes such as `static/` or `content/` in public URLs.
 
@@ -160,6 +163,6 @@ Use normal Markdown link syntax for organizations and content. Zola content refe
 
 The implementation lives in `templates/resume.html`, `templates/components/resume.html`, and `sass/assets/stylesheet/pages/_resume.scss`. The canonical section template also selects the resume component. Full resume pages and sections load `page-resume.css`, including their navigation styles. A home page with a visible resume preview loads `resume-preview.css` instead, sharing the resume styles while preserving the home page's navigation layout. Both stylesheets use Persona's shared design tokens.
 
-`static/assets/script/resume.js` enhances the badge strip with continuous scrolling that pauses during interaction, and the skill categories with accessible tabs and a manually scrollable category row. It loads on resume pages and sections, and on the home page when it includes a visible resume preview.
+`static/assets/script/resume.js` enhances the badge strip with continuous scrolling that pauses during interaction, and the skill categories with accessible tabs and a manually scrollable category row. It also checks whether each entry's period has wrapped below its heading and joins the organization and location only for those entries. Without JavaScript, these fields keep their separate alignment. The script loads on resume pages and sections, and on the home page when it includes a visible resume preview.
 
 Use the browser's Print command to print or save a PDF. The print stylesheet arranges sections in one column and shows all skill lists in current browsers, including categories that are inactive on screen. Badges wrap onto as many lines as needed, with each badge printed once. Preview the result with your own content before sharing, since pagination depends on content length and printer settings.

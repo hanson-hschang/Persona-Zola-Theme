@@ -7,6 +7,7 @@ type = "resume"
 subtitle = "Research and education"
 icon_class = "bi bi-file-earmark-person"
 order = 15
+location_separator = "@"
 skills = [
   { category = "Programming languages", icon_class = "bi bi-code-slash", items = ["Python", "C/C++", "JavaScript"] },
   { category = "Development tools", icon_class = "bi bi-tools", items = ["Git", "Docker"] },

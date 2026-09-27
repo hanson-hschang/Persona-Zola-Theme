@@ -14,6 +14,15 @@
     outline-offset: 4px;
   }
 
+  .post__outline-toggle:focus-visible {
+    outline: none;
+    span {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 0.25em;
+    }
+  }
+
   [hidden] { display: none !important; }
 
   img { display: block; max-width: 100%; height: auto; margin-inline: auto; }
@@ -192,23 +201,54 @@
 
   &__layout { display: grid; gap: var(--spacing-xl); }
   &__body { min-width: 0; }
+  &__sidebar { min-width: 0; }
   &__sidebar:not(:has(aside)) { display: none; }
   &__sidebar-inner { display: grid; gap: var(--spacing-lg); }
 
   &__contents {
-    border-bottom: 1px solid var(--post-line);
-    padding-bottom: var(--spacing-md);
-    font-size: 0.875rem;
+    font-size: 1rem;
 
-    p { font-weight: 700; margin-bottom: var(--spacing-xs); }
-    ul { display: flex; flex-wrap: wrap; gap: var(--spacing-xs) var(--spacing-md); list-style: none; padding: 0; margin: 0; }
-    a { display: inline-block; padding: 0.25rem 0.5rem; border-left: 3px solid transparent; color: var(--color-heading); }
-    a:hover { color: var(--color-accent); }
+    ul { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--spacing-xxs); list-style: none; padding: 0; margin: 0; }
+    a {
+      display: block;
+      min-height: 44px;
+      padding: 0.625rem 0.75rem;
+      border-left: 3px solid var(--color-accent);
+      border-radius: 0 4px 4px 0;
+      color: var(--color-heading);
+      line-height: 1.5;
+      overflow-wrap: break-word;
+      word-break: normal;
+      hyphens: none;
+    }
+    a:hover,
+    a:focus-visible,
     a[aria-current="location"] {
       color: var(--color-accent);
       border-left-color: var(--color-accent);
       background: var(--post-tint);
     }
+  }
+
+  &__outline-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    min-height: 44px;
+    padding-block: var(--spacing-xs);
+    font-weight: 700;
+    list-style: none;
+    cursor: pointer;
+
+    &::-webkit-details-marker { display: none; }
+    &:hover { color: var(--color-accent); }
+    i { flex-shrink: 0; font-size: 0.875rem; @include mixins.transition(transform); }
+  }
+
+  &__outline[open] > &__outline-toggle {
+    margin-bottom: var(--spacing-xs);
+    i { transform: rotate(180deg); }
   }
 
   &__section,
@@ -329,11 +369,38 @@
     margin: 0;
 
     li + li { margin-top: 20px; }
-    time { display: block; margin-top: var(--spacing-xs); color: var(--color-gray); font-size: 0.875rem; }
+    time { display: block; margin-top: var(--spacing-xs); }
   }
 
   &__layout:has(.post__related) &__body > :last-child { margin-bottom: 0; }
   &__copy-status { min-height: 1.75em; margin-top: var(--spacing-xs); font-size: 0.875rem; color: var(--color-heading); }
+
+  @include mixins.respond-below(lg) {
+    &__outline {
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--color-accent) 25%, var(--color-background));
+      border-radius: var(--img-border-radius);
+      background: var(--post-tint);
+
+      > nav { padding: var(--spacing-xs); }
+    }
+
+    &__outline-toggle {
+      justify-content: flex-start;
+      gap: var(--spacing-xs);
+      padding: 0.625rem var(--spacing-sm);
+      color: var(--color-accent);
+      background: color-mix(in srgb, var(--color-accent) 12%, var(--color-background));
+
+      &:hover { background: color-mix(in srgb, var(--color-accent) 17%, var(--color-background)); }
+    }
+
+    &__outline[open] > &__outline-toggle {
+      margin-bottom: 0;
+    }
+
+    &__contents a { background: var(--color-surface); }
+  }
 
   @include mixins.respond-above(lg) {
     --post-scroll-offset: calc(100px + var(--spacing-lg));
@@ -355,9 +422,10 @@
       padding: var(--spacing-xs);
       margin: calc(-1 * var(--spacing-xs));
     }
-    &__contents { border-bottom: 0; padding: 0; }
-    &__contents ul { display: grid; gap: var(--spacing-xs); }
-    &__contents a { display: block; }
+    &__contents { font-size: 0.875rem; }
+    &__contents ul { gap: var(--spacing-xs); }
+    &__contents a { min-height: 0; padding: 0.25rem 0.5rem; border-left-color: transparent; line-height: 1.75; }
+    &__outline-toggle { min-height: 0; padding: 0; }
 
     &__layout:has(.post__related) {
       grid-template-columns: 240px minmax(0, 1fr);
@@ -380,7 +448,8 @@
 @media (prefers-reduced-motion: reduce) {
   html:has(.post) { scroll-behavior: auto; }
   .post a,
-  .post button { transition: none; }
+  .post button,
+  .post__outline-toggle i { transition: none; }
 }
 
 @media print {

@@ -5,6 +5,15 @@
   const sidebar = post?.querySelector('.post__sidebar-inner');
   const related = post?.querySelector('.post__related');
 
+  const outline = post?.querySelector('[data-post-outline]');
+  if (outline) {
+    const wideOutline = window.matchMedia('(min-width: 992px)');
+    const setOutlineDefault = () => { outline.open = wideOutline.matches; };
+    // Reset only when crossing the breakpoint; preserve manual toggles otherwise.
+    wideOutline.addEventListener('change', setOutlineDefault);
+    setOutlineDefault();
+  }
+
   // Pandoc emits raw HTML headings, which Zola cannot include in page.toc.
   // Rebuild the prose portion from the rendered headings so both authoring
   // paths have the same outline and the same scroll-spy behavior.
@@ -100,14 +109,16 @@
     scheduleCurrentSection();
   }
 
-  const copyButton = document.querySelector('[data-copy-citation]');
   const citation = document.getElementById('post-bibtex');
-  const copyStatus = document.querySelector('[data-copy-status]');
+  const citationStatus = document.querySelector('[data-copy-status]');
 
-  if (copyButton && citation && copyStatus) {
+  document.querySelectorAll('[data-copy-citation]').forEach(copyButton => {
+    const copyStatus = copyButton.closest('[data-share]')?.querySelector('[role="status"]') || citationStatus;
+    if (!citation || !copyStatus) return;
     copyButton.hidden = false;
     copyButton.addEventListener('click', async () => {
       copyStatus.textContent = '';
+      if (citationStatus) citationStatus.textContent = '';
       copyButton.disabled = true;
       try {
         await navigator.clipboard.writeText(citation.textContent.trim());
@@ -120,12 +131,13 @@
         selection.removeAllRanges();
         selection.addRange(range);
         citation.parentElement.focus();
-        copyStatus.textContent = 'Copy unavailable. The citation is selected; use your browser’s Copy command.';
+        // Focusing the citation closes Share; show the fallback beside the selection.
+        (citationStatus || copyStatus).textContent = 'Copy unavailable. The citation is selected; use your browser’s Copy command.';
       } finally {
         copyButton.disabled = false;
       }
     });
-  }
+  });
 
   document.querySelectorAll('[data-post-gallery]').forEach((gallery) => {
     const track = gallery.querySelector('.post__slides');

@@ -3,6 +3,16 @@
   Shared presentation components used by page, segment, and post templates.
 #}
 
+{# Visible ISO dates share one format while retaining the supplied precision. #}
+{% component render.date(value, class_name="") -%}
+  <time class="date-text{% if class_name %} {{ class_name }}{% endif %}" datetime="{{ value }}">
+    {%- if value | length == 4 -%}{{ value }}
+    {%- elif value | length == 7 -%}{{ (value ~ "-01") | date(format="%B %Y") }}
+    {%- else -%}{{ value | date(format="%B %d, %Y") }}
+    {%- endif -%}
+  </time>
+{%- endcomponent render.date %}
+
 {% component render.post_entry(page) %}
 {% set post = page.extra.post | default(value={}) %}
 {% set subtitle = post.subtitle | default(value=page.extra.subtitle | default(value="")) %}
@@ -26,7 +36,7 @@
     <div class="post-entry__content">
       <div class="post-entry__meta">
         <h4 class="post-entry__title">{{ page.title }}</h4>
-        {% if page.date %}<time class="post-entry__date" datetime="{{ page.date | date(format='%Y-%m-%d') }}">{{ page.date | date(format='%b %d, %Y') }}</time>{% endif %}
+        {% if page.date %}{{ <render.date value={page.date | date(format='%Y-%m-%d')} class_name="post-entry__date" /> }}{% endif %}
       </div>
       {% if subtitle %}<p class="post-entry__subtitle">{{ subtitle }}</p>{% endif %}
       {% if excerpt %}<p class="post-entry__excerpt">{{ excerpt }}</p>{% endif %}
@@ -70,23 +80,27 @@
 <div class="article-meta">
   <ul class="article-meta__details" aria-label="Article information">
     {% if page.date %}
-    <li><i class="bi bi-calendar-event" aria-hidden="true"></i><time class="article-meta__date" datetime="{{ page.date | date(format='%Y-%m-%d') }}">{{ page.date | date(format='%B %d, %Y') }}</time></li>
+    <li>{{ <render.date value={page.date | date(format='%Y-%m-%d')} class_name="article-meta__date" /> }}</li>
     {% endif %}
     <li><i class="bi bi-hourglass-split" aria-hidden="true"></i><span class="article-meta__reading-time">{% if page.reading_time > 0 %}{{ page.reading_time }}{% else %}1{% endif %} min read</span></li>
   </ul>
-  {{ <render.share_menu title={page.title} permalink={page.permalink} /> }}
+  {% set post = page.extra.post | default(value={}) %}
+  {% set bibtex = post.bibtex | default(value="") | trim %}
+  {{ <render.share_menu title={page.title} permalink={page.permalink} has_bibtex={bibtex != ""} /> }}
 </div>
 {% endcomponent render.article_meta %}
 
-{% component render.share_menu(title, permalink) %}
+{% component render.share_menu(title, permalink, has_bibtex=false) %}
 <aside class="share" data-share aria-label="Article sharing">
   <button class="share__button" data-share-toggle type="button" aria-expanded="false" aria-controls="article-share-menu" hidden>
     <i class="bi bi-box-arrow-up" aria-hidden="true"></i><span>Share</span>
   </button>
   <nav id="article-share-menu" class="share-menu" aria-label="Share this article">
-    <button class="share-menu__item" data-share-copy data-share-url="{{ permalink }}" type="button" hidden>
-      <i class="bi bi-copy" aria-hidden="true"></i><span>Copy link</span>
+    {% if has_bibtex %}
+    <button class="share-menu__item" data-copy-citation aria-controls="post-bibtex" type="button" hidden>
+      <i class="bi bi-copy" aria-hidden="true"></i><span>Copy BibTeX</span>
     </button>
+    {% endif %}
     <a class="share-menu__item" href="{{ permalink }}">
       <i class="bi bi-link-45deg" aria-hidden="true"></i><span>Permalink</span>
     </a>

@@ -78,10 +78,14 @@
   }
 
   &__date {
-    color: var(--color-gray);
-    font-size: var(--font-size-normal);
     width: fit-content;
     white-space: nowrap;
+
+    // Taxonomy item counts also use this layout class, but are not dates.
+    &:not(.date-text) {
+      color: var(--color-gray);
+      font-size: var(--font-size-normal);
+    }
   }
 
   &__subtitle {
