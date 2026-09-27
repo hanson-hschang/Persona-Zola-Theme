@@ -2,6 +2,9 @@
    # name; ## section; ### entry; --- column break; leading quote = metadata. #}
 {% component resume.document(pos) %}
   {% set body = pos.content | trim %}
+  {# Replace only a leading, quoted Bootstrap icon marker in a Markdown list item.
+     Keep paragraph wrappers for loose lists and preserve all remaining Markdown HTML. #}
+  {% set body = body | regex_replace(pattern='<li>(\\s*<p>)?\\[(?:"|&quot;|“)\\s*(bi bi-[a-z0-9]+(?:-[a-z0-9]+)*)\\s*(?:"|&quot;|”)\\][\\t\\n ]+', rep='<li class="resume__icon-item">${1}<i class="resume__bullet-icon ${2}" aria-hidden="true"></i>') %}
   {% set name = "" %}
   {% if body is starting_with(pat="<h1 ") or body is starting_with(pat="<h1>") %}
     {% set parts = body | split(pat="</h1>") %}
@@ -79,6 +82,7 @@
           <a class="resume__skill-tab" id="resume-skill-{{ loop.index }}" href="#resume-skill-panel-{{ loop.index }}">
               {% if group.icon_class %}<i class="resume__skill-icon {{ group.icon_class }}" aria-hidden="true"></i>{% endif %}
               <span>{{ group.category }}</span>
+              <span class="resume__skill-tab-edge" aria-hidden="true"></span>
           </a>
           {% endfor %}
         </nav>

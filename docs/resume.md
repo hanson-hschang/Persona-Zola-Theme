@@ -125,6 +125,21 @@ Use an absolute `https://` or `http://` URL, a site path such as `"/about/"` or 
 
 Omit `skills` or use `skills = []` to leave the tabs out and retain the full-width summary, including its heading and badges. Blank skill items and categories without a label or any nonblank items are ignored; if no valid categories remain, the layout uses the same full-width summary. On the full resume page, summary headings and category headings in the no-script and print layouts use level two. A badge heading uses level three beneath a summary heading, or level two when that heading is hidden. The home preview nests its summary at level three beneath the section title, with a level-four badge heading, or level three when the summary heading is hidden.
 
+## Custom bullet icons
+
+Start a bullet's content with a quoted Bootstrap Icons class in square brackets to replace its normal marker:
+
+```markdown
+- A regular bullet keeps the default marker.
+- ["bi bi-pencil-square"] [Introductory blog post](/blogs/science/belief-net/)
+- ["bi bi-check-circle"] A result with **bold text** and a second line
+  that wraps beneath the content.
+```
+
+Use the `"bi bi-icon-name"` format with an icon from the theme's bundled Bootstrap Icons. The prefix must come first in the list item, followed by whitespace and the content. Links, emphasis, nested lists, and paragraphs keep their normal Markdown rendering. Lists in the resume's introductory and section prose support the same syntax.
+
+Omit the prefix to keep the default bullet. Ordinary bracketed text and Markdown links are unchanged. Icons use the theme's accent color, sit beside the first line, and remain visible without JavaScript and when printing. They are decorative; the text should convey the bullet's meaning. On sites hosted under a path prefix, use a Zola content reference such as `[Introductory blog post](@/blogs/science/belief-net/index.md)` to resolve the link to its permalink.
+
 ## Optional entry metadata
 
 An optional blockquote immediately below a `###` entry heading supplies its details. Use the labels `Period:`, `Organization:`, and `Location:`. End each metadata line except the last with **two spaces** so Markdown inserts a hard line break. Omit unused lines, and omit the entire blockquote when the entry has no metadata.
