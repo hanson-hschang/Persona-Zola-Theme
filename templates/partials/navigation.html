@@ -30,17 +30,44 @@
   </header>
 {% else %}
   {% set_global navigation_title = "" %}
+  {% set_global navigation_child = "" %}
+  {% set_global navigation_path = "" %}
   {% if page is defined %}
     {% set_global navigation_title = page.components[0] %}
+    {% set_global navigation_path = page.path %}
+    {% if page.components | length > 1 %}{% set_global navigation_child = page.components[1] %}{% endif %}
   {% elif section is defined %}
     {% set_global navigation_title = section.components[0] %}
+    {% set_global navigation_path = section.path %}
+    {% if section.components | length > 1 %}{% set_global navigation_child = section.components[1] %}{% endif %}
   {% endif %}
   <header id="header" class="header d-flex justify-content-center">
     <nav id="navmenu" class="navmenu">
       <ul>
         <li><a href="{{ get_url(path='/') }}" aria-label="Link to Home"><i class="{{ home_section.extra.icon_class }}"></i><span>Home</span></a></li>
         {% for subsection in subsections | sort(attribute="extra.order") %}
-          <li><a href="{{ subsection.permalink }}" {% if subsection.title | lower == navigation_title %}class="active"{% endif %} aria-label="Link to {{ subsection.title }}"><i class="{{ subsection.extra.icon_class }}"></i><span>{{ subsection.title }}</span></a></li>
+          {% set_global dropdown_subsections = [] %}
+          {% if subsection.extra.type | default(value="") == "category" %}
+            {% for child_path in subsection.subsections %}
+              {% set child = get_section(path=child_path) %}
+              {% if child.extra.order | default(value=0) > 0 %}
+                {% set_global dropdown_subsections = [...dropdown_subsections, child] %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+          {% set is_category = dropdown_subsections | length > 0 %}
+          <li{% if is_category %} class="dropdown"{% endif %}>
+            <a href="{{ subsection.permalink }}" {% if subsection.components[0] == navigation_title %}class="active"{% endif %}{% if subsection.path == navigation_path %} aria-current="page"{% endif %} aria-label="Link to {{ subsection.title }}"><i class="{{ subsection.extra.icon_class }}" aria-hidden="true"></i><span>{{ subsection.title }}</span>{% if is_category %}<i class="bi bi-chevron-down navmenu__chevron" aria-hidden="true"></i>{% endif %}</a>
+            {% if is_category %}
+              <button class="navmenu__dropdown-toggle" type="button" aria-label="Toggle {{ subsection.title }} sections" aria-expanded="false" aria-controls="nav-subsections-{{ subsection.components[0] }}" hidden><i class="bi bi-chevron-down" aria-hidden="true"></i></button>
+              <ul id="nav-subsections-{{ subsection.components[0] }}" aria-label="{{ subsection.title }} sections">
+                {% for child in dropdown_subsections | sort(attribute="extra.order") %}
+                  {% set is_current_child = child.components[1] == navigation_child and subsection.components[0] == navigation_title %}
+                  <li><a href="{{ child.permalink }}"{% if is_current_child %} class="active" aria-current="{% if child.path == navigation_path %}page{% else %}location{% endif %}"{% endif %}>{{ child.title }}</a></li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </li>
         {% endfor %}
         {% if config.extra.persona.contact_infos is defined %}
           {% for info in config.extra.persona.contact_infos %}

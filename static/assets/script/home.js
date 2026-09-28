@@ -30,7 +30,7 @@
       header: '#header',
       toggleBtn: '.nav-toggle',
       navmenu: '#navmenu',
-      dropdownToggle: '.navmenu .toggle-dropdown',
+      dropdownToggle: '.navmenu .navmenu__dropdown-toggle',
       scrollOffset: 200
     },
     scrollTop: {
@@ -196,15 +196,43 @@
      * Sets up dropdown toggle functionality for navigation submenus.
      */
     initDropdownToggles() {
-      const dropdownToggles = document.querySelectorAll(CONFIG.navigation.dropdownToggle);
+      const navmenu = document.querySelector(CONFIG.navigation.navmenu);
+      if (!navmenu) return;
 
-      dropdownToggles.forEach(toggle => {
-        toggle.addEventListener('click', function(e) {
-          e.preventDefault();
-          this.parentNode.classList.toggle('active');
-          this.parentNode.nextElementSibling.classList.toggle('dropdown-active');
-          e.stopImmediatePropagation();
+      const entries = [...document.querySelectorAll(CONFIG.navigation.dropdownToggle)]
+        .map(toggle => ({
+          toggle,
+          submenu: document.getElementById(toggle.getAttribute('aria-controls'))
+        }))
+        .filter(entry => entry.submenu);
+      if (!entries.length) return;
+
+      entries.forEach(({ toggle }) => { toggle.hidden = false; });
+      navmenu.classList.add('navmenu--enhanced');
+
+      const close = ({ toggle, submenu }) => {
+        toggle.setAttribute('aria-expanded', 'false');
+        submenu.classList.remove('dropdown-active');
+      };
+
+      entries.forEach(entry => {
+        entry.toggle.addEventListener('click', () => {
+          const opening = entry.toggle.getAttribute('aria-expanded') !== 'true';
+          entries.forEach(close);
+          if (opening) {
+            entry.toggle.setAttribute('aria-expanded', 'true');
+            entry.submenu.classList.add('dropdown-active');
+          }
         });
+      });
+
+      navmenu.addEventListener('keydown', event => {
+        if (event.key !== 'Escape') return;
+        const openEntry = entries.find(({ toggle }) => toggle.getAttribute('aria-expanded') === 'true');
+        if (!openEntry) return;
+        event.preventDefault();
+        close(openEntry);
+        openEntry.toggle.focus();
       });
     },
 

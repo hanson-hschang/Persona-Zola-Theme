@@ -705,6 +705,18 @@
     margin-bottom: 0;
   }
 
+  &__prose li,
+  &__summary > :is(ul, ol) li,
+  &__skills-summary > :is(ul, ol) li,
+  &__entry-content li {
+    text-align: justify;
+  }
+
+  &__summary > p,
+  &__skills-summary > p {
+    text-align: justify;
+  }
+
   &__entry-content > ul {
     margin: var(--spacing-sm) 0 0;
     padding-left: 1.1rem;
