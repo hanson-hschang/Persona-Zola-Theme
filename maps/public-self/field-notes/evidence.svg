@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="1200" height="600" role="img" aria-labelledby="title desc">
+  <title id="title">An evidence map</title>
+  <desc id="desc">Each of three questions is connected to a record and an interpretation: what changed to observations and comparison; why it changed to assumptions and explanation; when it holds to conditions and limitations.</desc>
+  <rect width="1200" height="600" rx="16" fill="#f4f8fc"/>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="64" y="65" fill="#0563bb" font-size="16" letter-spacing="2">FIELD NOTES / EVIDENCE MAP</text>
+    <g fill="#45505b" font-size="18" font-weight="700"><text x="64" y="127">QUESTION</text><text x="453" y="127">SUPPORTING RECORD</text><text x="844" y="127">INTERPRETATION</text></g>
+    <g stroke="#cbd9e6" fill="#fff"><rect x="64" y="160" width="294" height="90" rx="8"/><rect x="453" y="160" width="294" height="90" rx="8"/><rect x="844" y="160" width="292" height="90" rx="8"/><rect x="64" y="284" width="294" height="90" rx="8"/><rect x="453" y="284" width="294" height="90" rx="8"/><rect x="844" y="284" width="292" height="90" rx="8"/><rect x="64" y="408" width="294" height="90" rx="8"/><rect x="453" y="408" width="294" height="90" rx="8"/><rect x="844" y="408" width="292" height="90" rx="8"/></g>
+    <g fill="none" stroke="#0563bb" stroke-width="2"><path d="M358 205h95m294 0h97M358 329h95m294 0h97M358 453h95m294 0h97"/></g>
+    <g fill="#272829" font-size="22"><text x="90" y="213">What changed?</text><text x="479" y="213">Observations</text><text x="870" y="213">Comparison</text><text x="90" y="337">Why did it change?</text><text x="479" y="337">Assumptions</text><text x="870" y="337">Explanation</text><text x="90" y="461">When does it hold?</text><text x="479" y="461">Conditions</text><text x="870" y="461">Limitations</text></g>
+    <text x="64" y="551" fill="#45505b" font-size="18">Every interpretation should have a path back to its source.</text>
+  </g>
+</svg>
