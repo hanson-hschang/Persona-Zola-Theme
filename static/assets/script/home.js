@@ -157,16 +157,24 @@
         return;
       }
 
-      const toggleHeader = () => {
-        header.classList.toggle('header__navmenu__show');
-        headerToggleBtn.classList.toggle('bi-list');
-        headerToggleBtn.classList.toggle('bi-x');
+      const compactNavigation = window.matchMedia('(max-width: 991.98px)');
+      const setHeaderOpen = open => {
+        header.classList.toggle('header__navmenu__show', open);
+        headerToggleBtn.classList.toggle('bi-list', !open);
+        headerToggleBtn.classList.toggle('bi-x', open);
         if (headerToggleBtn.hasAttribute('aria-expanded')) {
-          headerToggleBtn.setAttribute('aria-expanded', String(header.classList.contains('header__navmenu__show')));
+          headerToggleBtn.setAttribute('aria-expanded', String(open));
         }
+        if (!open) this.closeDropdowns?.();
       };
+      const toggleHeader = () => setHeaderOpen(!header.classList.contains('header__navmenu__show'));
 
       headerToggleBtn.addEventListener('click', toggleHeader);
+      document.addEventListener('pointerdown', event => {
+        if (!compactNavigation.matches || !header.classList.contains('header__navmenu__show')) return;
+        if (header.contains(event.target) || headerToggleBtn.contains(event.target)) return;
+        setHeaderOpen(false);
+      });
 
       // Store reference for potential cleanup
       this.headerToggle = toggleHeader;
@@ -214,11 +222,12 @@
         toggle.setAttribute('aria-expanded', 'false');
         submenu.classList.remove('dropdown-active');
       };
+      this.closeDropdowns = () => entries.forEach(close);
 
       entries.forEach(entry => {
         entry.toggle.addEventListener('click', () => {
           const opening = entry.toggle.getAttribute('aria-expanded') !== 'true';
-          entries.forEach(close);
+          this.closeDropdowns();
           if (opening) {
             entry.toggle.setAttribute('aria-expanded', 'true');
             entry.submenu.classList.add('dropdown-active');
