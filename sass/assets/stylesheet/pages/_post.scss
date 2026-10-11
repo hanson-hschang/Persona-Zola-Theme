@@ -206,12 +206,17 @@ html.post-lightbox-open { overflow: hidden; scrollbar-gutter: stable; }
   }
 
   &__eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-xs);
     font-family: var(--font-nav);
     font-size: 0.875rem;
     color: var(--color-accent);
     margin-bottom: var(--spacing-md);
-    span { margin-inline: var(--spacing-xs); }
   }
+
+  &__venue-separator { margin-inline-end: var(--spacing-xs); }
 
   &__heading h1 {
     font-size: clamp(2.2rem, 4.8vw, 3.75rem);
@@ -266,7 +271,7 @@ html.post-lightbox-open { overflow: hidden; scrollbar-gutter: stable; }
 
   &__note { margin: var(--spacing-xs) 0 0; font-size: 0.875rem; }
   &__heading { min-width: 0; }
-  &__heading .article-tags { margin-top: var(--spacing-md); }
+  &__heading > .taxonomy-labels--tags { margin-top: var(--spacing-md); }
   &__hero > .article-meta { grid-column: 1 / -1; margin: 0; min-width: 0; }
 
   &__resources {

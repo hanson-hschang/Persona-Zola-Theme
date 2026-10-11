@@ -110,13 +110,7 @@
     {{ <render.section_title title={pos.title} /> }}
       {% if pos.content %}<div class="container listing__intro">{{ pos.content | safe }}</div>{% endif %}
       {% if entries and limit > 0 %}
-      <ol class="container post-list">
-        {% for entry in entries %}
-          {% if loop.index <= limit %}
-            {{ <render.post_entry page={entry} /> }}
-          {% endif %}
-        {% endfor %}
-      </ol>
+      {{ <post_gallery.render pages={entries} limit={limit} /> }}
       {% endif %}
       {% if preview and entries | length > limit %}
       <div class="container"><p class="listing__more"><a href="{{ pos.permalink }}">View all {{ pos.title | lower }} <i class="bi bi-arrow-right" aria-hidden="true"></i></a></p></div>

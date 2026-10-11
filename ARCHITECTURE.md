@@ -30,7 +30,10 @@ It serves as a guide for contributors to understand how the theme is structured 
 │           │   └── _plain.scss       # Plain section content styles
 │           ├── components/
 │           │   ├── _category.scss    # Category section styles
-│           │   ├── _post.scss        # Shared post listing styles
+│           │   ├── _labels.scss      # Shared label mixins for tags and resume skills
+│           │   ├── _taxonomy.scss    # Category boxes and tag pills
+│           │   ├── _post.scss        # Collection introductions, View all links, taxonomy overview
+│           │   ├── _post-gallery.scss   # Shared post galleries and category filters
 │           │   ├── __old_post.scss   # Archived former blog article styles
 │           │   ├── __old_widgets.scss # Archived former blog widget styles
 │           │   ├── _share.scss       # Article metadata and sharing controls
@@ -39,7 +42,7 @@ It serves as a guide for contributors to understand how the theme is structured 
 │           ├── home.scss             # Entry point: home page -> home.css
 │           ├── page-plain.scss       # Entry point: plain sections -> page-plain.css
 │           ├── page-category.scss    # Entry point: category sections -> page-category.css
-│           ├── page-post-list.scss   # Entry point: post lists -> page-post-list.css
+│           ├── page-post-gallery.scss   # Entry point: post galleries -> page-post-gallery.css
 │           ├── page-post.scss        # Entry point: all articles -> page-post.css
 │           ├── page-resume.scss      # Entry point: resumes -> page-resume.css
 │           ├── resume-preview.scss   # Entry point: home resume previews -> resume-preview.css
@@ -94,6 +97,7 @@ Located in `templates/` root:
   - Omits sections with `extra.landing_page = false` from both home content and home navigation; positive-order sections remain in ordinary page navigation
   - Renders visible resume sections as compact previews using the front matter title, subtitle, and summary with badges; skills and Markdown entries remain on the full resume page
   - Links each resume preview to its section permalink using `extra.summary.button_text`, defaulting to "View full resume"; loads `resume-preview.css` and `resume.js` only when a preview is visible, keeping full-page navigation styles out of the home page
+  - Uses shared card galleries for post previews, retaining their preview limits and View all links; category subsection cards keep their existing layout
   - Shows contact section
 
 - **section.html**: Section page template
@@ -121,7 +125,9 @@ Located in `templates/` root:
 
 - **post.html**: Unified post template
   - Selected with `template = "post.html"` or the section's `page_template`; reads optional `page.extra.post` data
-  - Shows linked tags with the title; publication date, reading time, and Share occupy a separate full-width row after the author byline and before resources, with no Save action
+  - Renders the optional detail-page subtitle from `extra.post.subtitle`, falling back to `extra.subtitle`; listing cards omit subtitles
+  - Shows linked categories as rectangular boxes above the title, with an optional venue; tags below the title and subtitle use the same dotted pills as resume skill items
+  - Publication date, reading time, and Share occupy a separate full-width row after the author byline and before resources, with no Save action
   - Renders authors, affiliations, resource links, teaser, abstract, article, gallery, video, poster, and BibTeX; article images are centered by default
   - Separates Pandoc's appended bibliography at `<!-- persona-bibliography -->` and renders it after the BibTeX Citation section, preserving all citation anchors; legacy `<div id="refs">` output is also supported
   - Generates page metadata and scholarly citation tags
@@ -147,18 +153,27 @@ Tera 2 components are globally registered by component name. They do not need im
 
 - **render.html**: Core rendering utilities
   - `render.date(value, class_name="")`: Shared semantic date rendering for article metadata, listings, Related Posts, and resume periods; full dates use `%B %d, %Y`, while year and month values retain their precision. The shared `.date-text` class supplies consistent body-font typography without icons.
-  - `render.post_entry(page)`: Shared section and taxonomy post entries, with optional thumbnail, date, subtitle, and description
-  - `render.article_tags(page)` and `render.article_meta(page)`: Article tags and metadata / sharing controls
+  - `render.post_entry(page)`: Compatibility wrapper for `post_gallery.card(page)`
+  - `render.article_meta(page)`: Article metadata and sharing controls
+  - `render.article_tags(page)`: Compatibility wrapper for `taxonomy.labels(page, name="tags")`; current posts call the taxonomy component directly
   - `render.section_title`: Renders section titles
   - `render.text_content`: Renders text content
   - `render.cards`: Renders card layouts
   - And more...
 
+- **post-gallery.html**: Shared post gallery components
+  - `post_gallery.card(page)`: Post card with one article link wrapping the optional image, plain-text category labels, title, date, description, and Read more cue
+  - Each card is an `article` in a `.post-card` list item with its exact categories encoded as JSON in `data-post-categories`; the `.post-card__link` is the card's only link
+  - Card descriptions fall back from the page description to `extra.excerpt`, then to the page summary or stripped article content shortened to 180 characters
+  - `post_gallery.render(pages, limit=-1)`: Responsive gallery for post sections, home previews, and individual taxonomy pages; excludes theme drafts and applies the optional limit before deriving category filters
+  - `.post-gallery[data-post-gallery]` contains an ordered `.post-grid[data-post-grid]` list and, when categories are present, initially hidden native filter buttons; All uses an empty filter value and category buttons retain their exact labels
+  - Cards preserve each image's natural aspect ratio and can have different heights in a responsive grid, progressively enhanced into masonry
+
 - **segment.html**: Segment rendering logic
   - `segment.populate`: Populates section content
   - `segment.plain`: Renders plain sections
   - `segment.category(pos, preview=false, limit=3)`: Renders subsection cards, with an optional limited home-page preview
-  - `segment.posts(pos, preview=false, limit=3)`: Renders shared post page lists, with an optional limited home-page preview
+  - `segment.posts(pos, preview=false, limit=3)`: Renders the shared post gallery, with an optional limited home-page preview
   - The index passes `config.extra.persona.home_items_limit` (default `3`) through `segment.populate` to both category and page lists; Tera components receive the setting explicitly
   - Preview limits apply after eligibility filtering. Zero shows only a View all link for a nonempty collection; negative limits use the default of three. Full section pages are unlimited
   - `extra.post.draft` pages remain buildable but are excluded from automatic post, taxonomy, and Related Posts lists
@@ -197,9 +212,10 @@ Tera 2 components are globally registered by component name. They do not need im
 - **debug.html**: Debug utilities
   - Development helpers
 
-- **taxonomy.html**: Taxonomy page components
+- **taxonomy.html**: Taxonomy labels and page components
+  - `taxonomy.labels(page, name)`: Renders ordered category or tag links from `[taxonomies]` as a named list, omitting empty lists; `.taxonomy-labels--categories` selects rectangular boxes and `.taxonomy-labels--tags` selects dotted pills
   - `taxonomy.list`: Renders category and tag index pages
-  - `taxonomy.term`: Renders a single category or tag page
+  - `taxonomy.term`: Renders a single category or tag page with the same post gallery used by sections and home previews
 
 ### Template Partials
 
@@ -271,7 +287,10 @@ stylesheet/
 │
 ├── components/
 │   ├── _category.scss           # Category card listing
-│   ├── _post.scss               # Shared post entries
+│   ├── _labels.scss             # Shared pill mixin for tag links and resume skill items
+│   ├── _taxonomy.scss           # Category boxes and tag pills
+│   ├── _post.scss               # Collection introductions, View all links, taxonomy overview
+│   ├── _post-gallery.scss          # Shared post galleries and category filters
 │   ├── __old_post.scss          # Archived former blog article styles
 │   ├── __old_widgets.scss       # Archived former blog widgets
 │   ├── _share.scss              # Article metadata and sharing controls
@@ -282,7 +301,7 @@ stylesheet/
     ├── home.scss                 # Home / index page
     ├── page-plain.scss           # Plain section + page template
     ├── page-category.scss        # Category section pages
-    ├── page-post-list.scss       # Post listing section pages
+    ├── page-post-gallery.scss       # Post gallery section pages
     ├── page-post.scss            # All post pages
     ├── page-resume.scss          # Resume sections and standalone resume pages
     ├── resume-preview.scss       # Home resume previews, without page navigation styles
@@ -297,13 +316,13 @@ Each template loads only the CSS it needs:
 | Template | Entry point loaded | Contents |
 |---|---|---|
 | `base.html` (all pages) | `main.css` | variables, base, footer, preloader, custom |
-| `index.html` | `home.css` | nav-index, hero, segment, plain, category, shared page lists, contact |
+| `index.html` | `home.css` | nav-index, hero, segment, plain, category, shared post galleries, contact |
 | `index.html` (visible resume preview) | `resume-preview.css` | shared resume styles, summary, badge strip, and preview link; no page navigation overrides |
 | `section.html` (plain) | `page-plain.css` | navigation, segment, plain |
 | `section.html` (category) | `page-category.css` | navigation, segment, category |
-| `section.html` (posts) | `page-post-list.css` | navigation, segment, post lists, breadcrumbs |
+| `section.html` (posts), category and tag pages | `page-post-gallery.css` | navigation, segment, post galleries, taxonomy index entries, breadcrumbs |
 | `section.html` (resume), `resume.html` | `page-resume.css` | shared design tokens, navigation, resume layout and print styles |
-| `post.html` | `page-post.css` | variables, navigation, breadcrumbs, sidebar widgets, article layout/media, sharing, custom |
+| `post.html` | `page-post.css` | variables, navigation, breadcrumbs, sidebar widgets, article layout/media, taxonomy labels, sharing, custom |
 | `post.html` | `citations.css` | Pandoc citation and bibliography styles |
 | `page.html` | `page-plain.css` | navigation, segment, plain |
 | `404.html` | `page-404.css` | navigation, segment, plain, contact |
@@ -342,6 +361,15 @@ JavaScript files in `static/assets/script/`:
 - **share.js**: Share menu disclosure
   - Opens the menu and closes it on Escape, outside clicks, or focus leaving the menu
   - Enhances the template's Permalink and social links even when no BibTeX copy action is present; links remain available without JavaScript
+
+- **post-gallery.js**: Progressive category filtering for post galleries
+  - Reveals native category buttons when a displayed gallery has category labels; All restores every displayed card, including cards without categories
+  - Matches exact category strings from each card's JSON data
+  - Scopes filtering to each gallery, keeping multiple home-page post previews independent
+  - Exposes the selected native button's pressed state and keeps a usable focus target when a card is hidden
+  - Measures natural card heights for masonry after filtering, image and font loading, and resizing; preserves DOM order and does not animate
+  - Skips galleries without a post grid so article media galleries retain their own `post.js` behavior
+  - Leaves every displayed card accessible through its native link when JavaScript is unavailable
 
 - **video-start.js**: Loaded by `video.player` to enforce its configured start time
   - Preserves valid playback positions and guards backward seeking and replay

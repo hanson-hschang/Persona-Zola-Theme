@@ -5,7 +5,7 @@ date = 2025-03-17
 draft = false
 [taxonomies]
 tags = ['website', 'blog']
-categories = ['blogs', 'private-soul']
+categories = ['Website tutorial']
 [extra]
 subtitle = "From first installation to a personal website"
 excerpt = """

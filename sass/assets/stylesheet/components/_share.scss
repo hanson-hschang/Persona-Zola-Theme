@@ -1,25 +1,4 @@
-// Article metadata, linked tags, and sharing controls shared by both templates.
-.article-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-xs);
-  padding: 0;
-  margin: var(--spacing-md) 0;
-  list-style: none;
-
-  &__item a {
-    display: inline-block;
-    padding: 0.2rem 0.65rem;
-    border-radius: 4px;
-    background: color-mix(in srgb, var(--color-accent) 7%, var(--color-background));
-    color: var(--color-accent);
-    font-size: 0.8125rem;
-    line-height: 1.6;
-    text-decoration: none;
-
-    &:hover { text-decoration: underline; }
-  }
-}
+// Article metadata and sharing controls.
 
 .article-meta {
   display: flex;
@@ -136,7 +115,6 @@
   button { width: 100%; }
 }
 
-.article-tags a:focus-visible,
 .share a:focus-visible,
 .share button:focus-visible {
   outline: 3px solid var(--color-accent);

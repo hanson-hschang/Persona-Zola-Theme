@@ -5,7 +5,7 @@ date = 2025-03-19
 draft = false
 [taxonomies]
 tags = ['citation', 'pandoc', 'bibtex']
-categories = ['private-soul']
+categories = ['Citation workflow']
 [extra]
 excerpt = """
 A practical guide for writing citation-enabled posts in Persona with Pandoc and BibTeX.

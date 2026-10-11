@@ -1,0 +1,75 @@
+{# Post cards and category-filtered galleries. Category section cards are separate. #}
+{% component post_gallery.card(page) %}
+  {% set post = page.extra.post | default(value={}) %}
+  {% set thumbnail = post.thumbnail | default(value=page.extra.thumbnail | default(value="")) %}
+  {% set thumbnail_alt = post.thumbnail_alt | default(value=page.extra.thumbnail_alt | default(value="")) %}
+  {% if not thumbnail and post.teaser %}
+    {% if post.teaser.type is defined and post.teaser.type == "video" %}
+      {% set thumbnail = post.teaser.poster | default(value="") %}
+    {% else %}
+      {% set thumbnail = post.teaser.src %}
+      {% set thumbnail_alt = post.teaser.alt | default(value=thumbnail_alt) %}
+    {% endif %}
+  {% endif %}
+  {% set description = "" %}
+  {% if page.description %}{% set description = page.description | trim %}{% endif %}
+  {% if not description %}{% set description = page.extra.excerpt | default(value="") | trim %}{% endif %}
+  {% if not description %}
+    {% if page.summary %}{% set description = page.summary %}{% else %}{% set description = page.content %}{% endif %}
+    {% set description = description | striptags | trim | truncate(length=180) %}
+  {% endif %}
+  {% set categories = page.taxonomies.categories | default(value=[]) %}
+  <li class="post-card" data-post-categories="{{ categories | json_encode() }}">
+    <article>
+      <a class="post-card__link" href="{{ page.permalink }}" aria-label="Read {{ page.title }}">
+        {% if thumbnail %}
+        <figure class="post-card__figure">
+          <img class="post-card__image" src="{{ <post.url page={page} path={thumbnail} /> }}" alt="{{ thumbnail_alt }}" loading="lazy" decoding="async">
+        </figure>
+        {% endif %}
+        <div class="post-card__content">
+          {% if categories %}
+          <ul class="post-card__categories" aria-label="Categories" role="list">
+            {% for category in categories %}<li class="post-card__category">{{ category }}</li>{% endfor %}
+          </ul>
+          {% endif %}
+          <h3 class="post-card__title">{{ page.title }}</h3>
+          {% if page.date %}{{ <render.date value={page.date | date(format='%Y-%m-%d')} class_name="post-card__date" /> }}{% endif %}
+          {% if description %}<p class="post-card__description">{{ description }}</p>{% endif %}
+          <span class="post-card__more">Read more <i class="bi bi-arrow-right" aria-hidden="true"></i></span>
+        </div>
+      </a>
+    </article>
+  </li>
+{% endcomponent post_gallery.card %}
+
+{% component post_gallery.render(pages, limit=-1) %}
+  {% set_global entries = [] %}
+  {% for entry in pages %}
+    {% set post = entry.extra.post | default(value={}) %}
+    {% if not post.draft and (limit < 0 or entries | length < limit) %}
+      {% set_global entries = [...entries, entry] %}
+    {% endif %}
+  {% endfor %}
+  {% if entries %}
+    {% set_global categories = [] %}
+    {% for entry in entries %}
+      {% for category in entry.taxonomies.categories | default(value=[]) %}
+        {% if category not in categories %}{% set_global categories = [...categories, category] %}{% endif %}
+      {% endfor %}
+    {% endfor %}
+    <div class="container post-gallery" data-post-gallery>
+      {% if categories %}
+      <div class="post-gallery__filters" data-post-filters role="group" aria-label="Filter posts by category" hidden>
+        <button class="post-gallery__filter" type="button" data-post-filter="" aria-pressed="true">All</button>
+        {% for category in categories | sort %}
+        <button class="post-gallery__filter" type="button" data-post-filter="{{ category }}" aria-pressed="false">{{ category }}</button>
+        {% endfor %}
+      </div>
+      {% endif %}
+      <ol class="post-grid" data-post-grid role="list">
+        {% for entry in entries %}{{ <post_gallery.card page={entry} /> }}{% endfor %}
+      </ol>
+    </div>
+  {% endif %}
+{% endcomponent post_gallery.render %}

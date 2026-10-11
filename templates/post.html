@@ -73,13 +73,17 @@
   <article class="post container" id="post-main" aria-labelledby="post-title" tabindex="-1">
     <header class="post__hero">
       <div class="post__heading">
-        {% if post.venue or post.kind %}
-        <p class="post__eyebrow">{{ post.kind | default(value='Research post') }}{% if post.venue %}<span aria-hidden="true"> / </span>{{ post.venue }}{% endif %}</p>
+        {% set categories = page.taxonomies.categories | default(value=[]) %}
+        {% if categories or post.venue %}
+        <div class="post__eyebrow">
+          {{ <taxonomy.labels page={page} name="categories" /> }}
+          {% if post.venue %}<span class="post__venue">{% if categories %}<span class="post__venue-separator" aria-hidden="true">/</span> {% endif %}{{ post.venue }}</span>{% endif %}
+        </div>
         {% endif %}
         <h1 id="post-title">{{ page.title }}</h1>
         {% set subtitle = post.subtitle | default(value=page.extra.subtitle | default(value="")) %}
         {% if subtitle %}<p class="post__subtitle">{{ subtitle }}</p>{% endif %}
-        {{ <render.article_tags page={page} /> }}
+        {{ <taxonomy.labels page={page} name="tags" /> }}
         {% if post.award %}<p class="post__award"><i class="bi bi-award" aria-hidden="true"></i> {{ post.award }}</p>{% endif %}
       </div>
       {% if post.authors or post.affiliations %}

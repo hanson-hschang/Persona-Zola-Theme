@@ -1,5 +1,6 @@
 // Resume — an open, two-column timeline built from Persona's design tokens.
 @use '../mixins';
+@use '../components/labels';
 
 .resume {
   --resume-rule: color-mix(in srgb, var(--color-heading) 18%, var(--color-background));
@@ -508,18 +509,6 @@
       }
     }
 
-    &__skill-items li {
-      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
-    }
-
-    @media (hover: hover) {
-      &__skill-items li:hover {
-        transform: translateY(-2px);
-        border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-background));
-        box-shadow: 0 3px 8px color-mix(in srgb, var(--color-accent) 12%, transparent);
-      }
-    }
-
     [data-tabs-ready] .resume__skill-card:not([hidden]) .resume__skill-items li {
       animation: resume-skill-enter 260ms ease-out 160ms backwards;
 
@@ -540,27 +529,7 @@
     list-style: none;
 
     li {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--spacing-xs);
-      max-width: 100%;
-      padding: 0.375rem 0.75rem;
-      border: 1px solid color-mix(in srgb, var(--color-accent) 18%, var(--color-background));
-      border-radius: 999px;
-      background: var(--color-surface);
-      color: var(--color-heading);
-      font-size: 0.9375rem;
-      font-weight: 500;
-      line-height: 1.4;
-
-      &::before {
-        flex: 0 0 0.375rem;
-        width: 0.375rem;
-        height: 0.375rem;
-        border-radius: 50%;
-        background: var(--color-accent);
-        content: '';
-      }
+      @include labels.pill;
     }
   }
 

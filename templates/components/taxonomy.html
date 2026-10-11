@@ -1,3 +1,15 @@
+{# Semantic, linked labels shared by article categories and tags. #}
+{% component taxonomy.labels(page, name) %}
+  {% set terms = page.taxonomies[name] | default(value=[]) %}
+  {% if terms %}
+  <ul class="taxonomy-labels taxonomy-labels--{{ name }}" aria-label="{{ name | capitalize }}" role="list">
+    {% for term in terms %}
+    <li class="taxonomy-labels__item"><a class="taxonomy-labels__link" href="{{ get_taxonomy_url(kind=name, term=term) }}">{{ term }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+{% endcomponent taxonomy.labels %}
+
 {% component taxonomy.list(title, terms) %}
   <section class="plain segment">
     {{ <render.section_title title={title} /> }}
@@ -40,10 +52,6 @@
   </section>
 
   {% if entries %}
-    <ol id="post-entries" class="container post-list" data-aos="fade-up">
-      {% for page in entries %}
-        {{ <render.post_entry page={page} /> }}
-      {% endfor %}
-    </ol>
+    {{ <post_gallery.render pages={entries} /> }}
   {% endif %}
 {% endcomponent taxonomy.term %}

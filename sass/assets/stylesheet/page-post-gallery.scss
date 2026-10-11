@@ -1,9 +1,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// page-post-list — Loaded on post listing section pages
-// Includes: navigation, segment, post listing, breadcrumbs.
-// Compiled output: public/assets/stylesheet/page-post-list.css
+// page-post-gallery — Loaded on post section and taxonomy pages
+// Includes: navigation, segment, post cards, taxonomy overview, breadcrumbs.
+// Compiled output: public/assets/stylesheet/page-post-gallery.css
 // ─────────────────────────────────────────────────────────────────────────────
 @use 'layout/navigation';
 @use 'layout/segment';
 @use 'components/post';
+@use 'components/post-gallery';
 @use 'layout/breadcrumbs';

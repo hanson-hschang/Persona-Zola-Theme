@@ -40,7 +40,11 @@ order = 10
 +++
 ```
 
-This creates a complete listing at `/maps/public-self/` and uses the shared article layout for its pages. Section and taxonomy page lists use the same `render.post_entry(page)` template and shared styles. Each entry can display a thumbnail on the left, a title and date, a subtitle below the title, and a description. The image and text form one link. Section Markdown, if supplied, appears above the entries.
+This creates a complete listing at `/maps/public-self/` and uses the shared article layout for its pages. Post sections, home-page post previews, and individual category or tag pages use the shared `post_gallery.render(pages, limit=-1)` and `post_gallery.card(page)` components. Cards can display an image, category labels, a title and date, and a description, followed by **Read more**. The entire card is one link to the article; its category labels are plain text. Section Markdown, if supplied, appears above the gallery.
+
+The gallery uses responsive columns and preserves each image's natural aspect ratio, allowing cards to have different heights. JavaScript packs those heights into a masonry layout while preserving the card order; without it, the cards use a regular responsive grid. Cards without an image remain part of the same layout. Its colors and typography follow Persona's theme tokens.
+
+When category labels are present in a displayed gallery, JavaScript reveals category filter buttons and **All**. Selecting a category shows cards with that exact label; a post with several categories can appear under each one. **All** also includes cards without categories. The selected button exposes its pressed state to assistive technology, and keyboard focus stays on the control. Filters act only on their own gallery, so separate home-page previews can be filtered independently. Without JavaScript, the filters stay hidden and every displayed card remains a usable link. Category-section subsection cards keep their existing layout.
 
 For this date-sorted section, give **every page** a top-level `date` to list newest first. Zola excludes pages without dates from a section sorted by date. Alternatively, use `sort_by = "weight"` and give every page a `weight`; lower values appear first. All posts follow the section's ordering.
 
@@ -51,7 +55,7 @@ Add the limit under your existing `[extra.persona]` table in `config.toml`:
 home_items_limit = 3
 ```
 
-The setting applies to every list preview on the home page: category subsection cards and post entry lists. It defaults to `3` when omitted. Use a non-negative integer. `0` hides preview items while retaining the **View all** link for each nonempty collection. Negative values fall back to `3`. Full section pages show all eligible cards or non-draft entries. A **View all** link appears whenever a home-page preview omits eligible items. In the demo, the home page previews subsection cards under Maps; Public Self contains the full mixed list.
+The setting applies to every list preview on the home page: category subsection cards and post galleries. It defaults to `3` when omitted. Use a non-negative integer. `0` hides preview items while retaining the **View all** link for each nonempty collection. Negative values fall back to `3`. Full section pages show all eligible cards. A **View all** link appears whenever a home-page preview omits eligible items. Draft filtering and the preview limit apply before the gallery's category filters are derived, so filters describe only the cards currently in that preview. In the demo, the home page previews subsection cards under Maps; Public Self contains the full mixed gallery.
 
 Configure an entry in its page front matter:
 
@@ -62,20 +66,19 @@ date = 2026-09-21
 template = "post.html"
 
 [extra.post]
-subtitle = "A concise statement of the contribution"
 thumbnail = "thumbnail.jpg"
 thumbnail_alt = "Overview of the proposed method"
 ```
 
-Thumbnails follow the resource URL rules below. If `extra.post.thumbnail` is omitted, the listing tries `extra.thumbnail`, then the teaser image or a video teaser's `poster`. An entry without an image uses the full text width. `thumbnail_alt` defaults to empty because the adjacent title already names the linked post. Entry descriptions use the page's `description`, falling back to `extra.excerpt` when empty.
+Thumbnails follow the resource URL rules below. If `extra.post.thumbnail` is omitted, the listing tries `extra.thumbnail`, then the teaser image or a video teaser's `poster`. Listing images sit above the card text and retain their natural proportions without cropping. A card without an image starts with its text. `thumbnail_alt` falls back to `extra.thumbnail_alt`, then defaults to empty because the adjacent title already names the linked post; when using a teaser image, the listing uses its supplied `alt` text. Card descriptions use the page's `description`, falling back to `extra.excerpt`, then the page summary or article content stripped of markup and shortened to 180 characters.
 
-The top-level `date` appears in the full-width metadata row after the author byline on the detail page and beside the title in listings. Omit it to hide the date. Dates use the same full-month format everywhere, such as **September 21, 2026**, including home previews, section and taxonomy lists, and Related Posts. They share the theme's muted body font at normal weight and 0.875rem, with tabular numerals and no calendar icon. Post subtitles appear on both the detail page and listings; `extra.post.subtitle` takes precedence over `extra.subtitle`.
+The top-level `date` appears in the full-width metadata row after the author byline on the detail page and below the title in listing cards. Omit it to hide the date. Dates use the same full-month format everywhere, such as **September 21, 2026**, including home previews, section and taxonomy lists, and Related Posts. They share the theme's muted body font at normal weight and 0.875rem, with tabular numerals and no calendar icon. Post subtitles appear only on detail pages; `extra.post.subtitle` takes precedence over `extra.subtitle`.
 
-Existing optional fields under `[extra]` remain supported: `subtitle`, `thumbnail`, and `thumbnail_alt`. A subtitle also appears below the title on the detail page. Use the top-level `description` or the existing `extra.excerpt` for a separate summary. Thumbnails are optional; an `extra.thumbnail` also supplies the article's hero image when no teaser is configured.
+Existing optional fields under `[extra]` remain supported: `subtitle`, `thumbnail`, and `thumbnail_alt`. A subtitle appears below the title on the detail page. Use the top-level `description` or the existing `extra.excerpt` for a separate summary in listing cards. Thumbnails are optional; an `extra.thumbnail` also supplies the article's hero image when no teaser is configured.
 
-### Tags, metadata, citations, and mathematics
+### Categories, tags, metadata, citations, and mathematics
 
-Keep tags in the standard `[taxonomies]` table and the date at the top level. Linked tags appear with the title. The publication date, estimated reading time, and Share menu occupy a separate row after the author byline and before the resource buttons, aligned to the same full width as the resources. The row still appears when authors or resources are omitted. It has no Save action.
+Keep categories and tags in the standard `[taxonomies]` table and the date at the top level. Categories appear as separate linked rectangular boxes above the title, followed by the optional publication venue. Choose labels that describe the article's topic or format, such as `Research paper`, `Travel journal`, or `Theme development`. Tags appear below the title and subtitle as rounded pills with a decorative dot, sharing the résumé skill-item styling. Both lists wrap and retain their supplied order. The publication date, estimated reading time, and Share menu occupy a separate row after the author byline and before the resource buttons, aligned to the same full width as the resources. The row still appears when authors or resources are omitted. It has no Save action.
 
 Share starts with **Copy BibTeX** when `[extra.post].bibtex` contains a citation, followed by **Permalink** and the social sharing links. Without a citation, or when the field contains only whitespace, it starts with **Permalink**. Both the Share action and the Citation section's copy button copy the same literal BibTeX; Permalink remains the direct link to the article.
 
@@ -83,6 +86,7 @@ Share starts with **Copy BibTeX** when `[extra.post].bibtex` contains a citation
 date = 2026-09-21
 
 [taxonomies]
+categories = ["Research paper"]
 tags = ["research", "mathematics"]
 
 [extra.tex.macros]
@@ -121,12 +125,12 @@ All fields below belong to `[extra.post]` unless another location is shown. Omit
 | Field | Type | Rendering |
 | --- | --- | --- |
 | `draft` | Boolean | Defaults to `false`. When `true`, hides the entry from automatic post, taxonomy, and Related Posts lists while preserving its generated URL. |
-| `kind` | String | Small label above the title; defaults to `Research post` when `venue` is present. |
+| `[taxonomies].categories` | Array of strings | Linked rectangular labels above the title, in the supplied order. Omit or use `[]` to hide category labels. |
 | `venue` | String | Conference or publication label and citation metadata. |
-| `subtitle` | String | Supporting text below the title on the post page and in listings; falls back to `extra.subtitle`. |
+| `subtitle` | String | Supporting text below the title on the post detail page only; falls back to `extra.subtitle`. |
 | Top-level `date` | Date | Visible publication date on the post page and in listings; also used for scholarly metadata. |
-| `thumbnail` | URL string | Small image on the left of the post entry in listings. |
-| `thumbnail_alt` | String | Alternative text for the listing image; defaults to empty. |
+| `thumbnail` | URL string | Image above the text in listing cards, preserving its natural aspect ratio. |
+| `thumbnail_alt` | String | Alternative text for the listing image; falls back to `extra.thumbnail_alt` or empty. A teaser image uses its own `alt`. |
 | `award` | String | Award note with an icon. |
 | `authors` | Array of author tables | Authors in the supplied order; also used in citation metadata. |
 | `affiliations` | Array of affiliation tables | Institution names below the authors. |
@@ -164,8 +168,10 @@ Readers can fold or expand Outline at any size. JavaScript preserves that choice
 ### Authors, affiliations, and links
 
 ```toml
+[taxonomies]
+categories = ["Research paper"]
+
 [extra.post]
-kind = "Research paper"
 venue = "Example Conference 2026"
 subtitle = "A concise explanation of the contribution"
 award = "Best paper award"
@@ -305,8 +311,12 @@ The first two examples reuse front matter already rendered by the template; use 
 
 The public template and component names are `post.html` and `post.*`; configure optional article features under `[extra.post]`. Styles use `.post` classes and reserved `post-` fragment IDs. The implementation lives in `templates/post.html`, `templates/components/post.html`, `sass/assets/stylesheet/pages/_post.scss`, and `static/assets/script/post.js`. `page-post.scss` compiles through Zola and includes the shared variables and final custom overrides. Adjust Persona's existing tokens or your `_custom.scss` overrides to change the post styling alongside the rest of your site.
 
+Category and tag labels share `taxonomy.labels(page, name)` in `templates/components/taxonomy.html`, with the `.taxonomy-labels` classes styled by `sass/assets/stylesheet/components/_taxonomy.scss`. The shared `pill` mixin in `components/_labels.scss` keeps tag pills and résumé skill items consistent. Category and tag front matter belongs under `[taxonomies]`.
+
+Post listing cards and category filters live in `templates/components/post-gallery.html`, with shared gallery styles in `sass/assets/stylesheet/components/_post-gallery.scss` and progressive filtering in `static/assets/script/post-gallery.js`. Home-page post previews, post sections, and individual taxonomy pages load these assets where needed. Listing categories use plain text inside the card's article link; the linked category and tag labels on article pages retain their taxonomy navigation behavior. `render.post_entry(page)` remains a compatibility wrapper for the shared card component.
+
 The [Academic Project Page Template](https://github.com/eliahuhorwitz/Academic-project-page-template) informed the feature set. Persona's post layout, Sass, and JavaScript are original implementations; no upstream stylesheet is copied.
 
 ## Development checks
 
-From the theme directory, run `python3 tests/test_posts.py` to build isolated minimal and populated examples and check their rendered output. The tests require Zola and Python 3, and leave the theme's content unchanged. Run `node --test tests/test_post_outline.cjs` for the outline's breakpoint and disclosure behavior. These checks cover template rendering, URL handling, and scripted state changes; check actual media playback and responsive interactions in a browser when changing the media components or script.
+From the theme directory, run `python3 tests/test_posts.py` to build isolated minimal and populated examples and check their rendered output. The tests require Zola and Python 3, and leave the theme's content unchanged. Run `node tests/test_post_gallery.cjs` for scoped category filtering and masonry layout, and `node --test tests/test_post_outline.cjs` for the outline's breakpoint and disclosure behavior. These checks cover template rendering, URL handling, and scripted state changes; check actual media playback and responsive interactions in a browser when changing the media components or script.

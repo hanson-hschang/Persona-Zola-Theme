@@ -5,11 +5,13 @@ date = 2026-09-21
 template = "post.html"
 weight = 1
 
+[taxonomies]
+categories = ["Template demonstration"]
+
 [extra.post]
 draft = false # Set true to hide from automatic lists while keeping this URL available.
 thumbnail = "workflow.svg"
 thumbnail_alt = "Observation-to-evidence workflow"
-kind = "Template demonstration"
 subtitle = "A clear path through the question, the method, and the evidence."
 authors = [
   { name = "Alex Morgan", affiliations = "1", equal = true },

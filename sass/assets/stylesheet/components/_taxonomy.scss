@@ -1,0 +1,40 @@
+// Linked taxonomy labels: category boxes and skill-style tag pills.
+@use 'labels';
+
+.taxonomy-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-default);
+
+  &__item { min-width: 0; max-width: 100%; }
+
+  &__link {
+    max-width: 100%;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+
+    &:focus-visible {
+      outline: 3px solid var(--color-accent);
+      outline-offset: 3px;
+    }
+  }
+
+  &--categories &__link {
+    @include labels.box;
+
+    &:hover { text-decoration: underline; }
+  }
+
+  &--tags {
+    gap: var(--spacing-xs) 0.75rem;
+
+    .taxonomy-labels__link {
+      @include labels.pill;
+    }
+  }
+}

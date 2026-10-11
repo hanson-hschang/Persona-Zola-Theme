@@ -25,6 +25,7 @@ SUBTITLE = 'A subtitle <img src=x onerror=alert(2)> & "quotes"'
 AUTHOR = 'A <img src=x onerror=alert(1)> & B'
 BIBTEX = '@misc{example, title={<script>alert("citation")</script> & Research}}'
 OUTLINE_TITLE = 'Sections <img src=x onerror=alert("outline")> & "details"'
+GALLERY_CATEGORY = 'Controls & Robotics / "Soft" [arm]'
 SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2"></svg>'
 
 
@@ -119,6 +120,13 @@ A short **post introduction**.
              'teaser = { type = "video", src = "clip.mp4", title = "No poster" }'),
             ("c-excerpt", "", "", "draft = false"),
         ]
+        listing_categories = [
+            ["Research & Methods", GALLERY_CATEGORY],
+            ["Research & Methods"],
+            ["Sequence modeling"],
+            ["Archive only"],
+            [],
+        ]
         for weight, (folder, location, description, post) in enumerate(listing_posts, 1):
             title = TITLE if weight == 1 else f"Listing post {weight}"
             date = "date = 2025-03-04" if weight == 1 else ""
@@ -132,6 +140,8 @@ weight = {weight * 2}
 {date}
 {location}
 {description}
+[taxonomies]
+categories = {json.dumps(listing_categories[weight - 1])}
 [extra]
 excerpt = "Fallback listing excerpt {weight}"
 {subtitle}
@@ -159,6 +169,7 @@ title = {json.dumps(TITLE)}
 date = 2025-03-04
 [taxonomies]
 tags = ["Shared fixture"]
+categories = {json.dumps(listing_categories[0])}
 [extra]
 excerpt = "Blog listing excerpt"
 subtitle = {json.dumps(SUBTITLE)}
@@ -172,6 +183,7 @@ title = "Blog without optional fields"
 date = 2025-03-03
 [taxonomies]
 tags = []
+categories = ["Personal writing"]
 [extra]
 excerpt = "A text-only blog entry"
 +++
@@ -194,6 +206,7 @@ date = {date}
 template = "post.html"
 [taxonomies]
 tags = ["Shared fixture", "Draft-only fixture"]
+categories = ["Draft-only gallery"]
 [extra.post]
 draft = true
 +++
@@ -231,6 +244,8 @@ thumbnail = "thumb.svg"
 title = "Unlisted {folder}"
 weight = {weight}
 {location}
+[taxonomies]
+categories = ["Draft-only gallery"]
 [extra.post]
 draft = true
 teaser = {{ src = "thumb.svg", alt = "Unlisted post thumbnail" }}
@@ -240,6 +255,32 @@ Draft post body remains available through its direct URL.
             cls.write(f"content/posts/{folder}/thumb.svg", SVG)
 
         cls.write("content/test-minimal.md", '+++\ntitle = "Minimal post"\ntemplate = "post.html"\n+++\nNo extra table.')
+        cls.write("content/test-category-only.md", '''+++
+title = "Categorized post"
+template = "post.html"
+[taxonomies]
+categories = ["Personal reflections"]
++++
+A post with a category and no publication venue.
+''')
+        cls.write("content/test-venue-only.md", '''+++
+title = "Published post"
+template = "post.html"
+[taxonomies]
+categories = []
+[extra.post]
+venue = "Example Journal"
++++
+A publication venue without category labels.
+''')
+        cls.write("content/test-legacy-kind.md", '''+++
+title = "Post with an obsolete label"
+template = "post.html"
+[extra.post]
+kind = "Obsolete kind label"
++++
+A legacy label does not appear in the post header.
+''')
         for name, bibtex in (("empty", ""), ("whitespace", " \n\t ")):
             cls.write(f"content/test-bibtex-{name}.md", f'''+++
 title = "Post with {name} BibTeX"
@@ -269,9 +310,9 @@ slug = "ignored-slug"
 path = "research/custom-output"
 template = "post.html"
 [taxonomies]
+categories = ["Research post", "Research & Methods"]
 tags = ["Research & Methods", "Equations"]
 [extra.post]
-kind = "Research post"
 venue = "Example Conference 2025"
 subtitle = {quote(SUBTITLE)}
 award = "Example award"
@@ -454,7 +495,7 @@ bibtex = "@misc{legacy, title={Legacy post}}"
         return [attrs for _, attrs in document.descendants(section)
                 if class_name in attrs.get("class", "").split()]
 
-    def section_links(self, document, section_id, class_name="post-entry__link"):
+    def section_links(self, document, section_id, class_name="post-card__link"):
         return [attrs["href"] for attrs in self.within_section(
             document, section_id, class_name)]
 
@@ -463,6 +504,15 @@ bibtex = "@misc{legacy, title={Legacy post}}"
         return [attrs["href"] for tag, attrs in document.descendants(section)
                 if tag == "a" and document.text_content(attrs).strip().startswith("View all")]
 
+    def section_gallery(self, document, section_id):
+        galleries = self.within_section(document, section_id, "post-gallery")
+        self.assertEqual(len(galleries), 1)
+        return galleries[0]
+
+    def gallery_filter_values(self, document, gallery):
+        return [attrs["data-post-filter"] for tag, attrs in document.descendants(gallery)
+                if tag == "button" and "data-post-filter" in attrs]
+
     def test_minimal_post_needs_no_extra_table(self):
         page = self.document("test-minimal")
         self.single(page, "h1", id="post-title")
@@ -470,6 +520,7 @@ bibtex = "@misc{legacy, title={Legacy post}}"
         self.assertFalse(page.with_class("post__byline"))
         self.assertFalse(page.with_class("article-meta__date"))
         self.assertFalse(page.with_class("post__subtitle"))
+        self.assertFalse(page.with_class("post__eyebrow"))
         self.assertFalse(page.with_class("post__contents"))
         self.assertFalse(page.find(id="post-citation"))
         self.assertFalse(page.find(id="preloader"))
@@ -483,6 +534,49 @@ bibtex = "@misc{legacy, title={Legacy post}}"
         self.single(page, "link", href=BASE + "assets/stylesheet/page-post.css")
         self.single(page, "script", src=BASE + "assets/script/post.js")
         self.assertTrue((self.site / "public/assets/stylesheet/page-post.css").is_file())
+
+    def test_category_labels_link_to_taxonomies_and_preserve_the_venue(self):
+        page = self.document("research/custom-output")
+        eyebrow = self.single(page, "div", **{"class": "post__eyebrow"})
+        categories = self.single(page, "ul", **{
+            "class": "taxonomy-labels taxonomy-labels--categories", "aria-label": "Categories"})
+        self.assertIn(("ul", categories), page.descendants(eyebrow))
+        items = [attrs for tag, attrs in page.descendants(categories)
+                 if tag == "li" and attrs.get("class") == "taxonomy-labels__item"]
+        self.assertEqual(len(items), 2)
+        links = [attrs for tag, attrs in page.descendants(categories) if tag == "a"]
+        self.assertTrue(all(link.get("class") == "taxonomy-labels__link" for link in links))
+        for item, link in zip(items, links):
+            self.assertEqual(page.descendants(item), [("a", link)])
+        self.assertEqual([link["href"] for link in links], [
+            BASE + "categories/research-post/", BASE + "categories/research-methods/"])
+        self.assertEqual([page.text_content(link) for link in links],
+                         ["Research post", "Research & Methods"])
+        self.assertNotIn(",", page.text_content(categories))
+        venue = self.single(page, "span", **{"class": "post__venue"})
+        self.assertIn(("span", venue), page.descendants(eyebrow))
+        self.assertEqual(" ".join(page.text_content(venue).split()), "/ Example Conference 2025")
+
+        category_only = self.document("test-category-only")
+        eyebrow = self.single(category_only, "div", **{"class": "post__eyebrow"})
+        self.assertEqual(" ".join(category_only.text_content(eyebrow).split()), "Personal reflections")
+        self.single(category_only, "a", **{"class": "taxonomy-labels__link",
+                    "href": BASE + "categories/personal-reflections/"})
+        self.assertFalse(category_only.with_class("post__venue"))
+
+    def test_venue_without_categories_has_no_invented_label_or_separator(self):
+        page = self.document("test-venue-only")
+        eyebrow = self.single(page, "div", **{"class": "post__eyebrow"})
+        self.assertEqual(page.text_content(eyebrow).strip(), "Example Journal")
+        venue = self.single(page, "span", **{"class": "post__venue"})
+        self.assertEqual(page.descendants(eyebrow), [("span", venue)])
+        self.assertFalse(page.with_class("taxonomy-labels--categories"))
+        self.single(page, "meta", name="citation_conference_title", content="Example Journal")
+
+    def test_obsolete_kind_does_not_supply_a_header_label(self):
+        page = self.document("test-legacy-kind")
+        self.assertFalse(page.with_class("post__eyebrow"))
+        self.assertNotIn("Obsolete kind label", page.text)
 
     def test_generated_pages_load_only_current_post_assets(self):
         obsolete = {"project.js", "page-project.css", "post.css", "page-blog.css"}
@@ -604,8 +698,9 @@ bibtex = "@misc{legacy, title={Legacy post}}"
         reading = page.with_class("article-meta__reading-time")
         self.assertEqual(len(reading), 1)
         self.assertRegex(page.text_content(reading[0]), r"\d+\s+min")
-        tags = page.with_class("article-tags")
+        tags = page.with_class("taxonomy-labels--tags")
         self.assertEqual(len(tags), 1)
+        self.assertEqual(tags[0].get("aria-label"), "Tags")
         tag_links = [attrs["href"] for tag, attrs in page.descendants(tags[0]) if tag == "a"]
         self.assertEqual(tag_links, [BASE + "tags/research-methods/", BASE + "tags/equations/"])
         self.assertIn("research & methods", page.text_content(tags[0]).lower())
@@ -625,7 +720,7 @@ bibtex = "@misc{legacy, title={Legacy post}}"
         self.assertEqual(query["url"], [FULL_URL])
         self.assertEqual(query["text"], [TITLE])
         self.assertTrue(any(link["href"] == FULL_URL for link in links))
-        self.assertFalse(self.document("test-minimal").with_class("article-tags"))
+        self.assertFalse(self.document("test-minimal").with_class("taxonomy-labels"))
 
     def test_share_menu_copies_available_bibtex_and_otherwise_starts_with_permalink(self):
         for output, has_bibtex in (("research/custom-output", True),
@@ -789,7 +884,7 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                 self.single(page, "article", id="post-main")
                 self.assertFalse(page.with_class("blog-post"))
                 self.assertEqual(len(page.with_class("article-meta")), 1)
-                self.assertTrue(page.with_class("article-tags"))
+                self.assertTrue(page.with_class("taxonomy-labels--tags"))
                 self.single(page, "section", id="post-bibliography")
                 self.single(page, "div", id="refs")
                 self.assertTrue(page.find("a", href="#ref-zolathemes"))
@@ -824,8 +919,8 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                 home = self.document("", directory=directory)
                 self.assertFalse(home.find("nav", **{"aria-label": "Breadcrumb"}))
                 for section_id, path, expected, link_class in (
-                        ("fixture-posts", "posts", expected_links, "post-entry__link"),
-                        ("fixture-blog", "test-blog", blog_links, "post-entry__link"),
+                        ("fixture-posts", "posts", expected_links, "post-card__link"),
+                        ("fixture-blog", "test-blog", blog_links, "post-card__link"),
                         ("fixture-categories", "test-category", card_links, "post-entry__thumb")):
                     with self.subTest(section=section_id):
                         self.assertEqual(self.section_links(home, section_id, link_class),
@@ -838,13 +933,13 @@ bibtex = "@misc{legacy, title={Legacy post}}"
 
     def test_post_listing_thumbnails_and_excerpt_fallback(self):
         archive = self.document("posts")
-        self.assertEqual(len(archive.with_class("post-list")), 1)
+        self.assertEqual(len(archive.with_class("post-grid")), 1)
         self.assertIn("Fixture posts", archive.text)
         self.assertIn("post introduction", archive.text)
         self.assertIn("Explicit thumbnail description", archive.text)
         self.assertNotIn("Fallback listing excerpt 1", archive.text)
         self.assertIn("Fallback listing excerpt 5", archive.text)
-        thumbnails = archive.with_class("post-entry__thumbnail")
+        thumbnails = archive.with_class("post-card__image")
         self.assertEqual([image["src"] for image in thumbnails], [
             BASE + "research/nested-post/thumb.svg",
             BASE + "posts/renamed-image/thumb.svg",
@@ -854,6 +949,86 @@ bibtex = "@misc{legacy, title={Legacy post}}"
         self.assertTrue(all(image.get("src") for image in thumbnails))
         self.assertTrue((self.site / "public/research/nested-post/thumb.svg").is_file())
         self.assertTrue((self.site / "public/posts/renamed-image/thumb.svg").is_file())
+
+        blog = self.document("test-blog")
+        descriptions = blog.with_class("post-card__description")
+        self.assertEqual(len(descriptions), 5)
+        self.assertEqual(blog.text_content(descriptions[0]), "Blog listing excerpt")
+        self.assertEqual(blog.text_content(descriptions[1]), "A text-only blog entry")
+        self.assertTrue(all("Another published blog entry." in blog.text_content(description)
+                            for description in descriptions[2:]))
+
+    def test_post_gallery_filters_preserve_exact_categories_and_exclude_drafts(self):
+        archive = self.document("posts")
+        gallery = self.section_gallery(archive, "fixture-posts")
+        filters = self.gallery_filter_values(archive, gallery)
+        expected = {"", "Research & Methods", GALLERY_CATEGORY,
+                    "Sequence modeling", "Archive only"}
+        self.assertEqual(set(filters), expected)
+        self.assertEqual(len(filters), len(expected), "Repeated category labels need one filter")
+        self.assertEqual(filters[0], "")
+        self.assertNotIn("Draft-only gallery", filters)
+
+        for tag, button in archive.descendants(gallery):
+            if tag == "button" and "data-post-filter" in button:
+                self.assertEqual(button.get("type"), "button")
+                self.assertEqual(archive.text_content(button).strip(),
+                                 button["data-post-filter"] or "All")
+        cards = archive.with_class("post-card")
+        expected_categories = [["Research & Methods", GALLERY_CATEGORY],
+                               ["Research & Methods"], ["Sequence modeling"],
+                               ["Archive only"], []]
+        self.assertEqual([json.loads(card["data-post-categories"]) for card in cards],
+                         expected_categories)
+        self.assertFalse(any("hidden" in card for card in cards))
+        filters_roots = [attrs for _, attrs in archive.descendants(gallery)
+                         if "data-post-filters" in attrs]
+        self.assertEqual(len(filters_roots), 1)
+        self.assertIn("hidden", filters_roots[0], "Controls are enhanced only after JavaScript loads")
+
+        for card, categories in zip(cards, expected_categories):
+            labels = [attrs for _, attrs in archive.descendants(card)
+                      if "post-card__category" in attrs.get("class", "").split()]
+            self.assertEqual([archive.text_content(label) for label in labels], categories)
+            self.assertFalse(any(tag == "a" for label in labels
+                                 for tag, _ in archive.descendants(label)))
+
+    def test_home_gallery_filters_are_scoped_to_the_visible_preview(self):
+        category_sets = {
+            "fixture-posts": [
+                ["Research & Methods", GALLERY_CATEGORY], ["Research & Methods"],
+                ["Sequence modeling"], ["Archive only"], []],
+            "fixture-blog": [
+                ["Research & Methods", GALLERY_CATEGORY], ["Personal writing"], [], [], []],
+        }
+        for directory, limit in (("public", 3), ("public-limit-2", 2),
+                                 ("public-limit-0", 0), ("public-limit-5", 5),
+                                 ("public-limit--1", 3)):
+            home = self.document("", directory=directory)
+            for section_id, category_lists in category_sets.items():
+                with self.subTest(directory=directory, section=section_id):
+                    if limit == 0:
+                        self.assertFalse(self.within_section(home, section_id, "post-gallery"))
+                        continue
+                    gallery = self.section_gallery(home, section_id)
+                    expected = {"", *(category for categories in category_lists[:limit]
+                                      for category in categories)}
+                    self.assertEqual(set(self.gallery_filter_values(home, gallery)), expected)
+                    self.assertNotIn("Draft-only gallery", self.gallery_filter_values(home, gallery))
+                    if section_id == "fixture-posts":
+                        self.assertNotIn("Personal writing", self.gallery_filter_values(home, gallery))
+                    else:
+                        self.assertNotIn("Sequence modeling", self.gallery_filter_values(home, gallery))
+            self.assertFalse(self.within_section(home, "fixture-categories", "post-gallery"))
+
+    def test_gallery_scripts_load_on_gallery_pages(self):
+        for output in ("", "posts", "test-blog", "tags/shared-fixture", "maps/public-self"):
+            with self.subTest(output=output):
+                self.single(self.document(output), "script", src=BASE + "assets/script/post-gallery.js")
+        for output in ("test-blog/full", "test-minimal", "tags", "test-category"):
+            with self.subTest(output=output):
+                self.assertFalse(self.document(output).find(
+                    "script", src=BASE + "assets/script/post-gallery.js"))
 
     def test_draft_posts_are_unlisted_but_keep_direct_urls_and_assets(self):
         draft_outputs = ("research/unlisted-first", "posts/unlisted-middle")
@@ -929,15 +1104,15 @@ bibtex = "@misc{legacy, title={Legacy post}}"
 
     def test_view_all_counts_only_published_posts(self):
         home = self.document("", directory="public-limit-5")
-        self.assertEqual(len(self.within_section(home, "fixture-posts", "post-entry--row")), 5)
+        self.assertEqual(len(self.within_section(home, "fixture-posts", "post-card")), 5)
         self.assertFalse(self.view_all_links(home, "fixture-posts"))
 
     def test_all_draft_collection_has_no_entries_or_view_all(self):
         for output in ("", "posts"):
             with self.subTest(output=output):
                 listing = self.document(output, directory="public-all-drafts")
-                self.assertFalse(self.within_section(listing, "fixture-posts", "post-entry--row"))
-                self.assertFalse(self.within_section(listing, "fixture-posts", "post-entry__link"))
+                self.assertFalse(self.within_section(listing, "fixture-posts", "post-card"))
+                self.assertFalse(self.within_section(listing, "fixture-posts", "post-card__link"))
                 self.assertFalse(self.view_all_links(listing, "fixture-posts"))
         for output in ("research/nested-post", "posts/renamed-image",
                        "posts/m-video", "posts/b-no-image", "posts/c-excerpt",
@@ -946,25 +1121,30 @@ bibtex = "@misc{legacy, title={Legacy post}}"
             self.single(page, "h1", id="post-title")
             self.assertTrue((self.site / "public-all-drafts" / output / "thumb.svg").is_file())
 
-    def test_post_listing_has_one_link_per_row_wrapping_its_thumbnail(self):
+    def test_post_cards_have_one_link_wrapping_their_content_and_read_more_cue(self):
         archive = self.document("posts")
-        entries = archive.with_class("post-entry--row")
+        entries = archive.with_class("post-card")
         self.assertEqual(len(entries), 5)
         for entry in entries:
             self.assertTrue(any(tag == "li" and attrs is entry for tag, attrs in archive.elements))
             descendants = archive.descendants(entry)
             links = [attrs for tag, attrs in descendants if tag == "a"]
             self.assertEqual(len(links), 1)
-            self.assertIn("post-entry__link", links[0].get("class", "").split())
+            self.assertIn("post-card__link", links[0].get("class", "").split())
             linked_elements = archive.descendants(links[0])
             for tag, attrs in descendants:
                 if tag == "img":
                     self.assertIn((tag, attrs), linked_elements)
             self.assertTrue(any(tag in ("h2", "h3", "h4") for tag, _ in linked_elements))
+            more = [attrs for _, attrs in linked_elements
+                    if "post-card__more" in attrs.get("class", "").split()]
+            self.assertEqual(len(more), 1)
+            self.assertIn("Read more", archive.text_content(more[0]))
+            self.assertFalse(any(tag == "button" for tag, _ in descendants))
         for entry in entries[3:]:
             self.assertFalse(any(tag == "img" for tag, _ in archive.descendants(entry)))
 
-    def test_post_date_and_subtitle_are_consistent_between_detail_and_list(self):
+    def test_post_dates_match_cards_while_subtitles_stay_on_details(self):
         detail = self.document("research/nested-post")
         date = detail.with_class("article-meta__date")
         self.assertEqual(len(date), 1)
@@ -981,14 +1161,13 @@ bibtex = "@misc{legacy, title={Legacy post}}"
         for output in ("", "posts"):
             with self.subTest(output=output):
                 listing = self.document(output)
-                dates = self.within_section(listing, "fixture-posts", "post-entry__date")
+                dates = self.within_section(listing, "fixture-posts", "post-card__date")
                 self.assertEqual(len(dates), 1)
                 self.assertEqual(dates[0]["datetime"], "2025-03-04")
                 self.assertEqual(listing.text_content(dates[0]), "March 04, 2025")
-                self.assertEqual([listing.text_content(subtitle)
-                                  for subtitle in self.within_section(
-                                      listing, "fixture-posts", "post-entry__subtitle")],
-                                 [SUBTITLE, "Shared post subtitle"])
+                self.assertFalse(self.within_section(listing, "fixture-posts", "post-card__subtitle"))
+                self.assertNotIn(SUBTITLE, listing.text)
+                self.assertNotIn("Shared post subtitle", listing.text)
                 self.assertNotIn("Shared subtitle should be overridden", listing.text)
 
     def test_post_and_listing_dates_share_format_and_style_without_calendar_icons(self):
@@ -1009,13 +1188,13 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                     self.assertEqual(len(page.with_class("bi-hourglass-split")), 1,
                                      "The reading-time icon is unrelated to publication dates")
 
-    def test_blog_post_and_taxonomy_lists_share_row_markup(self):
+    def test_blog_post_and_taxonomy_lists_share_card_gallery_markup(self):
         posts = self.document("posts")
         blog = self.document("test-blog")
         taxonomy = self.document("tags/shared-fixture")
-        post_row = posts.with_class("post-entry--row")[0]
-        blog_row = blog.with_class("post-entry--row")[0]
-        taxonomy_row = taxonomy.with_class("post-entry--row")[0]
+        post_row = posts.with_class("post-card")[0]
+        blog_row = blog.with_class("post-card")[0]
+        taxonomy_row = taxonomy.with_class("post-card")[0]
 
         def shape(document, row):
             return [(tag, tuple(attrs.get("class", "").split()))
@@ -1027,42 +1206,51 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                               (taxonomy, taxonomy_row)):
             with self.subTest(row=row):
                 self.assertEqual(set(row["class"].split()),
-                                 {"container", "post-entry", "post-entry--row", "border-bottom"})
-                lists = document.with_class("post-list")
+                                 {"post-card"})
+                lists = document.with_class("post-grid")
                 self.assertEqual(len(lists), 1)
-                self.assertIn("container", lists[0]["class"].split())
+                self.assertEqual(lists[0].get("role"), "list")
+                self.assertIn("data-post-grid", lists[0])
                 self.assertIn(("li", row), document.descendants(lists[0]))
+                galleries = document.with_class("post-gallery")
+                self.assertEqual(len(galleries), 1)
+                self.assertIn("container", galleries[0]["class"].split())
+                self.assertIn("data-post-gallery", galleries[0])
                 self.assertFalse(document.with_class("project-entry"))
                 self.assertFalse(document.with_class("project-list"))
 
-        blog_thumbnail = blog.with_class("post-entry__thumbnail")
+        blog_thumbnail = blog.with_class("post-card__image")
         self.assertEqual(len(blog_thumbnail), 1)
         self.assertEqual(blog_thumbnail[0]["src"], BASE + "test-assets/shared.svg")
         self.assertEqual(blog_thumbnail[0]["alt"], "Blog listing thumbnail")
-        plain_row = blog.with_class("post-entry--row")[1]
+        plain_row = blog.with_class("post-card")[1]
         plain_descendants = blog.descendants(plain_row)
         self.assertFalse(any(tag in ("figure", "img") for tag, _ in plain_descendants))
-        self.assertFalse(any("post-entry__subtitle" in attrs.get("class", "").split()
+        self.assertFalse(any("post-card__subtitle" in attrs.get("class", "").split()
                              for _, attrs in plain_descendants))
 
-    def test_blog_subtitle_is_optional_and_escaped_in_details_and_lists(self):
+    def test_blog_subtitles_are_optional_on_details_and_absent_from_cards(self):
         detail = self.document("test-blog/full")
         subtitles = detail.with_class("post__subtitle")
         self.assertEqual(len(subtitles), 1)
         self.assertEqual(detail.text_content(subtitles[0]), SUBTITLE)
         self.assertFalse(self.document("test-blog/minimal").with_class("post__subtitle"))
-        for output in ("research/nested-post", "test-blog/full", "posts",
-                       "test-blog", "tags/shared-fixture"):
+        for output in ("research/nested-post", "test-blog/full", "", "posts",
+                       "test-blog", "tags/shared-fixture", "categories/research-methods"):
             with self.subTest(output=output):
                 page = self.document(output)
                 self.assertIn(TITLE, page.text)
-                self.assertIn(SUBTITLE, page.text)
                 self.assertFalse(page.find("img", src="x"))
                 self.assertFalse(any("onerror" in attributes for _, attributes in page.elements))
                 self.assertTrue(all("src" in script for script in page.find("script")))
-                if output in ("posts", "test-blog", "tags/shared-fixture"):
-                    self.assertEqual(page.text_content(page.with_class("post-entry__subtitle")[0]),
-                                     SUBTITLE)
+                if output in ("research/nested-post", "test-blog/full"):
+                    self.assertIn(SUBTITLE, page.text)
+                else:
+                    self.assertFalse(page.with_class("post-card__subtitle"))
+                    for card in page.with_class("post-card"):
+                        self.assertNotIn(SUBTITLE, page.text_content(card))
+                        self.assertNotIn("Shared post subtitle", page.text_content(card))
+                    self.assertTrue(page.with_class("post-card__description"))
 
     def test_post_breadcrumbs_follow_sections_with_custom_output_paths(self):
         page = self.document("research/nested-post")

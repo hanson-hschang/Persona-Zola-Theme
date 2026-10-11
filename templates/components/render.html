@@ -14,35 +14,8 @@
 {%- endcomponent render.date %}
 
 {% component render.post_entry(page) %}
-{% set post = page.extra.post | default(value={}) %}
-{% set subtitle = post.subtitle | default(value=page.extra.subtitle | default(value="")) %}
-{% set thumbnail = post.thumbnail | default(value=page.extra.thumbnail | default(value="")) %}
-{% if not thumbnail and post.teaser %}
-  {% if post.teaser.type is defined and post.teaser.type == "video" %}
-    {% set thumbnail = post.teaser.poster | default(value="") %}
-  {% else %}
-    {% set thumbnail = post.teaser.src %}
-  {% endif %}
-{% endif %}
-{% set excerpt = page.description %}
-{% if not excerpt %}{% set excerpt = page.extra.excerpt | default(value="") %}{% endif %}
-<li class="container post-entry post-entry--row border-bottom">
-  <a class="post-entry__link{% if thumbnail %} post-entry__link--with-thumbnail{% endif %}" href="{{ page.permalink }}">
-    {% if thumbnail %}
-    <figure class="post-entry__figure">
-      <img class="post-entry__thumbnail" src="{{ <post.url page={page} path={thumbnail} /> }}" alt="{{ post.thumbnail_alt | default(value=page.extra.thumbnail_alt | default(value='')) }}" width="160" height="120" loading="lazy" decoding="async">
-    </figure>
-    {% endif %}
-    <div class="post-entry__content">
-      <div class="post-entry__meta">
-        <h4 class="post-entry__title">{{ page.title }}</h4>
-        {% if page.date %}{{ <render.date value={page.date | date(format='%Y-%m-%d')} class_name="post-entry__date" /> }}{% endif %}
-      </div>
-      {% if subtitle %}<p class="post-entry__subtitle">{{ subtitle }}</p>{% endif %}
-      {% if excerpt %}<p class="post-entry__excerpt">{{ excerpt }}</p>{% endif %}
-    </div>
-  </a>
-</li>
+{# Keep the public helper available to consuming templates. #}
+{{ <post_gallery.card page={page} /> }}
 {% endcomponent render.post_entry %}
 
 {% component render.section_title(title, subtitle="", subtitle_html=true) %}
@@ -67,13 +40,8 @@
 {% endcomponent render.text_content %}
 
 {% component render.article_tags(page) %}
-{% if page.taxonomies.tags %}
-<ul class="article-tags" aria-label="Tags">
-  {% for tag in page.taxonomies.tags %}
-  <li class="article-tags__item"><a href="{{ get_taxonomy_url(kind='tags', term=tag) }}">{{ tag }}</a></li>
-  {% endfor %}
-</ul>
-{% endif %}
+{# Retain the public tag helper for consuming templates. #}
+{{ <taxonomy.labels page={page} name="tags" /> }}
 {% endcomponent render.article_tags %}
 
 {% component render.article_meta(page) %}

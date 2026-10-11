@@ -16,8 +16,10 @@
   {% endfor %}
   {% set_global poss = poss | sort(attribute="extra.order") %}
   {% set_global has_resume_preview = false %}
+  {% set_global has_post_preview = false %}
   {% for pos in poss %}
     {% if pos.extra.type == "resume" %}{% set_global has_resume_preview = true %}{% endif %}
+    {% if pos.extra.type == "posts" %}{% set_global has_post_preview = true %}{% endif %}
   {% endfor %}
   {{ super() }}
   <link rel="stylesheet" href="{{ get_url(path='assets/stylesheet/home.css') }}">
@@ -42,4 +44,5 @@
   <script src="{{ get_url(path='vendor/typed.js/typed.umd.js') }}"></script>
   <script src="{{ get_url(path='assets/script/home.js') }}"></script>
   {% if has_resume_preview %}<script src="{{ get_url(path='assets/script/resume.js') }}" defer></script>{% endif %}
+  {% if has_post_preview %}<script src="{{ get_url(path='assets/script/post-gallery.js') }}" defer></script>{% endif %}
 {% endblock scripts %}
