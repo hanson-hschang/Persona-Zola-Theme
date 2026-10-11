@@ -13,11 +13,6 @@
   {% endif %}
   {% set description = "" %}
   {% if page.description %}{% set description = page.description | trim %}{% endif %}
-  {% if not description %}{% set description = page.extra.excerpt | default(value="") | trim %}{% endif %}
-  {% if not description %}
-    {% if page.summary %}{% set description = page.summary %}{% else %}{% set description = page.content %}{% endif %}
-    {% set description = description | striptags | trim | truncate(length=180) %}
-  {% endif %}
   {% set categories = page.taxonomies.categories | default(value=[]) %}
   <li class="post-card" data-post-categories="{{ categories | json_encode() }}">
     <article>

@@ -3,14 +3,14 @@ template = "post.html"
 title = 'Begin with Persona'
 date = 2025-03-17
 draft = false
-[taxonomies]
-tags = ['website', 'blog']
-categories = ['Website tutorial']
-[extra]
-subtitle = "From first installation to a personal website"
-excerpt = """
+description = """
 A step-by-step tutorial on how to start a website using the Persona theme: from installation and configuration to segment setup and full theme customization.
 """
+[taxonomies]
+tags = ['website', 'blog']
+categories = ['Tutorial']
+[extra]
+subtitle = "From first installation to a personal website"
 bibliography = "references.bib"
 +++
 

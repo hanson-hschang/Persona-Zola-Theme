@@ -164,7 +164,7 @@ Tera 2 components are globally registered by component name. They do not need im
 - **post-gallery.html**: Shared post gallery components
   - `post_gallery.card(page)`: Post card with one article link wrapping the optional image, plain-text category labels, title, date, description, and Read more cue
   - Each card is an `article` in a `.post-card` list item with its exact categories encoded as JSON in `data-post-categories`; the `.post-card__link` is the card's only link
-  - Card descriptions fall back from the page description to `extra.excerpt`, then to the page summary or stripped article content shortened to 180 characters
+  - Cards show only the top-level page `description`; missing or whitespace-only descriptions omit the description element
   - `post_gallery.render(pages, limit=-1)`: Responsive gallery for post sections, home previews, and individual taxonomy pages; excludes theme drafts and applies the optional limit before deriving category filters
   - `.post-gallery[data-post-gallery]` contains an ordered `.post-grid[data-post-grid]` list and, when categories are present, initially hidden native filter buttons; All uses an empty filter value and category buttons retain their exact labels
   - Cards preserve each image's natural aspect ratio and can have different heights in a responsive grid, progressively enhanced into masonry

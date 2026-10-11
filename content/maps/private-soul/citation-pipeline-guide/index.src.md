@@ -3,13 +3,13 @@ template = "post.html"
 title = 'Writing Citation-Enabled Posts in Persona'
 date = 2025-03-19
 draft = false
+description = """
+A practical guide for writing citation-enabled posts in Persona with Pandoc and BibTeX.
+"""
 [taxonomies]
 tags = ['citation', 'pandoc', 'bibtex']
 categories = ['Citation', 'Tutorial']
 [extra]
-excerpt = """
-A practical guide for writing citation-enabled posts in Persona with Pandoc and BibTeX.
-"""
 citation_style = "apa"
 bibliography = "references.bib"
 

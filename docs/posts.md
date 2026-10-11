@@ -20,7 +20,7 @@ template = "post.html"
 Write the article here.
 ```
 
-The `[extra.post]` table is optional. Set `description` at the top level for search and social metadata, and `date` for the publication date. Existing `[extra].tex` support is available for mathematics. Posts share Persona's standard navigation and mobile menu. Breadcrumbs link Home and the parent sections, followed by the current post title; they follow content ancestry even when a post has a custom output path.
+The `[extra.post]` table is optional. Set `description` at the top level for card previews, search and social metadata, and `date` for the publication date. Existing `[extra].tex` support is available for mathematics. Posts share Persona's standard navigation and mobile menu. Breadcrumbs link Home and the parent sections, followed by the current post title; they follow content ancestry even when a post has a custom output path.
 
 Use a page bundle such as `content/maps/public-self/my-post/index.md` so images, videos, caption files, and PDFs can live alongside the page.
 
@@ -70,11 +70,11 @@ thumbnail = "thumbnail.jpg"
 thumbnail_alt = "Overview of the proposed method"
 ```
 
-Thumbnails follow the resource URL rules below. If `extra.post.thumbnail` is omitted, the listing tries `extra.thumbnail`, then the teaser image or a video teaser's `poster`. Listing images sit above the card text and retain their natural proportions without cropping. A card without an image starts with its text. `thumbnail_alt` falls back to `extra.thumbnail_alt`, then defaults to empty because the adjacent title already names the linked post; when using a teaser image, the listing uses its supplied `alt` text. Card descriptions use the page's `description`, falling back to `extra.excerpt`, then the page summary or article content stripped of markup and shortened to 180 characters.
+Thumbnails follow the resource URL rules below. If `extra.post.thumbnail` is omitted, the listing tries `extra.thumbnail`, then the teaser image or a video teaser's `poster`. Listing images sit above the card text and retain their natural proportions without cropping. A card without an image starts with its text. `thumbnail_alt` falls back to `extra.thumbnail_alt`, then defaults to empty because the adjacent title already names the linked post; when using a teaser image, the listing uses its supplied `alt` text. Card descriptions use only the top-level `description`. If it is missing or contains only whitespace, the card omits its description. Cards do not generate a summary from the article.
 
 The top-level `date` appears in the full-width metadata row after the author byline on the detail page and below the title in listing cards. Omit it to hide the date. Dates use the same full-month format everywhere, such as **September 21, 2026**, including home previews, section and taxonomy lists, and Related Posts. They share the theme's muted body font at normal weight and 0.875rem, with tabular numerals and no calendar icon. Post subtitles appear only on detail pages; `extra.post.subtitle` takes precedence over `extra.subtitle`.
 
-Existing optional fields under `[extra]` remain supported: `subtitle`, `thumbnail`, and `thumbnail_alt`. A subtitle appears below the title on the detail page. Use the top-level `description` or the existing `extra.excerpt` for a separate summary in listing cards. Thumbnails are optional; an `extra.thumbnail` also supplies the article's hero image when no teaser is configured.
+Existing optional fields under `[extra]` remain supported: `subtitle`, `thumbnail`, and `thumbnail_alt`. A subtitle appears below the title on the detail page. Use the top-level `description` for a separate summary in listing cards. Thumbnails are optional; an `extra.thumbnail` also supplies the article's hero image when no teaser is configured.
 
 ### Categories, tags, metadata, citations, and mathematics
 

@@ -26,6 +26,7 @@ AUTHOR = 'A <img src=x onerror=alert(1)> & B'
 BIBTEX = '@misc{example, title={<script>alert("citation")</script> & Research}}'
 OUTLINE_TITLE = 'Sections <img src=x onerror=alert("outline")> & "details"'
 GALLERY_CATEGORY = 'Controls & Robotics / "Soft" [arm]'
+CARD_DESCRIPTION = 'Blog card description <img src=x onerror=alert(3)> & details.'
 SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2"></svg>'
 
 
@@ -167,11 +168,12 @@ icon_class = "bi bi-journal"
         cls.write("content/test-blog/full.md", f'''+++
 title = {json.dumps(TITLE)}
 date = 2025-03-04
+description = {json.dumps('  ' + CARD_DESCRIPTION + '  ')}
 [taxonomies]
-tags = ["Shared fixture"]
+tags = ["Shared fixture", "Description behavior"]
 categories = {json.dumps(listing_categories[0])}
 [extra]
-excerpt = "Blog listing excerpt"
+excerpt = "Legacy blog excerpt must not appear"
 subtitle = {json.dumps(SUBTITLE)}
 thumbnail = "/test-assets/shared.svg"
 thumbnail_alt = "Blog listing thumbnail"
@@ -182,21 +184,32 @@ Blog fixture body.
 title = "Blog without optional fields"
 date = 2025-03-03
 [taxonomies]
-tags = []
+tags = ["Description behavior"]
 categories = ["Personal writing"]
 [extra]
-excerpt = "A text-only blog entry"
+excerpt = "Legacy blog excerpt must not appear"
 +++
-Blog fixture without a subtitle or thumbnail.
+Generated summary preview without a description.
+
+<!-- more -->
+
+Generated body preview without a description.
 ''')
         for number, date in enumerate(("2025-03-02", "2025-03-01", "2025-02-28"), 3):
+            description = {3: 'description = ""',
+                           4: 'description = ' + json.dumps(" \t\n ")}.get(number, "")
+            body = (f"Generated body preview {number} without a description." if number == 5
+                    else f"Generated summary preview {number} without a description.\n\n"
+                         f"<!-- more -->\n\nGenerated body preview {number} without a description.")
             cls.write(f"content/test-blog/entry-{number}.md", f'''+++
 title = "Blog entry {number}"
 date = {date}
+{description}
 [taxonomies]
-tags = []
+tags = ["Description behavior"]
+categories = {json.dumps(["Research & Methods"] if number == 3 else [])}
 +++
-Another published blog entry.
+{body}
 ''')
         for folder, date in (("draft-first", "2025-03-06"),
                              ("draft-middle", "2025-03-03T12:00:00Z")):
@@ -931,14 +944,15 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                         self.assertEqual(self.section_links(archive, section_id, link_class), expected)
                         self.assertFalse(self.view_all_links(archive, section_id))
 
-    def test_post_listing_thumbnails_and_excerpt_fallback(self):
+    def test_post_cards_preserve_thumbnails_and_explicit_descriptions(self):
         archive = self.document("posts")
         self.assertEqual(len(archive.with_class("post-grid")), 1)
         self.assertIn("Fixture posts", archive.text)
         self.assertIn("post introduction", archive.text)
         self.assertIn("Explicit thumbnail description", archive.text)
         self.assertNotIn("Fallback listing excerpt 1", archive.text)
-        self.assertIn("Fallback listing excerpt 5", archive.text)
+        self.assertNotIn("Fallback listing excerpt 5", archive.text)
+        self.assertEqual(len(archive.with_class("post-card__description")), 4)
         thumbnails = archive.with_class("post-card__image")
         self.assertEqual([image["src"] for image in thumbnails], [
             BASE + "research/nested-post/thumb.svg",
@@ -952,11 +966,54 @@ bibtex = "@misc{legacy, title={Legacy post}}"
 
         blog = self.document("test-blog")
         descriptions = blog.with_class("post-card__description")
-        self.assertEqual(len(descriptions), 5)
-        self.assertEqual(blog.text_content(descriptions[0]), "Blog listing excerpt")
-        self.assertEqual(blog.text_content(descriptions[1]), "A text-only blog entry")
-        self.assertTrue(all("Another published blog entry." in blog.text_content(description)
-                            for description in descriptions[2:]))
+        self.assertEqual(len(descriptions), 1)
+        self.assertEqual(blog.text_content(descriptions[0]), CARD_DESCRIPTION)
+
+    def test_card_descriptions_require_nonblank_top_level_description(self):
+        expected = {
+            "research/nested-post": "Explicit thumbnail description",
+            "test-blog/full": CARD_DESCRIPTION,
+            "posts/c-excerpt": None,
+            "test-blog/minimal": None,
+            "test-blog/entry-3": None,
+            "test-blog/entry-4": None,
+            "test-blog/entry-5": None,
+        }
+        surfaces = (
+            ("", "public", ["research/nested-post", "test-blog/full",
+                              "test-blog/minimal", "test-blog/entry-3"]),
+            ("", "public-limit-5", list(expected)),
+            ("posts", "public", ["research/nested-post", "posts/c-excerpt"]),
+            ("test-blog", "public", [name for name in expected if name.startswith("test-blog/")]),
+            ("tags/description-behavior", "public",
+             [name for name in expected if name.startswith("test-blog/")]),
+            ("categories/research-methods", "public",
+             ["research/nested-post", "test-blog/full", "test-blog/entry-3"]),
+        )
+        ignored = ("Fallback listing excerpt", "Legacy blog excerpt",
+                   "Generated summary preview", "Generated body preview", "Fixture post body.")
+        for output, directory, required in surfaces:
+            with self.subTest(output=output, directory=directory):
+                document = self.document(output, directory=directory)
+                tested = set()
+                for card in document.with_class("post-card"):
+                    descendants = document.descendants(card)
+                    links = [attrs for tag, attrs in descendants if tag == "a"]
+                    self.assertEqual(len(links), 1)
+                    name = links[0]["href"].removeprefix(BASE).removesuffix("/")
+                    for text in ignored:
+                        self.assertNotIn(text, document.text_content(card))
+                    if name not in expected:
+                        continue
+                    tested.add(name)
+                    descriptions = [attrs for _, attrs in descendants
+                                    if "post-card__description" in attrs.get("class", "").split()]
+                    if expected[name] is None:
+                        self.assertFalse(descriptions, name)
+                    else:
+                        self.assertEqual(len(descriptions), 1, name)
+                        self.assertEqual(document.text_content(descriptions[0]), expected[name])
+                self.assertTrue(set(required).issubset(tested), (required, tested))
 
     def test_post_gallery_filters_preserve_exact_categories_and_exclude_drafts(self):
         archive = self.document("posts")
@@ -999,7 +1056,8 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                 ["Research & Methods", GALLERY_CATEGORY], ["Research & Methods"],
                 ["Sequence modeling"], ["Archive only"], []],
             "fixture-blog": [
-                ["Research & Methods", GALLERY_CATEGORY], ["Personal writing"], [], [], []],
+                ["Research & Methods", GALLERY_CATEGORY], ["Personal writing"],
+                ["Research & Methods"], [], []],
         }
         for directory, limit in (("public", 3), ("public-limit-2", 2),
                                  ("public-limit-0", 0), ("public-limit-5", 5),
