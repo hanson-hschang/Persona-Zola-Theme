@@ -168,6 +168,7 @@ Tera 2 components are globally registered by component name. They do not need im
   - `post_gallery.render(pages, limit=-1)`: Responsive gallery for post sections, home previews, and individual taxonomy pages; excludes theme drafts and applies the optional limit before deriving category filters
   - `.post-gallery[data-post-gallery]` contains an ordered `.post-grid[data-post-grid]` list and, when categories are present, initially hidden native filter buttons; All uses an empty filter value and category buttons retain their exact labels
   - Cards preserve each image's natural aspect ratio and can have different heights in a responsive grid, progressively enhanced into masonry
+  - CSS centers a single incomplete row by counting visible cards, retaining the usual card widths after filtering; full and multirow galleries keep their column alignment
 
 - **segment.html**: Segment rendering logic
   - `segment.populate`: Populates section content

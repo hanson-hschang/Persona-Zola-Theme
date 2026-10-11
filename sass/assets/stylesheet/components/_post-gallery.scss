@@ -53,11 +53,25 @@
   list-style: none;
 
   @include mixins.respond-above(md) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    // Two tracks per card preserve its width while allowing half-card offsets.
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    > .post-card { grid-column: auto / span 2; }
+
+    &:not(:has(> :nth-child(2 of .post-card:not([hidden])))) {
+      > :nth-child(1 of .post-card:not([hidden])) { grid-column-start: 2; }
+    }
   }
 
   @include mixins.respond-above(lg) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+
+    // Center only a single incomplete row; larger filtered sets keep masonry.
+    &:not(:has(> :nth-child(3 of .post-card:not([hidden])))) {
+      > :nth-child(1 of .post-card:not([hidden])) { grid-column-start: 2; }
+    }
+    &:not(:has(> :nth-child(2 of .post-card:not([hidden])))) {
+      > :nth-child(1 of .post-card:not([hidden])) { grid-column-start: 3; }
+    }
   }
 
   &[data-post-masonry-ready] {

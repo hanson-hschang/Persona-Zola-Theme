@@ -6,7 +6,7 @@ template = "post.html"
 weight = 1
 
 [taxonomies]
-categories = ["Template demonstration"]
+categories = ["Tutorial"]
 
 [extra.post]
 draft = false # Set true to hide from automatic lists while keeping this URL available.
