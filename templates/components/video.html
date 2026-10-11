@@ -1,0 +1,7 @@
+{% component video.player(src, title, start_time=0) %}
+<video controls playsinline preload="metadata" data-start-time="{{ start_time }}" aria-label="{{ title }}">
+<source src="{{ src }}#t={{ start_time }}" type="video/mp4">
+<a href="{{ src }}#t={{ start_time }}">Open {{ title }}</a>.
+</video>
+<script src="{{ get_url(path='assets/script/video-start.js') }}" defer></script>
+{% endcomponent video.player %}

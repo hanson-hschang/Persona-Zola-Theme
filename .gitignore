@@ -3,3 +3,6 @@
 
 # Zola build directory
 public/
+
+# pycache
+*/__pycache__/

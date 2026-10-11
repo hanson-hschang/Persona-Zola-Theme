@@ -171,6 +171,11 @@ Tera 2 components are globally registered by component name. They do not need im
   - `media.block`: Renders image/text media rows
   - Content usage example: `{{ <media.image page={page} path="img/example.png" width={700} alt="Example" /> }}`
 
+- **video.html**: Native video player component
+  - `video.player(src, title, start_time=0)`: Renders an MP4 player and direct-link fallback with a media fragment for the start time
+  - Loads the theme's `video-start.js` through `get_url` to keep playback at or after the configured start time
+  - Content usage example: `{{ <video.player src="https://example.com/video.mp4" title="Demonstration" start_time={3} /> }}`
+
 - **post.html**: Post components
   - `post.url(page, path)`: Resolves page-relative, site-root, and content URLs while preserving external links and fragments
   - `post.media(page, item, eager=false)`: Renders an image or native video with optional caption
@@ -337,6 +342,11 @@ JavaScript files in `static/assets/script/`:
 - **share.js**: Share menu disclosure
   - Opens the menu and closes it on Escape, outside clicks, or focus leaving the menu
   - Enhances the template's Permalink and social links even when no BibTeX copy action is present; links remain available without JavaScript
+
+- **video-start.js**: Loaded by `video.player` to enforce its configured start time
+  - Preserves valid playback positions and guards backward seeking and replay
+  - Pauses and disables controls when the start time is outside the playable duration
+  - Prevents duplicate event bindings when a page contains multiple players
 
 - **post.js**: Progressive enhancements for all post pages
   - Sets Outline's expanded state when crossing the 992px breakpoint, preserving manual disclosure choices while staying within the same breakpoint; native disclosure remains usable without JavaScript
