@@ -40,6 +40,133 @@
   &:focus { transform: translateY(0); }
 }
 
+html.post-lightbox-open { overflow: hidden; scrollbar-gutter: stable; }
+
+.post [data-post-lightbox-trigger] { cursor: zoom-in; }
+
+.post__lightbox {
+  width: min(1200px, calc(100vw - 3rem));
+  height: min(960px, calc(100dvh - 3rem));
+  max-width: none;
+  max-height: none;
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--post-line);
+  border-radius: calc(var(--img-border-radius) + 6px);
+  background: var(--color-surface);
+  color: var(--color-default);
+  font-family: var(--font-default);
+  line-height: 1.6;
+  box-shadow: 0 24px 80px color-mix(in srgb, var(--color-heading) 30%, transparent);
+
+  &[open] { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
+
+  &::backdrop {
+    background: color-mix(in srgb, var(--color-heading) 64%, transparent);
+    backdrop-filter: blur(5px);
+  }
+
+  &-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  &-heading { min-width: 0; }
+  &-heading p {
+    margin: 0.125rem 0 0;
+    color: var(--color-heading);
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  &-count {
+    color: var(--color-accent);
+    font-family: var(--font-nav);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  &-actions { display: flex; flex-shrink: 0; align-items: center; gap: var(--spacing-xs); }
+  &-actions button { white-space: nowrap; }
+  .post__lightbox-close { width: 44px; padding: 0; border-radius: 50%; color: var(--color-accent); background: var(--post-tint); }
+
+  &-viewport {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: var(--spacing-md);
+    border-block: 1px solid var(--post-line);
+    background: var(--post-tint);
+
+    &:focus-visible { outline-offset: -4px; }
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      margin: 0;
+    }
+  }
+
+  &-status {
+    position: absolute;
+    inset: 50% var(--spacing-md) auto;
+    margin: 0;
+    text-align: center;
+    color: var(--color-heading);
+    &:empty { display: none; }
+  }
+
+  &-footer { padding: var(--spacing-sm) var(--spacing-md); }
+  &-caption {
+    max-height: 18dvh;
+    overflow: auto;
+    margin: 0;
+    color: var(--color-heading);
+    font-size: 0.9375rem;
+    &:focus-visible { outline-offset: -3px; }
+  }
+
+  @include mixins.respond-below(sm) {
+    width: calc(100vw - 1rem);
+    height: calc(100dvh - 1rem);
+    border-radius: var(--img-border-radius);
+    &-header { display: grid; grid-template-columns: 1fr auto; gap: var(--spacing-xs); padding: 0.75rem; }
+    &-heading { display: contents; }
+    &-count { grid-column: 1; grid-row: 1; }
+    &-heading p { grid-column: 1 / -1; grid-row: 2; font-size: 1.0625rem; }
+    &-actions { grid-column: 2; grid-row: 1; gap: var(--spacing-xxs); }
+    &-actions .post__button { font-size: 0.8125rem; padding-inline: 0.65rem; }
+    &-viewport { padding: 0.75rem; }
+    &-footer { padding: 0.75rem; }
+    &-caption { max-height: 22dvh; font-size: 0.875rem; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &[open] { animation: post-lightbox-enter 160ms ease-out; }
+  }
+}
+
+@keyframes post-lightbox-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 // Use the shared breadcrumb treatment without its fixed-height overlap.
 .page-title.post-breadcrumbs {
   height: auto;
@@ -180,6 +307,8 @@
 
   &__figure {
     margin: 0;
+
+    > a { display: block; }
 
     img,
     video {

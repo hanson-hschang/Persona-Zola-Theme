@@ -109,6 +109,136 @@
     scheduleCurrentSection();
   }
 
+  const lightbox = post?.querySelector('[data-post-lightbox]');
+  if (lightbox && typeof lightbox.showModal === 'function') {
+    const image = lightbox.querySelector('[data-lightbox-image]');
+    const title = lightbox.querySelector('[data-lightbox-title]');
+    const caption = lightbox.querySelector('[data-lightbox-caption]');
+    const count = lightbox.querySelector('[data-lightbox-count]');
+    const close = lightbox.querySelector('[data-lightbox-close]');
+    const viewport = lightbox.querySelector('[data-lightbox-viewport]');
+    const status = lightbox.querySelector('[data-lightbox-status]');
+    const triggers = Array.from(post.querySelectorAll('a[data-post-lightbox-trigger]'))
+      .filter((trigger) => trigger.querySelector('img'));
+
+    if (image && title && caption && count && close && viewport) {
+      let source = null;
+      let request = 0;
+      let backdropPress = false;
+      let description = '';
+      const plainText = (element) => element?.textContent.replace(/\s+/g, ' ').trim() || '';
+      const setStatus = (message) => {
+        if (status) {
+          status.textContent = message;
+          status.hidden = !message;
+        } else {
+          caption.textContent = [description, message].filter(Boolean).join(' ');
+        }
+      };
+      const openFigure = (trigger) => {
+        if (lightbox.open) return true;
+        const thumbnail = trigger.querySelector('img');
+        const index = triggers.indexOf(trigger);
+        const figureCaption = trigger.closest('figure')?.querySelector('figcaption')?.cloneNode(true);
+        const captionTitle = figureCaption?.querySelector('strong');
+        title.textContent = plainText(captionTitle) || `Figure ${index + 1}`;
+        captionTitle?.remove();
+        description = plainText(figureCaption);
+        caption.textContent = description;
+        count.textContent = `Figure ${index + 1} of ${triggers.length}`;
+        image.alt = thumbnail.alt;
+        image.hidden = true;
+        image.removeAttribute('src');
+        viewport.scrollTo({ left: 0, top: 0, behavior: 'instant' });
+        setStatus('Loading figure…');
+        const position = { trigger, x: window.scrollX, y: window.scrollY };
+        try {
+          lightbox.showModal();
+        } catch (_) {
+          return false;
+        }
+        source = position;
+        document.documentElement.classList.add('post-lightbox-open');
+        close.focus({ preventScroll: true });
+
+        // A separate loader prevents a previous figure's late response from
+        // replacing the current image or error state after reopening.
+        const currentRequest = ++request;
+        const loader = new Image();
+        loader.onload = () => {
+          if (currentRequest !== request || !lightbox.open) return;
+          image.src = loader.src;
+          image.width = loader.naturalWidth;
+          image.height = loader.naturalHeight;
+          image.hidden = false;
+          setStatus('');
+        };
+        loader.onerror = () => {
+          if (currentRequest !== request || !lightbox.open) return;
+          setStatus('The full-size figure could not be loaded. Close this viewer and try again.');
+        };
+        loader.src = trigger.href;
+        return true;
+      };
+
+      triggers.forEach((trigger) => {
+        trigger.setAttribute('role', 'button');
+        trigger.setAttribute('aria-haspopup', 'dialog');
+        trigger.setAttribute('aria-label', `View figure: ${trigger.querySelector('img').alt}`);
+        if (lightbox.id) trigger.setAttribute('aria-controls', lightbox.id);
+        trigger.addEventListener('click', (event) => {
+          if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+          if (openFigure(trigger)) event.preventDefault();
+        });
+        trigger.addEventListener('keydown', (event) => {
+          if (event.key !== ' ' || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+          event.preventDefault();
+          if (!event.repeat) openFigure(trigger);
+        });
+      });
+
+      close.addEventListener('click', () => lightbox.close());
+      lightbox.addEventListener('keydown', (event) => {
+        if (event.key !== 'Tab' || event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey) return;
+        const focusable = Array.from(lightbox.querySelectorAll('button:not(:disabled), [tabindex="0"]'))
+          .filter((element) => !element.matches(':disabled') && !element.closest('[hidden]') &&
+            element.getClientRects().length && window.getComputedStyle(element).visibility !== 'hidden');
+        if (!focusable.length) return;
+        const current = focusable.indexOf(document.activeElement);
+        const next = current < 0 ? (event.shiftKey ? focusable.length - 1 : 0) :
+          (current + (event.shiftKey ? -1 : 1) + focusable.length) % focusable.length;
+        event.preventDefault();
+        focusable[next].focus({ preventScroll: true });
+      });
+      const isBackdrop = (event) => {
+        const bounds = lightbox.getBoundingClientRect();
+        return event.target === lightbox && (event.clientX < bounds.left || event.clientX > bounds.right ||
+          event.clientY < bounds.top || event.clientY > bounds.bottom);
+      };
+      lightbox.addEventListener('pointerdown', (event) => {
+        backdropPress = event.button === 0 && isBackdrop(event);
+      });
+      lightbox.addEventListener('pointercancel', () => { backdropPress = false; });
+      lightbox.addEventListener('click', (event) => {
+        if (backdropPress && isBackdrop(event)) lightbox.close();
+        backdropPress = false;
+      });
+      // Native dialog cancellation handles Escape.
+      lightbox.addEventListener('close', () => {
+        ++request;
+        backdropPress = false;
+        document.documentElement.classList.remove('post-lightbox-open');
+        image.hidden = true;
+        image.removeAttribute('src');
+        if (source) {
+          source.trigger.focus({ preventScroll: true });
+          window.scrollTo({ left: source.x, top: source.y, behavior: 'instant' });
+          source = null;
+        }
+      });
+    }
+  }
+
   const citation = document.getElementById('post-bibtex');
   const citationStatus = document.querySelector('[data-copy-status]');
 

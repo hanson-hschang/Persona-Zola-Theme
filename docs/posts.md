@@ -221,6 +221,10 @@ caption = "The method running on a sample sequence."
 
 Article images are centered by default while respecting their intrinsic size and the available width. For images, `width` and `height` are optional intrinsic pixel dimensions. Use descriptive alt text, or an empty `alt` for a purely decorative image. The teaser image loads eagerly; gallery images load lazily. Videos expose native playback controls and do not autoplay. `title`, `mime`, `poster`, and the caption-track fields are optional. If `captions` is set, `lang` defaults to `en` and `caption_label` defaults to `English`.
 
+Set `full_size = true` on a teaser or gallery image to open it in Persona's lightbox. The viewer uses the theme's colors and typography and fits the image to the viewport. Escape, the close button, or a click on the backdrop closes it and returns focus to the figure without losing the reader's place. Keyboard focus stays inside the viewer while it is open. Captions remain visible beneath the image. Omit the option, or set it to `false`, to leave an image unlinked.
+
+For figures authored directly in Markdown/HTML, wrap the image in a link to its original asset and add `data-post-lightbox-trigger` to that link. Keep its `<figcaption>` outside the link. The viewer takes its heading from the caption's first `<strong>` element and preserves the image's alternative text. Without JavaScript or native dialog support, the links still open the original images. Other templates using this media component can include `{{ <post.lightbox /> }}` once inside their `.post` wrapper, alongside `page-post.css` and `post.js`.
+
 The gallery supports touch and native horizontal scrolling. JavaScript adds previous/next buttons beside the results heading, an announced position, and left/right arrow keys when the gallery track has focus. It respects reduced-motion preferences and pauses videos when another slide becomes active. The gallery remains scrollable without JavaScript.
 
 ### Embedded video and PDF poster

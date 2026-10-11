@@ -18,11 +18,34 @@
       <a href="{{ <post.url page={page} path={item.src} /> }}">Download the video</a>.
     </video>
   {% else %}
+    {% if item.full_size | default(value=false) %}<a href="{{ <post.url page={page} path={item.src} /> }}" data-post-lightbox-trigger aria-label="View full-size image: {{ item.alt }}">{% endif %}
     <img src="{{ <post.url page={page} path={item.src} /> }}" alt="{{ item.alt }}"{% if item.width %} width="{{ item.width }}"{% endif %}{% if item.height %} height="{{ item.height }}"{% endif %} loading="{% if eager %}eager{% else %}lazy{% endif %}" decoding="async">
+    {% if item.full_size | default(value=false) %}</a>{% endif %}
   {% endif %}
   {% if item.caption %}<figcaption>{{ item.caption | markdown | safe }}</figcaption>{% endif %}
 </figure>
 {% endcomponent post.media %}
+
+{% component post.lightbox() %}
+<dialog class="post__lightbox" id="post-lightbox" data-post-lightbox aria-labelledby="post-lightbox-title">
+  <header class="post__lightbox-header">
+    <div class="post__lightbox-heading">
+      <span class="post__lightbox-count" data-lightbox-count>Figure</span>
+      <p id="post-lightbox-title" data-lightbox-title>Figure viewer</p>
+    </div>
+    <div class="post__lightbox-actions">
+      <button class="post__button post__lightbox-close" type="button" data-lightbox-close aria-label="Close image viewer" title="Close" autofocus><i class="bi bi-x-lg" aria-hidden="true"></i></button>
+    </div>
+  </header>
+  <div class="post__lightbox-viewport" data-lightbox-viewport role="region" aria-label="Figure image">
+    <img data-lightbox-image alt="">
+    <p class="post__lightbox-status" data-lightbox-status role="status"></p>
+  </div>
+  <footer class="post__lightbox-footer">
+    <p class="post__lightbox-caption" data-lightbox-caption tabindex="0" role="region" aria-label="Figure caption"></p>
+  </footer>
+</dialog>
+{% endcomponent post.lightbox %}
 
 {% component post.gallery(page, items, id="post-gallery", title="Results gallery", heading_id="") %}
 <div class="post__gallery" data-post-gallery>
