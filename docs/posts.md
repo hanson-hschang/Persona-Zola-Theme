@@ -74,7 +74,7 @@ Thumbnails follow the resource URL rules below. If `extra.post.thumbnail` is omi
 
 The top-level `date` appears in the full-width metadata row after the author byline on the detail page and below the title in listing cards. Omit it to hide the date. Dates use the same full-month format everywhere, such as **September 21, 2026**, including home previews, section and taxonomy lists, and Related Posts. They share the theme's muted body font at normal weight and 0.875rem, with tabular numerals and no calendar icon. Post subtitles appear only on detail pages; `extra.post.subtitle` takes precedence over `extra.subtitle`.
 
-Existing optional fields under `[extra]` remain supported: `subtitle`, `thumbnail`, and `thumbnail_alt`. A subtitle appears below the title on the detail page. Use the top-level `description` for a separate summary in listing cards. Thumbnails are optional; an `extra.thumbnail` also supplies the article's hero image when no teaser is configured.
+Existing optional fields under `[extra]` remain supported: `subtitle`, `thumbnail`, and `thumbnail_alt`. A subtitle appears below the title on the detail page. Use the top-level `description` for a separate summary in listing cards. Thumbnails are optional and supply card and sharing images. Configure `extra.post.teaser` to display leading media inside the article.
 
 ### Categories, tags, metadata, citations, and mathematics
 
@@ -144,9 +144,8 @@ All fields below belong to `[extra.post]` unless another location is shown. Omit
 | `poster` | Poster table | PDF viewer and a direct link after the video. |
 | `related` | Array of related-work tables | Related Posts widget below Outline on the left; below the article on screens narrower than 992px. When omitted, shows up to five other listed pages from the parent section. Set `[]` to hide it. |
 | `bibtex` | String | Literal BibTeX displayed in a code block with a copy button and a Copy BibTeX action in Share. Empty or whitespace-only values hide both. |
-| `paper` | URL string | PDF URL for `citation_pdf_url` metadata. Add a resource link separately to show a Paper button. |
 | `doi` | String | DOI for citation metadata. |
-| `social_image` | URL string | Open Graph image; enables the large-image Twitter card. |
+| `social_image` | URL string | Optional sharing-image override. Falls back to the card image: `extra.post.thumbnail`, `extra.thumbnail`, then the teaser image or video poster. A usable image enables the large-image Twitter card. |
 
 The main Markdown content appears after the abstract and before the gallery. Its top-level table-of-contents headings appear in Outline, alongside configured sections. JavaScript also adds headings from Pandoc-generated HTML. Bibliography appears after Citation, with its original citation anchors preserved. Avoid custom heading IDs beginning with `post-`, which are reserved for the template.
 
@@ -261,7 +260,6 @@ template = "post.html"
 abstract = """
 Explain the question and contribution. **Markdown** is supported here.
 """
-paper = "paper.pdf"
 doi = "10.1234/example"
 social_image = "social-preview.png"
 bibtex = '''
@@ -273,13 +271,15 @@ bibtex = '''
 '''
 ```
 
-The template provides a canonical URL, description, Open Graph tags, Twitter card type, and scholarly citation tags for the title, authors, date, venue, DOI, and paper URL when supplied. The page description falls back to `config.description`.
+The template provides a canonical URL, description, Open Graph tags, Twitter card type, and scholarly citation tags for the title, authors, date, venue, and DOI when supplied. The page description falls back to `config.description`. Add PDFs to `extra.post.links` to display resource buttons.
+
+The sharing image defaults to the card image: `extra.post.thumbnail`, then `extra.thumbnail`, then the teaser image or a video teaser's `poster`. Set `extra.post.social_image` only to use a different image for sharing. Missing or whitespace-only overrides use the default. When no image is available, the template omits `og:image` and uses the small `summary` Twitter card type.
 
 BibTeX is rendered as text, without a citation-processing dependency. Long lines wrap to fit the screen while preserving the original citation text and line breaks for copying; surrounding whitespace is trimmed. JavaScript enables both copy buttons. Copying from Share announces success inside that menu, while copying from Citation announces it beside the code block. If clipboard access fails, either button selects and focuses the citation for manual copying, with the fallback announced in the Citation section. Without JavaScript, the code block remains selectable and Share's ordinary links remain available. Use the separate [Citation Pipeline](../README.md#-citation-pipeline) if you need formatted references within the article itself.
 
 ## Resource URL rules
 
-The `post.url` component resolves author links, resource links, related-work links, media sources, video posters and caption tracks, poster PDFs, `paper`, and `social_image`:
+The `post.url` component resolves author links, resource links, related-work links, media sources, video posters and caption tracks, poster PDFs, and sharing images:
 
 | Input | Resolution |
 | --- | --- |

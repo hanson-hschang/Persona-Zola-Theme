@@ -9,8 +9,19 @@
   <meta property="og:description" content="{{ page.description | default(value=config.description) }}">
   <meta property="og:url" content="{{ page.permalink }}">
   <meta property="og:site_name" content="{{ config.title }}">
-  {% if post.social_image %}
-    <meta property="og:image" content="{{ <post.url page={page} path={post.social_image} /> }}">
+  {% set social_image = post.social_image | default(value="") | trim %}
+  {% if not social_image %}
+    {% set social_image = post.thumbnail | default(value=page.extra.thumbnail | default(value="")) | trim %}
+  {% endif %}
+  {% if not social_image and post.teaser %}
+    {% if post.teaser.type is defined and post.teaser.type == "video" %}
+      {% set social_image = post.teaser.poster | default(value="") | trim %}
+    {% else %}
+      {% set social_image = post.teaser.src | default(value="") | trim %}
+    {% endif %}
+  {% endif %}
+  {% if social_image %}
+    <meta property="og:image" content="{{ <post.url page={page} path={social_image} /> }}">
     <meta name="twitter:card" content="summary_large_image">
   {% else %}
     <meta name="twitter:card" content="summary">
@@ -24,7 +35,6 @@
   {% if page.date %}<meta name="citation_publication_date" content="{{ page.date | date(format='%Y/%m/%d') }}">{% endif %}
   {% if post.venue %}<meta name="citation_conference_title" content="{{ post.venue }}">{% endif %}
   {% if post.doi %}<meta name="citation_doi" content="{{ post.doi }}">{% endif %}
-  {% if post.paper %}<meta name="citation_pdf_url" content="{{ <post.url page={page} path={post.paper} /> }}">{% endif %}
 {% endblock metadata %}
 
 {% block extra_css %}
@@ -119,9 +129,6 @@
 
     {% if post.teaser %}
     <div class="post__teaser">{{ <post.media page={page} item={post.teaser} eager={true} /> }}</div>
-    {% elif page.extra.thumbnail %}
-    {% set thumbnail = {"src": page.extra.thumbnail, "alt": page.extra.thumbnail_alt | default(value=page.title)} %}
-    <div class="post__teaser">{{ <post.media page={page} item={thumbnail} eager={true} /> }}</div>
     {% endif %}
 
     <div class="post__layout">

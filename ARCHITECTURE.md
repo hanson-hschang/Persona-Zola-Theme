@@ -129,6 +129,8 @@ Located in `templates/` root:
   - Shows linked categories as rectangular boxes above the title, with an optional venue; tags below the title and subtitle use the same dotted pills as resume skill items
   - Publication date, reading time, and Share occupy a separate full-width row after the author byline and before resources, with no Save action
   - Renders authors, affiliations, resource links, teaser, abstract, article, gallery, video, poster, and BibTeX; article images are centered by default
+  - Leading article media requires an explicit `extra.post.teaser`; thumbnails supply card and sharing previews
+  - Sharing metadata uses `extra.post.social_image` as an optional override, otherwise the card image (`extra.post.thumbnail`, legacy `extra.thumbnail`, or the teaser image/video poster); absent images omit `og:image` and use a `summary` Twitter card
   - Separates Pandoc's appended bibliography at `<!-- persona-bibliography -->` and renders it after the BibTeX Citation section, preserving all citation anchors; legacy `<div id="refs">` output is also supported
   - Generates page metadata and scholarly citation tags
   - Inherits standard navigation and mobile toggle, with breadcrumbs based on section ancestry

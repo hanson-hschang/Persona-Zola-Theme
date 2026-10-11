@@ -201,6 +201,7 @@ Generated body preview without a description.
             body = (f"Generated body preview {number} without a description." if number == 5
                     else f"Generated summary preview {number} without a description.\n\n"
                          f"<!-- more -->\n\nGenerated body preview {number} without a description.")
+            thumbnail = ('[extra.post]\nthumbnail = "/test-assets/shared.svg"' if number == 3 else "")
             cls.write(f"content/test-blog/entry-{number}.md", f'''+++
 title = "Blog entry {number}"
 date = {date}
@@ -208,6 +209,7 @@ date = {date}
 [taxonomies]
 tags = ["Description behavior"]
 categories = {json.dumps(["Research & Methods"] if number == 3 else [])}
+{thumbnail}
 +++
 {body}
 ''')
@@ -309,11 +311,23 @@ title = "Changed slug"
 slug = "changed-slug"
 template = "post.html"
 [extra.post]
+thumbnail = "   "
 teaser = { src = "plot.svg", alt = "Colocated plot" }
 +++
 Slug fixture.
 ''')
         cls.write("content/test-slug/plot.svg", SVG)
+        for name, social_image in (("empty", ""), ("whitespace", " \t\n "),
+                                   ("external", "  https://images.example.test/social.png?a=1&b=2  ")):
+            cls.write(f"content/test-social-{name}.md", f'''+++
+title = "Social image {name}"
+template = "post.html"
+[extra.post]
+thumbnail = "/test-assets/shared.svg"
+social_image = {json.dumps(social_image)}
++++
+Social image metadata fixture.
+''')
         quote = json.dumps
         cls.write("content/test-full/index.md", f'''+++
 title = {quote(TITLE)}
@@ -332,6 +346,7 @@ award = "Example award"
 doi = "10.1234/example"
 paper = "paper.pdf"
 social_image = "plot.svg"
+thumbnail = "/test-assets/shared.svg"
 authors = [{{ name = {quote(AUTHOR)}, url = "https://example.test/author?a=1&b=2", affiliations = "1,2", equal = true }}, {{ name = "Second author" }}]
 affiliations = [{{ id = "1", name = "Example institute" }}, {{ id = "2", name = "Other institute" }}]
 author_note = "Equal contribution."
@@ -687,10 +702,65 @@ bibtex = "@misc{legacy, title={Legacy post}}"
         self.single(page, "meta", name="citation_publication_date", content="2025/03/04")
         self.single(page, "meta", name="citation_conference_title", content="Example Conference 2025")
         self.single(page, "meta", name="citation_doi", content="10.1234/example")
-        self.single(page, "meta", name="citation_pdf_url", content=FULL_URL + "paper.pdf")
+        self.assertFalse(page.find("meta", name="citation_pdf_url"))
+        self.single(page, "a", href=FULL_URL + "paper.pdf")
         self.assertFalse(page.find("img", src="x"))
         self.assertTrue(all("src" in script for script in page.find("script")))
         self.assertFalse(any("onerror" in attributes for _, attributes in page.elements))
+
+    def test_social_images_default_to_thumbnail_or_teaser_with_resolved_urls(self):
+        expected_images = {
+            "research/custom-output": FULL_URL + "plot.svg",
+            "research/nested-post": BASE + "research/nested-post/thumb.svg",
+            "posts/renamed-image": BASE + "posts/renamed-image/thumb.svg",
+            "changed-slug": BASE + "changed-slug/plot.svg",
+            "test-blog/full": BASE + "test-assets/shared.svg",
+            "posts/m-video": BASE + "test-assets/shared.svg",
+            "test-social-empty": BASE + "test-assets/shared.svg",
+            "test-social-whitespace": BASE + "test-assets/shared.svg",
+            "test-social-external": "https://images.example.test/social.png?a=1&b=2",
+        }
+        for output, expected in expected_images.items():
+            with self.subTest(output=output):
+                page = self.document(output)
+                self.single(page, "meta", property="og:image", content=expected)
+                self.single(page, "meta", name="twitter:card", content="summary_large_image")
+
+        # The populated fixture's explicit social image differs from its thumbnail.
+        override = self.document("research/custom-output")
+        self.assertFalse(override.find("meta", property="og:image", content=BASE + "test-assets/shared.svg"))
+
+    def test_posts_without_a_usable_image_keep_summary_social_cards(self):
+        for output in ("test-minimal", "posts/b-no-image", "posts/c-excerpt", "test-blog/minimal"):
+            with self.subTest(output=output):
+                page = self.document(output)
+                self.assertFalse(page.find("meta", property="og:image"))
+                self.single(page, "meta", name="twitter:card", content="summary")
+
+    def test_thumbnails_remain_previews_without_supplying_article_media(self):
+        listing = self.document("test-blog")
+        for output in ("test-blog/full", "test-blog/entry-3"):
+            with self.subTest(output=output):
+                page = self.document(output)
+                self.assertFalse(page.with_class("post__teaser"))
+                self.assertFalse(page.find("img", src=BASE + "test-assets/shared.svg"))
+                self.single(page, "meta", property="og:image", content=BASE + "test-assets/shared.svg")
+                self.single(page, "meta", name="twitter:card", content="summary_large_image")
+                card_link = self.single(listing, "a", href=BASE + output + "/")
+                images = [attrs for tag, attrs in listing.descendants(card_link) if tag == "img"]
+                self.assertEqual([image["src"] for image in images], [BASE + "test-assets/shared.svg"])
+
+        image_page = self.document("changed-slug")
+        teaser = self.single(image_page, "div", **{"class": "post__teaser"})
+        image = self.single(image_page, "img", src=BASE + "changed-slug/plot.svg")
+        self.assertIn(("img", image), image_page.descendants(teaser))
+
+        video_page = self.document("posts/m-video")
+        teaser = self.single(video_page, "div", **{"class": "post__teaser"})
+        video = self.single(video_page, "video", poster=BASE + "test-assets/shared.svg")
+        source = self.single(video_page, "source", src=BASE + "posts/m-video/clip.mp4")
+        self.assertIn(("video", video), video_page.descendants(teaser))
+        self.assertIn(("source", source), video_page.descendants(teaser))
 
     def test_post_metadata_tags_and_share_are_integrated_without_bookmark(self):
         page = self.document("research/custom-output")
@@ -1278,8 +1348,7 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                 self.assertFalse(document.with_class("project-list"))
 
         blog_thumbnail = blog.with_class("post-card__image")
-        self.assertEqual(len(blog_thumbnail), 1)
-        self.assertEqual(blog_thumbnail[0]["src"], BASE + "test-assets/shared.svg")
+        self.assertEqual([image["src"] for image in blog_thumbnail], [BASE + "test-assets/shared.svg"] * 2)
         self.assertEqual(blog_thumbnail[0]["alt"], "Blog listing thumbnail")
         plain_row = blog.with_class("post-card")[1]
         plain_descendants = blog.descendants(plain_row)
