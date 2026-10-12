@@ -280,6 +280,8 @@ html.post-lightbox-open { overflow: hidden; scrollbar-gutter: stable; }
     gap: var(--spacing-xs);
   }
 
+  &__resource { display: inline-flex; }
+
   &__button {
     display: inline-flex;
     align-items: center;
@@ -298,7 +300,8 @@ html.post-lightbox-open { overflow: hidden; scrollbar-gutter: stable; }
     @include mixins.transition(background-color);
 
     &:hover { background: var(--post-tint); color: var(--color-accent); }
-    &:disabled { opacity: 0.4; cursor: default; }
+    &:disabled,
+    &[aria-disabled='true'] { opacity: 0.4; cursor: default; }
 
     &--primary {
       background: var(--color-accent);
@@ -318,11 +321,12 @@ html.post-lightbox-open { overflow: hidden; scrollbar-gutter: stable; }
     img,
     video {
       display: block;
-      width: 100%;
       height: auto;
       border-radius: var(--img-border-radius);
       background: var(--post-tint);
     }
+
+    video { width: 100%; }
 
     figcaption {
       padding-top: var(--spacing-sm);
@@ -410,7 +414,7 @@ html.post-lightbox-open { overflow: hidden; scrollbar-gutter: stable; }
 
   &__abstract li,
   &__prose li {
-    text-align: justify;
+    text-align: left;
   }
 
   &__prose {
@@ -512,7 +516,11 @@ html.post-lightbox-open { overflow: hidden; scrollbar-gutter: stable; }
   }
 
   &__layout:has(.post__related) &__body > :last-child { margin-bottom: 0; }
-  &__copy-status { min-height: 1.75em; margin-top: var(--spacing-xs); font-size: 0.875rem; color: var(--color-heading); }
+  &__copy-status {
+    margin-top: var(--spacing-xs);
+    font-size: 0.875rem;
+    color: var(--color-heading);
+  }
 
   @include mixins.respond-below(lg) {
     &__outline {

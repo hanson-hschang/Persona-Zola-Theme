@@ -6,6 +6,7 @@ link checks. Pandoc enables the citation-pipeline fixtures. Media fixtures test
 generated markup and URLs, not playback.
 """
 
+import base64
 import json
 from html.parser import HTMLParser
 from pathlib import Path
@@ -27,7 +28,17 @@ BIBTEX = '@misc{example, title={<script>alert("citation")</script> & Research}}'
 OUTLINE_TITLE = 'Sections <img src=x onerror=alert("outline")> & "details"'
 GALLERY_CATEGORY = 'Controls & Robotics / "Soft" [arm]'
 CARD_DESCRIPTION = 'Blog card description <img src=x onerror=alert(3)> & details.'
+COPY_RESOURCE_NAME = 'Citation <img src=x onerror=alert(4)> & details'
+PAGE_BREADCRUMB_TITLE = 'Short <img src=x onerror=alert(5)> & "breadcrumb"'
+SECTION_BREADCRUMB_TITLE = 'Notes <img src=x onerror=alert(6)> & "writing"'
+MEDIA_ALT = 'Figure <img src=x onerror=alert(7)> & "alt"'
+# Quoted titles use the normal internal-link renderer. Zola 0.23.4's optional
+# external-link renderer does not escape titles; external URL/query coverage
+# remains separate so this fixture tests the figure renderer's behavior.
+MEDIA_CAPTION = 'A **bold** caption and [source](/test-assets/shared.svg?a=1&b=2 \'Quoted "title"\'), [external source](https://example.test/figure?a=1&b=2), with `<img src=x onerror=alert(7)>` and `\\commands`.'
 SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2"></svg>'
+# A valid 8-by-4 RGBA PNG supplies real pixels for Zola's resizing path.
+PNG = base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAgAAAAECAYAAACzzX7wAAAAEklEQVR4nGP4z8DwHx9moL0CAHD0P8F+ACg+AAAAAElFTkSuQmCC')
 
 
 class Document(HTMLParser):
@@ -95,11 +106,12 @@ class PostIntegrationTests(unittest.TestCase):
                                 (cls.site / "config.toml").read_text(encoding="utf-8"))
         cls.write("config.toml", default_config)
         shutil.rmtree(cls.site / "content/posts", ignore_errors=True)
-        cls.write("content/posts/_index.md", '''+++
+        cls.write("content/posts/_index.md", f'''+++
 title = "Fixture posts"
 sort_by = "weight"
 page_template = "post.html"
 [extra]
+breadcrumb_title = {json.dumps('  ' + SECTION_BREADCRUMB_TITLE + '  ')}
 order = 1
 type = "posts"
 icon_class = "bi bi-journal-richtext"
@@ -135,6 +147,7 @@ A short **post introduction**.
                         else 'subtitle = "Shared post subtitle"' if weight == 2 else "")
             if weight == 1:
                 post += "\nsubtitle = " + json.dumps(SUBTITLE)
+            breadcrumb = 'breadcrumb_title = "  Short research note  "' if weight == 1 else ""
             cls.write(f"content/posts/{folder}/index.md", f'''+++
 title = {json.dumps(title)}
 weight = {weight * 2}
@@ -144,6 +157,7 @@ weight = {weight * 2}
 [taxonomies]
 categories = {json.dumps(listing_categories[weight - 1])}
 [extra]
+{breadcrumb}
 excerpt = "Fallback listing excerpt {weight}"
 {subtitle}
 [extra.post]
@@ -160,6 +174,7 @@ title = "Fixture blog"
 sort_by = "date"
 page_template = "post.html"
 [extra]
+breadcrumb_title = ""
 order = 2
 type = "posts"
 icon_class = "bi bi-journal"
@@ -240,9 +255,11 @@ icon_class = "bi bi-collection"
                               ("b-fourth", 40), ("c-fifth", 50), ("hidden-zero", 0),
                               ("hidden-missing", None)):
             order_field = f"order = {order}" if order is not None else ""
+            breadcrumb = 'breadcrumb_title = ' + json.dumps(" \t\n ") if folder == "z-first" else ""
             cls.write(f"content/test-category/{folder}/_index.md", f'''+++
 title = "Card {folder}"
 [extra]
+{breadcrumb}
 type = "posts"
 thumbnail = "thumb.svg"
 {order_field}
@@ -302,8 +319,28 @@ title = "Post with {name} BibTeX"
 template = "post.html"
 [extra.post]
 bibtex = {json.dumps(bibtex)}
+links = [{{ name = "Copy reference", action = "copy-bibtex", icon_class = "bi bi-clipboard" }}]
 +++
 No usable citation has been provided.
+''')
+        cls.write("content/test-resource-no-bibtex.md", '''+++
+title = "Copy resource without BibTeX"
+template = "post.html"
+[extra.post]
+links = [{ name = "Copy reference", action = "copy-bibtex", icon_class = "bi bi-clipboard" }]
++++
+An unconfigured copy action has no resource control.
+''')
+        cls.write("content/test-resource-mixed.md", '''+++
+title = "Ordinary resource beside an unconfigured copy"
+template = "post.html"
+[extra.post]
+links = [
+  { name = "Copy reference", action = "copy-bibtex", icon_class = "bi bi-clipboard" },
+  { name = "BibTeX", url = "https://example.test/bibtex", icon_class = "bi bi-box-arrow-up-right" }
+]
++++
+URL resources do not infer actions from their names.
 ''')
         cls.write("content/test-ordinary.md", '+++\ntitle = "Ordinary page"\ntemplate = "page.html"\n+++\nOrdinary page body.')
         cls.write("content/test-slug/index.md", '''+++
@@ -319,9 +356,12 @@ Slug fixture.
         cls.write("content/test-slug/plot.svg", SVG)
         for name, social_image in (("empty", ""), ("whitespace", " \t\n "),
                                    ("external", "  https://images.example.test/social.png?a=1&b=2  ")):
+            breadcrumb = ('[extra]\nbreadcrumb_title = ' + json.dumps(
+                "" if name == "empty" else " \t\n ")) if name != "external" else ""
             cls.write(f"content/test-social-{name}.md", f'''+++
 title = "Social image {name}"
 template = "post.html"
+{breadcrumb}
 [extra.post]
 thumbnail = "/test-assets/shared.svg"
 social_image = {json.dumps(social_image)}
@@ -339,6 +379,8 @@ template = "post.html"
 [taxonomies]
 categories = ["Research post", "Research & Methods"]
 tags = ["Research & Methods", "Equations"]
+[extra]
+breadcrumb_title = {quote('  ' + PAGE_BREADCRUMB_TITLE + '  ')}
 [extra.post]
 venue = "Example Conference 2025"
 subtitle = {quote(SUBTITLE)}
@@ -352,20 +394,22 @@ affiliations = [{{ id = "1", name = "Example institute" }}, {{ id = "2", name = 
 author_note = "Equal contribution."
 links = [
   {{ name = "Relative paper", url = "paper.pdf", icon_class = "bi bi-file-earmark-pdf" }},
+  {{ name = {quote(COPY_RESOURCE_NAME)}, action = "copy-bibtex", icon_class = "bi bi-clipboard" }},
   {{ name = "Root asset", url = "/test-assets/shared.svg" }},
   {{ name = "Internal page", url = "@/test-ordinary.md" }},
   {{ name = "External HTTPS", url = "https://example.test/code?a=1&b=2" }},
   {{ name = "External HTTP", url = "http://example.test/code" }},
   {{ name = "Protocol relative", url = "//example.test/code" }},
   {{ name = "Email", url = "mailto:research@example.test" }},
+  {{ name = "BibTeX", url = "https://example.test/bibtex", icon_class = "bi bi-box-arrow-up-right" }},
   {{ name = "Citation", url = "#post-citation" }}
 ]
 related = [{{ title = "Minimal post", url = "@/test-minimal.md", date = "2024-11-09" }}]
 abstract = "A **formatted** abstract."
-teaser = {{ src = "plot.svg", alt = "Teaser image", width = 2, height = 2, caption = "A **teaser** caption." }}
+teaser = {{ src = "plot.svg", alt = "Teaser image", width = 2, height = 2, caption = "A **teaser** caption.", full_size = true }}
 gallery_title = "Research results"
 gallery = [
-  {{ src = "/test-assets/shared.svg", alt = "Gallery image", caption = "Image result." }},
+  {{ src = "/test-assets/shared.svg", alt = "Gallery image", caption = "Image result.", full_size = true }},
   {{ type = "video", src = "clip.mp4", mime = "video/mp4", poster = "plot.svg", title = "Video result", captions = "captions.vtt", lang = "en", caption_label = "English", caption = "Video result caption." }}
 ]
 video = {{ src = "https://www.youtube-nocookie.com/embed/example", title = "Presentation video" }}
@@ -383,6 +427,39 @@ The post body supports normal Markdown.
         cls.write("content/test-full/paper.pdf", "%PDF-1.4\nstructural PDF fixture")
         cls.write("content/test-full/poster.pdf", "%PDF-1.4\nstructural PDF fixture")
         cls.write("content/test-full/captions.vtt", "WEBVTT\n\n00:00.000 --> 00:01.000\nCaption.\n")
+        cls.write("templates/test-legacy-breadcrumbs.html", '''{% extends "base.html" %}
+{% block main %}{{ <render.breadcrumbs crumbs={["posts", "legacy"]} /> }}{% endblock main %}
+''')
+        cls.write("content/test-legacy-breadcrumbs.md", '''+++
+title = "Legacy breadcrumbs"
+template = "test-legacy-breadcrumbs.html"
++++
+''')
+        cls.write("content/test-media/index.md", f'''+++
+title = "Shared image renderer"
+template = "post.html"
+path = "research/media-fixture"
+[extra]
+vector = {{ src = "vector.svg", alt = "Canonical SVG", width = 2, height = 2, caption = "Canonical **figure**.", full_size = false }}
++++
+{{{{ <media.image page={{page}} path="raster.png" width={{4}} alt={json.dumps(MEDIA_ALT)} caption={json.dumps(MEDIA_CAPTION)} full_size={{true}} /> }}}}
+
+{{{{ <media.image page={{page}} path="raster.png" alt="Original bitmap" full_size={{false}} eager={{true}} /> }}}}
+
+{{{{ <media.image page={{page}} path="raster.png" width={{4}} alt="Legacy resized bitmap" /> }}}}
+
+{{{{ <media.figure page={{page}} item={{page.extra.vector}} /> }}}}
+''')
+        cls.write("content/test-media/raster.png", PNG)
+        cls.write("content/test-media/vector.svg", SVG)
+        cls.write("content/test-media-slug/index.md", '''+++
+title = "SVG media with a custom slug"
+template = "post.html"
+slug = "media-custom-slug"
++++
+{{ <media.image page={page} path="vector.svg" alt="Original SVG" full_size={true} /> }}
+''')
+        cls.write("content/test-media-slug/vector.svg", SVG)
         cls.pandoc = shutil.which("pandoc")
         if cls.pandoc:
             for folder, has_bibtex in (("test-citations", True),
@@ -414,7 +491,12 @@ $$\int_0^1 x\,dx = \frac{1}{2}.$$
 A note preserves the original explanation.[^detail]
 
 [^detail]: This is the explanatory footnote.
+
+```{=html}
+{{ <media.image page={page} path="raster.png" width={4} alt="Pandoc figure" caption="A **Pandoc** figure." full_size={true} /> }}
+```
 ''')
+                cls.write(f"content/{folder}/raster.png", PNG)
                 cls.write(f"content/{folder}/references.bib", '''@article{fixture2025,
   title = {A cited fixture for post pages},
   author = {Example, Ada},
@@ -496,7 +578,10 @@ bibtex = "@misc{legacy, title={Legacy post}}"
     def write(cls, relative, contents):
         destination = cls.site / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_text(contents, encoding="utf-8")
+        if isinstance(contents, bytes):
+            destination.write_bytes(contents)
+        else:
+            destination.write_text(contents, encoding="utf-8")
 
     @classmethod
     def process_source(cls, folder):
@@ -517,6 +602,18 @@ bibtex = "@misc{legacy, title={Legacy post}}"
         matches = document.find(tag, **attributes)
         self.assertEqual(len(matches), 1, (tag, attributes, matches))
         return matches[0]
+
+    def copy_buttons_within(self, document, container):
+        return [attrs for tag, attrs in document.descendants(container)
+                if tag == "button" and "data-copy-citation" in attrs]
+
+    def figure_for_image(self, document, image):
+        figures = [figure for figure in document.with_class("post__figure")
+                   if ("img", image) in document.descendants(figure)]
+        self.assertEqual(len(figures), 1)
+        self.assertFalse(any(tag == "pre" for tag, _ in document.descendants(figures[0])),
+                         "Generated media must remain HTML, rather than escaped Markdown code")
+        return figures[0]
 
     def within_section(self, document, section_id, class_name):
         section = self.single(document, "section", id=section_id)
@@ -669,10 +766,29 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                     title="Presentation video", loading="lazy")
         self.single(page, "object", data=FULL_URL + "poster.pdf", type="application/pdf")
         self.single(page, "div", **{"data-gallery-controls": None, "hidden": None})
-        copy_buttons = page.find("button", **{"data-copy-citation": None, "hidden": None})
-        self.assertEqual(len(copy_buttons), 2)
-        self.assertTrue(all(button.get("aria-controls") == "post-bibtex"
-                            for button in copy_buttons))
+        for container in (page.with_class("share-menu")[0],
+                          self.single(page, "section", id="post-citation")):
+            copy_buttons = self.copy_buttons_within(page, container)
+            self.assertEqual(len(copy_buttons), 1)
+            button = copy_buttons[0]
+            self.assertIn("hidden", button)
+            self.assertEqual(button.get("aria-controls"), "post-bibtex")
+            self.assertEqual(button.get("data-copy-feedback"), "BibTex Copied!")
+            labels = [attrs for tag, attrs in page.descendants(button)
+                      if tag == "span" and "data-copy-label" in attrs]
+            self.assertEqual(len(labels), 1)
+            self.assertEqual(page.text_content(labels[0]), "Copy BibTeX")
+            self.assertFalse(page.descendants(labels[0]))
+            icons = [attrs for tag, attrs in page.descendants(button) if tag == "i"]
+            self.assertEqual(icons, [{"class": "bi bi-copy", "aria-hidden": "true"}])
+            statuses = [attrs for tag, attrs in page.descendants(container)
+                        if tag == "p" and attrs.get("role") == "status"]
+            self.assertEqual(len(statuses), 1)
+            self.assertIn("visually-hidden", statuses[0].get("class", "").split())
+            self.assertEqual(statuses[0].get("aria-live"), "polite")
+            self.assertNotIn("hidden", statuses[0])
+            self.assertEqual(page.text_content(statuses[0]), "")
+        self.assertNotIn("BibTex Copied!", page.text, "Success feedback appears only after copying")
         for asset in ("plot.svg", "clip.mp4", "captions.vtt", "paper.pdf", "poster.pdf"):
             self.assertTrue((self.site / "public/research/custom-output" / asset).is_file(), asset)
 
@@ -688,6 +804,112 @@ bibtex = "@misc{legacy, title={Legacy post}}"
         slug_page = self.document("changed-slug")
         self.single(slug_page, "img", src=BASE + "changed-slug/plot.svg")
         self.assertTrue((self.site / "public/changed-slug/plot.svg").is_file())
+
+    def test_media_images_keep_original_lightbox_links_and_render_rich_captions(self):
+        page = self.document("research/media-fixture")
+        image = self.single(page, "img", alt=MEDIA_ALT)
+        figure = self.figure_for_image(page, image)
+        triggers = [attrs for tag, attrs in page.descendants(figure)
+                    if tag == "a" and "data-post-lightbox-trigger" in attrs]
+        self.assertEqual(len(triggers), 1)
+        trigger = triggers[0]
+        self.assertEqual(trigger["href"], BASE + "research/media-fixture/raster.png")
+        self.assertEqual(trigger["aria-label"], "View full-size image: " + MEDIA_ALT)
+        self.assertEqual(page.descendants(trigger), [("img", image)])
+        self.assertNotIn("hidden", trigger)
+        self.assertNotEqual(image["src"], trigger["href"])
+        self.assertTrue(image["src"].startswith(BASE + "processed_images/"))
+        self.assertTrue((self.site / "public" / image["src"].removeprefix(BASE)).is_file())
+        self.assertEqual((image.get("width"), image.get("height")), ("4", "2"))
+        self.assertEqual(image.get("loading"), "lazy")
+        self.assertEqual(image.get("decoding"), "async")
+        self.assertEqual((self.site / "public/research/media-fixture/raster.png").read_bytes(), PNG)
+
+        captions = [attrs for tag, attrs in page.descendants(figure) if tag == "figcaption"]
+        self.assertEqual(len(captions), 1)
+        caption = captions[0]
+        bold = [attrs for tag, attrs in page.descendants(caption) if tag == "strong"]
+        self.assertEqual([page.text_content(item) for item in bold], ["bold"])
+        source = self.single(page, "a", href="/test-assets/shared.svg?a=1&b=2", title='Quoted "title"')
+        self.assertIn(("a", source), page.descendants(caption))
+        external = self.single(page, "a", href="https://example.test/figure?a=1&b=2")
+        self.assertIn(("a", external), page.descendants(caption))
+        code = [attrs for tag, attrs in page.descendants(caption) if tag == "code"]
+        self.assertEqual([page.text_content(item) for item in code],
+                         ["<img src=x onerror=alert(7)>", "\\commands"])
+        self.assertFalse(page.find("img", src="x"))
+        self.assertFalse(any("onerror" in attrs for _, attrs in page.elements))
+
+        populated = self.document("research/custom-output")
+        for alt, original, loading in (("Teaser image", FULL_URL + "plot.svg", "eager"),
+                                       ("Gallery image", BASE + "test-assets/shared.svg", "lazy")):
+            with self.subTest(alt=alt):
+                image = self.single(populated, "img", alt=alt)
+                figure = self.figure_for_image(populated, image)
+                triggers = [attrs for tag, attrs in populated.descendants(figure)
+                            if tag == "a" and "data-post-lightbox-trigger" in attrs]
+                self.assertEqual(len(triggers), 1)
+                self.assertEqual(triggers[0]["href"], original)
+                self.assertEqual(populated.descendants(triggers[0]), [("img", image)])
+                self.assertEqual(image.get("loading"), loading)
+                self.assertEqual(len([attrs for tag, attrs in populated.descendants(figure)
+                                      if tag == "figcaption"]), 1)
+
+    def test_media_image_defaults_preserve_legacy_resizing_and_original_svg_assets(self):
+        page = self.document("research/media-fixture")
+        original = self.single(page, "img", alt="Original bitmap")
+        figure = self.figure_for_image(page, original)
+        self.assertEqual(original["src"], BASE + "research/media-fixture/raster.png")
+        self.assertEqual(original.get("loading"), "eager")
+        self.assertEqual(original.get("decoding"), "async")
+        self.assertNotIn("width", original)
+        self.assertNotIn("height", original)
+        self.assertFalse(any(tag in ("a", "figcaption") for tag, _ in page.descendants(figure)))
+
+        legacy = self.single(page, "img", alt="Legacy resized bitmap")
+        figure = self.figure_for_image(page, legacy)
+        self.assertEqual(legacy["src"], self.single(page, "img", alt=MEDIA_ALT)["src"])
+        self.assertEqual((legacy.get("width"), legacy.get("height")), ("4", "2"))
+        self.assertEqual(legacy.get("loading"), "lazy")
+        self.assertFalse(any(tag in ("a", "figcaption") for tag, _ in page.descendants(figure)))
+
+        canonical = self.single(page, "img", alt="Canonical SVG")
+        figure = self.figure_for_image(page, canonical)
+        self.assertEqual(canonical["src"], BASE + "research/media-fixture/vector.svg")
+        self.assertEqual((canonical.get("width"), canonical.get("height")), ("2", "2"))
+        self.assertFalse(any(tag == "a" for tag, _ in page.descendants(figure)))
+
+        slug_page = self.document("media-custom-slug")
+        svg = self.single(slug_page, "img", alt="Original SVG")
+        figure = self.figure_for_image(slug_page, svg)
+        self.assertEqual(svg["src"], BASE + "media-custom-slug/vector.svg")
+        self.assertNotIn("width", svg)
+        self.assertNotIn("height", svg)
+        self.assertEqual(svg.get("loading"), "lazy")
+        link = self.single(slug_page, "a", href=svg["src"])
+        self.assertIn(("a", link), slug_page.descendants(figure))
+        self.assertEqual(slug_page.descendants(link), [("img", svg)])
+        self.assertIn("data-post-lightbox-trigger", link)
+        self.assertTrue((self.site / "public/media-custom-slug/vector.svg").is_file())
+
+    def test_pandoc_raw_html_media_calls_survive_citation_preprocessing(self):
+        if not self.pandoc:
+            self.skipTest("Pandoc is required for source/media integration")
+        for folder in ("test-citations", "test-references-only"):
+            with self.subTest(folder=folder):
+                generated = (self.site / f"content/{folder}/index.md").read_text(encoding="utf-8")
+                self.assertIn('{{ <media.image page={page} path="raster.png"', generated)
+                page = self.document(folder)
+                image = self.single(page, "img", alt="Pandoc figure")
+                figure = self.figure_for_image(page, image)
+                link = self.single(page, "a", href=BASE + folder + "/raster.png")
+                self.assertIn(("a", link), page.descendants(figure))
+                self.assertEqual(page.descendants(link), [("img", image)])
+                self.assertTrue(image["src"].startswith(BASE + "processed_images/"))
+                self.assertEqual((image.get("width"), image.get("height")), ("4", "2"))
+                self.assertEqual(image.get("loading"), "lazy")
+                bold = [attrs for tag, attrs in page.descendants(figure) if tag == "strong"]
+                self.assertEqual([page.text_content(item) for item in bold], ["Pandoc"])
 
     def test_metadata_and_plain_text_are_escaped(self):
         page = self.document("research/custom-output")
@@ -819,8 +1041,8 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                 self.assertEqual(page.text_content(first).strip(),
                                  "Copy BibTeX" if has_bibtex else "Permalink")
                 self.assertEqual(first_tag, "button" if has_bibtex else "a")
-                copies = page.find("button", **{"data-copy-citation": None})
-                self.assertEqual(len(copies), 2 if has_bibtex else 0)
+                copies = self.copy_buttons_within(page, menu)
+                self.assertEqual(len(copies), 1 if has_bibtex else 0)
                 self.assertFalse(page.find(**{"data-share-copy": None}))
                 self.assertNotIn("Copy link", page.text_content(menu))
                 if has_bibtex:
@@ -829,10 +1051,83 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                     code = self.single(page, "code", id="post-bibtex")
                     self.assertEqual(page.text_content(code).strip(), BIBTEX)
                     self.assertEqual(page.text_content(actions[1][1]).strip(), "Permalink")
+                    citation = self.single(page, "section", id="post-citation")
+                    self.assertEqual(len(self.copy_buttons_within(page, citation)), 1)
                 else:
                     self.assertEqual(first["href"], BASE + output + "/")
                     self.assertFalse(page.find(id="post-citation"))
                     self.assertFalse(page.find("a", href="#post-citation"))
+
+    def test_explicit_bibtex_resource_has_a_native_copy_control_and_link_fallback(self):
+        page = self.document("research/custom-output")
+        resources = self.single(page, "nav", **{"class": "post__resources"})
+        groups = [attrs for _, attrs in page.descendants(resources) if "data-copy-resource" in attrs]
+        self.assertEqual(len(groups), 1)
+        copies = self.copy_buttons_within(page, resources)
+        self.assertEqual(len(copies), 1)
+        button = copies[0]
+        self.assertEqual(button.get("type"), "button")
+        self.assertIn("hidden", button)
+        self.assertEqual(button.get("aria-controls"), "post-bibtex")
+        self.assertEqual(button.get("data-copy-feedback"), "BibTex Copied!")
+        self.assertEqual(page.text_content(button).strip(), COPY_RESOURCE_NAME)
+        self.assertIn(("button", button), page.descendants(groups[0]))
+
+        labels = [attrs for tag, attrs in page.descendants(button)
+                  if tag == "span" and "data-copy-label" in attrs]
+        self.assertEqual(len(labels), 1)
+        self.assertEqual(page.text_content(labels[0]), COPY_RESOURCE_NAME)
+        self.assertFalse(page.descendants(labels[0]), "Resource labels remain escaped plain text")
+        fallbacks = [attrs for tag, attrs in page.descendants(resources)
+                     if tag == "a" and "data-copy-citation-fallback" in attrs]
+        self.assertEqual(len(fallbacks), 1)
+        fallback = fallbacks[0]
+        self.assertEqual(fallback.get("href"), "#post-citation")
+        self.assertNotIn("hidden", fallback)
+        self.assertEqual(page.text_content(fallback).strip(), COPY_RESOURCE_NAME)
+        self.assertIn(("a", fallback), page.descendants(groups[0]))
+        for control in (button, fallback):
+            icons = [attrs for tag, attrs in page.descendants(control) if tag == "i"]
+            self.assertEqual(icons, [{"class": "bi bi-clipboard", "aria-hidden": "true"}])
+
+        statuses = [attrs for tag, attrs in page.descendants(resources)
+                    if tag == "p" and "data-copy-status" in attrs]
+        self.assertEqual(len(statuses), 1)
+        self.assertEqual(statuses[0].get("role"), "status")
+        self.assertEqual(statuses[0].get("aria-live"), "polite")
+        self.assertIn("visually-hidden", statuses[0].get("class", "").split())
+        self.assertEqual(page.text_content(statuses[0]), "")
+        code = self.single(page, "code", id="post-bibtex")
+        self.assertEqual(page.text_content(code).strip(), BIBTEX)
+
+        ordinary = {page.text_content(attrs).strip(): attrs for tag, attrs in page.descendants(resources)
+                    if tag == "a" and "data-copy-citation-fallback" not in attrs}
+        self.assertEqual(ordinary["Citation"]["href"], "#post-citation")
+        self.assertEqual(ordinary["BibTeX"]["href"], "https://example.test/bibtex")
+        self.assertEqual(ordinary["Relative paper"]["href"], FULL_URL + "paper.pdf")
+        self.assertFalse(any("data-copy-label" in attrs
+                             for _, attrs in page.descendants(ordinary["BibTeX"])))
+
+    def test_unavailable_bibtex_resources_are_omitted_without_affecting_url_links(self):
+        for output in ("test-resource-no-bibtex", "test-bibtex-empty", "test-bibtex-whitespace"):
+            with self.subTest(output=output):
+                page = self.document(output)
+                self.assertFalse(page.with_class("post__resources"))
+                self.assertFalse(page.find("button", **{"data-copy-citation": None}))
+                self.assertFalse(page.find("a", **{"data-copy-citation-fallback": None}))
+                self.assertFalse(page.find(id="post-bibtex"))
+
+        mixed = self.document("test-resource-mixed")
+        resources = self.single(mixed, "nav", **{"class": "post__resources"})
+        links = [attrs for tag, attrs in mixed.descendants(resources) if tag == "a"]
+        self.assertEqual(len(links), 1)
+        self.assertEqual(links[0]["href"], "https://example.test/bibtex")
+        self.assertEqual(mixed.text_content(links[0]).strip(), "BibTeX")
+        self.assertIn("post__button--primary", links[0].get("class", "").split())
+        self.assertFalse(self.copy_buttons_within(mixed, resources))
+        self.assertFalse(any("data-copy-status" in attrs or "data-copy-resource" in attrs
+                             for _, attrs in mixed.descendants(resources)))
+        self.assertNotIn("Copy reference", mixed.text_content(resources))
 
     def assert_bibliography_at_end(self, page, preceding_section):
         bibliography = self.single(page, "section", id="post-bibliography")
@@ -1378,6 +1673,77 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                         self.assertNotIn(SUBTITLE, page.text_content(card))
                         self.assertNotIn("Shared post subtitle", page.text_content(card))
                     self.assertTrue(page.with_class("post-card__description"))
+
+    def test_breadcrumb_overrides_preserve_post_titles_metadata_and_card_urls(self):
+        for output, label, archive, ancestors in (
+                ("research/nested-post", "Short research note", "posts",
+                 [("Home", BASE.rstrip("/")), (SECTION_BREADCRUMB_TITLE, BASE + "posts/")]),
+                ("research/custom-output", PAGE_BREADCRUMB_TITLE, "categories/research-methods",
+                 [("Home", BASE.rstrip("/"))])):
+            with self.subTest(output=output):
+                page = self.document(output)
+                breadcrumb = self.single(page, "nav", **{"aria-label": "Breadcrumb"})
+                links = [attrs for tag, attrs in page.descendants(breadcrumb) if tag == "a"]
+                self.assertEqual([(page.text_content(link), link["href"]) for link in links], ancestors)
+                self.assertTrue(all(not page.descendants(link) for link in links))
+                current = self.single(page, "li", **{"aria-current": "page"})
+                self.assertIn(("li", current), page.descendants(breadcrumb))
+                self.assertEqual(page.text_content(current), label)
+                self.assertFalse(page.descendants(current))
+                title = self.single(page, "h1", id="post-title")
+                self.assertEqual(page.text_content(title), TITLE)
+                self.single(page, "meta", property="og:title", content=TITLE)
+                self.single(page, "link", rel="canonical", href=BASE + output + "/")
+                self.assertFalse(page.find("img", src="x"))
+                self.assertFalse(any("onerror" in attrs for _, attrs in page.elements))
+
+                gallery = self.document(archive)
+                card = self.single(gallery, "a", href=BASE + output + "/")
+                titles = [attrs for _, attrs in gallery.descendants(card)
+                          if "post-card__title" in attrs.get("class", "").split()]
+                self.assertEqual(len(titles), 1)
+                self.assertEqual(gallery.text_content(titles[0]), TITLE)
+
+        section = self.document("posts")
+        breadcrumb = self.single(section, "nav", **{"aria-label": "Breadcrumb"})
+        current = self.single(section, "li", **{"aria-current": "page"})
+        self.assertIn(("li", current), section.descendants(breadcrumb))
+        self.assertEqual(section.text_content(current), SECTION_BREADCRUMB_TITLE)
+        self.assertFalse(section.descendants(current))
+        headings = [section.text_content(attrs) for tag, attrs in section.elements if tag == "h2"]
+        self.assertIn("Fixture posts", headings)
+
+    def test_breadcrumb_labels_fall_back_to_full_page_and_section_titles(self):
+        for output, title in (("test-minimal", "Minimal post"),
+                              ("test-social-empty", "Social image empty"),
+                              ("test-social-whitespace", "Social image whitespace"),
+                              ("changed-slug", "Changed slug"),
+                              ("test-blog", "Fixture blog"),
+                              ("test-category/z-first", "Card z-first"),
+                              ("test-category/a-second", "Card a-second")):
+            with self.subTest(output=output):
+                page = self.document(output)
+                breadcrumb = self.single(page, "nav", **{"aria-label": "Breadcrumb"})
+                current = self.single(page, "li", **{"aria-current": "page"})
+                self.assertIn(("li", current), page.descendants(breadcrumb))
+                self.assertEqual(page.text_content(current), title)
+                self.assertFalse(page.descendants(current))
+                links = [attrs for tag, attrs in page.descendants(breadcrumb) if tag == "a"]
+                self.assertEqual(links[0]["href"], BASE.rstrip("/"))
+                if output.startswith("test-category/"):
+                    self.assertEqual([(page.text_content(link), link["href"]) for link in links],
+                                     [("Home", BASE.rstrip("/")),
+                                      ("Fixture categories", BASE + "test-category/")])
+
+    def test_explicit_crumbs_api_keeps_legacy_labels_and_prefixed_links(self):
+        page = self.document("test-legacy-breadcrumbs")
+        breadcrumb = self.single(page, "nav", **{"aria-label": "Breadcrumb"})
+        links = [attrs for tag, attrs in page.descendants(breadcrumb) if tag == "a"]
+        self.assertEqual([(page.text_content(link), link["href"]) for link in links],
+                         [("Home", BASE.rstrip("/")), ("Posts", BASE + "posts")])
+        current = page.with_class("current")
+        self.assertEqual(len(current), 1)
+        self.assertEqual(page.text_content(current[0]), "Legacy")
 
     def test_post_breadcrumbs_follow_sections_with_custom_output_paths(self):
         page = self.document("research/nested-post")

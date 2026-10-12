@@ -65,8 +65,8 @@
   </button>
   <nav id="article-share-menu" class="share-menu" aria-label="Share this article">
     {% if has_bibtex %}
-    <button class="share-menu__item" data-copy-citation aria-controls="post-bibtex" type="button" hidden>
-      <i class="bi bi-copy" aria-hidden="true"></i><span>Copy BibTeX</span>
+    <button class="share-menu__item" data-copy-citation data-copy-feedback="BibTex Copied!" aria-controls="post-bibtex" type="button" hidden>
+      <i class="bi bi-copy" aria-hidden="true"></i><span data-copy-label>Copy BibTeX</span>
     </button>
     {% endif %}
     <a class="share-menu__item" href="{{ permalink }}">
@@ -88,7 +88,7 @@
       <i class="bi bi-envelope-fill" aria-hidden="true"></i>
       <span>Email</span>
     </a>
-    <p class="share__status" role="status" aria-live="polite"></p>
+    <p class="share__status visually-hidden" role="status" aria-live="polite"></p>
   </nav>
 </aside>
 {% endcomponent render.share_menu %}
@@ -115,22 +115,30 @@
 </div>
 {% endcomponent render.cards %}
 
-{% component render.breadcrumbs(crumbs=[], page={}, class_name="") %}
+{% component render.breadcrumb_label(pos) -%}
+  {%- set label = pos.extra.breadcrumb_title | default(value="") | trim -%}
+  {%- if not label -%}{%- set label = pos.title -%}{%- endif -%}
+  {{- label -}}
+{%- endcomponent render.breadcrumb_label %}
+
+{% component render.breadcrumbs(crumbs=[], page={}, class_name="", section={}) %}
+{% set current = page %}
+{% if not current %}{% set current = section %}{% endif %}
 <header class="page-title d-flex align-items-center{% if class_name %} {{ class_name }}{% endif %}">
   <div class="container" data-aos="fade">
     <nav class="breadcrumbs" aria-label="Breadcrumb">
       <ol>
         {% set_global path = "" %}
         <li><a href="{{ get_url(path='/') }}">Home</a></li>
-        {% if page %}
+        {% if current %}
           {# Section ancestry remains valid when a page uses a custom output path. #}
-          {% for ancestor in page.ancestors %}
+          {% for ancestor in current.ancestors %}
             {% set ancestor_section = get_section(path=ancestor) %}
             {% if ancestor_section.path != "/" %}
-            <li><a href="{{ ancestor_section.permalink }}">{{ ancestor_section.title }}</a></li>
+            <li><a href="{{ ancestor_section.permalink }}">{{ <render.breadcrumb_label pos={ancestor_section} /> }}</a></li>
             {% endif %}
           {% endfor %}
-          <li class="current" aria-current="page">{{ page.title }}</li>
+          <li class="current" aria-current="page">{{ <render.breadcrumb_label pos={current} /> }}</li>
         {% else %}
         {% for crumb in crumbs %}
           {% set_global path = path ~ crumb ~ "/" %}

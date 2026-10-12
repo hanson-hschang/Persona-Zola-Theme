@@ -44,7 +44,7 @@
     margin-top: 20px;
 
     p {
-      text-align: justify;
+      text-align: left;
     }
 
     img {
@@ -75,6 +75,7 @@
 
       p {
         color: var(--color-default);
+        text-align: center;
         line-height: 1.6;
         margin-bottom: 0;
         font-style: italic;

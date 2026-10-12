@@ -1,7 +1,34 @@
-{% component media.image(page, path, width, alt) %}
-  {% set resized = resize_image(path=page.colocated_path ~ path, width=width, op="fit_width") %}
-  <img alt="{{ alt }}" src="{{ resized.url | safe }}" />
-{% endcomponent media.image %}
+{% component media.image(page, path, width=0, alt="", caption="", full_size=false, eager=false) -%}
+{%- set item = {"src": path, "alt": alt, "caption": caption, "full_size": full_size} -%}
+{%- set image_path = path | lower -%}
+{%- if width > 0 and not image_path is ending_with(pat=".svg") and not path is starting_with(pat="/") and not path is starting_with(pat="@/") and not path is starting_with(pat="https://") and not path is starting_with(pat="http://") -%}
+{%- set resized = resize_image(path=page.colocated_path ~ path, width=width, op="fit_width") -%}
+{%- set item = {"src": path, "preview_src": resized.url, "width": resized.width, "height": resized.height, "alt": alt, "caption": caption, "full_size": full_size} -%}
+{%- endif -%}
+{{- <media.figure page={page} item={item} eager={eager} /> -}}
+{%- endcomponent media.image %}
+
+{# One figure renderer for body images, teasers, and article media galleries.
+   src remains the original asset; preview_src may point to a resized image.
+   Explicitly escape attributes: Markdown component calls lack HTML autoescaping. #}
+{% component media.figure(page, item, eager=false) -%}
+<figure class="post__figure">
+{%- if item.type is defined and item.type == "video" -%}
+<video controls playsinline preload="metadata"{% if item.poster %} poster="{{ <post.url page={page} path={item.poster} /> }}"{% endif %}{% if item.title %} aria-label="{{ item.title | escape_html | safe }}"{% endif %}>
+<source src="{{ <post.url page={page} path={item.src} /> }}"{% if item.mime %} type="{{ item.mime | escape_html | safe }}"{% endif %}>
+{%- if item.captions %}<track kind="captions" src="{{ <post.url page={page} path={item.captions} /> }}" srclang="{{ item.lang | default(value='en') | escape_html | safe }}" label="{{ item.caption_label | default(value='English') | escape_html | safe }}" default>{% endif %}
+<a href="{{ <post.url page={page} path={item.src} /> }}">Download the video</a>.
+</video>
+{%- else -%}
+{%- set alt = item.alt | default(value="") -%}
+{%- set preview = item.preview_src | default(value=item.src) -%}
+{%- if item.full_size | default(value=false) -%}<a href="{{ <post.url page={page} path={item.src} /> }}" data-post-lightbox-trigger aria-label="View full-size image: {{ alt | escape_html | safe }}">{%- endif -%}
+<img src="{{ <post.url page={page} path={preview} /> }}" alt="{{ alt | escape_html | safe }}"{% if item.width %} width="{{ item.width | str | escape_html | safe }}"{% endif %}{% if item.height %} height="{{ item.height | str | escape_html | safe }}"{% endif %} loading="{% if eager %}eager{% else %}lazy{% endif %}" decoding="async">
+{%- if item.full_size | default(value=false) -%}</a>{%- endif -%}
+{%- endif -%}
+{%- if item.caption -%}<figcaption>{{ item.caption | markdown | safe }}</figcaption>{%- endif -%}
+</figure>
+{%- endcomponent media.figure %}
 
 {% component media.block(page="", section="", path, title="", portion=2, alt="") %}
   {% if page %}

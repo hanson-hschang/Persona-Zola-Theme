@@ -22,7 +22,7 @@ author_note = "* Equal contribution. Illustrative project and authors."
 links = [
   { name = "Read the overview", url = "#post-abstract", icon_class = "bi bi-file-earmark-text" },
   { name = "Source", url = "https://github.com/hanson-hschang/Persona-Zola-Theme", icon_class = "bi bi-github" },
-  { name = "Cite", url = "#post-citation", icon_class = "bi bi-quote" },
+  { name = "Cite", action = "copy-bibtex", icon_class = "bi bi-quote" },
 ]
 related = [{ title = "More from Public Self", url = "@/maps/public-self/_index.md" }]
 abstract = """

@@ -22,6 +22,15 @@ Write the article here.
 
 The `[extra.post]` table is optional. Set `description` at the top level for card previews, search and social metadata, and `date` for the publication date. Existing `[extra].tex` support is available for mathematics. Posts share Persona's standard navigation and mobile menu. Breadcrumbs link Home and the parent sections, followed by the current post title; they follow content ancestry even when a post has a custom output path.
 
+Use `[extra].breadcrumb_title` for a shorter breadcrumb label while keeping the full article title:
+
+```toml
+[extra]
+breadcrumb_title = "Machine Deception Detection"
+```
+
+You can also set this field in a section's `_index.md` to customize its labels in breadcrumbs, including those on descendant posts. Missing, empty, or whitespace-only values use the normal `title`. This field changes breadcrumb text only; headings, card titles, metadata, and URLs keep their existing values.
+
 Use a page bundle such as `content/maps/public-self/my-post/index.md` so images, videos, caption files, and PDFs can live alongside the page.
 
 ## Post listings and home-page preview
@@ -135,7 +144,7 @@ All fields below belong to `[extra.post]` unless another location is shown. Omit
 | `authors` | Array of author tables | Authors in the supplied order; also used in citation metadata. |
 | `affiliations` | Array of affiliation tables | Institution names below the authors. |
 | `author_note` | String | Note below the byline, such as an explanation of equal contribution. Requires authors or affiliations. |
-| `links` | Array of resource tables | Resource buttons in the supplied order; the first has accent styling. |
+| `links` | Array of resource tables | URL links and explicit copy actions in the supplied order; the first available resource has accent styling. |
 | `abstract` | String | Markdown rendered in the Abstract section. |
 | `teaser` | Media table | Image or local video below the post header. |
 | `gallery` | Array of media tables | Scrollable results gallery after the article. |
@@ -186,16 +195,41 @@ affiliations = [
 links = [
   { name = "Paper", url = "paper.pdf", icon_class = "bi bi-file-earmark-pdf" },
   { name = "Code", url = "https://github.com/example/post", icon_class = "bi bi-github" },
-  { name = "Citation", url = "#post-citation" },
+  { name = "Cite", action = "copy-bibtex", icon_class = "bi bi-quote" },
 ]
 related = [
   { title = "Another post", url = "@/maps/public-self/another-post/index.md" },
 ]
 ```
 
-An author requires `name`; `url`, `affiliations`, and `equal` are optional. `affiliations` is a display string such as `"1,2"`, not an array or an automatic lookup. `equal = true` adds an asterisk. An affiliation requires `name`; its displayed `id` is optional. A resource requires `name` and `url`; `icon_class` is optional and can use Persona's existing Bootstrap Icons or Academicons. A related-work entry requires `title` and `url`.
+An author requires `name`; `url`, `affiliations`, and `equal` are optional. `affiliations` is a display string such as `"1,2"`, not an array or an automatic lookup. `equal = true` adds an asterisk. An affiliation requires `name`; its displayed `id` is optional. A resource requires `name` and either `url` for navigation or `action = "copy-bibtex"` for copying the post's BibTeX. `icon_class` is optional and can use Persona's existing Bootstrap Icons or Academicons. A related-work entry requires `title` and `url`.
+
+The copy action uses `[extra.post].bibtex` and needs no `url`. On success, the button shows **BibTex Copied!** for three seconds, then restores its configured name. Its icon remains visible and copying keeps the reader at the same place in the article. Without JavaScript, the same resource links to the Citation section for manual copying. Copy resources are omitted when BibTeX is missing or blank. An ordinary resource with `url = "#post-citation"` still navigates to Citation; its name and icon never infer an action.
 
 ### Images and local videos
+
+Use `media.image` for images within the article. It shares the figure renderer with teaser and gallery images, including captions and the lightbox:
+
+```tera
+{{ <media.image
+  page={page}
+  path="img/state-space-model.png"
+  width={1000}
+  alt="Structured State Space Duality"
+  caption="**Structured State Space Duality.** A short explanation of the figure."
+  full_size={true}
+/> }}
+```
+
+`path` is required; `alt`, `width`, `caption`, `full_size`, and `eager` are optional. A positive `width` generates a resized preview for a colocated raster image. Omitting it uses the original image. SVGs and external or site-root images remain unprocessed. With `full_size={true}`, clicking the preview opens the original asset. Captions support Markdown; the first bold phrase becomes the viewer's heading. Images load lazily unless `eager={true}` is supplied. Existing calls with only `page`, `path`, `width`, and `alt` continue to work.
+
+For citation sources processed by Pandoc (`*.src.md`), preserve component calls inside a raw HTML fence:
+
+````markdown
+```{=html}
+{{ <media.image page={page} path="img/example.png" width={1000} alt="Method overview" full_size={true} /> }}
+```
+````
 
 The teaser and gallery use the same media schema. Images require `src` and `alt`. Set `type = "video"` for a local video; omitting `type` renders an image. `caption` supports Markdown.
 
@@ -226,9 +260,9 @@ caption = "The method running on a sample sequence."
 
 Article images are centered by default while respecting their intrinsic size and the available width. For images, `width` and `height` are optional intrinsic pixel dimensions. Use descriptive alt text, or an empty `alt` for a purely decorative image. The teaser image loads eagerly; gallery images load lazily. Videos expose native playback controls and do not autoplay. `title`, `mime`, `poster`, and the caption-track fields are optional. If `captions` is set, `lang` defaults to `en` and `caption_label` defaults to `English`.
 
-Set `full_size = true` on a teaser or gallery image to open it in Persona's lightbox. The viewer uses the theme's colors and typography and fits the image to the viewport. Escape, the close button, or a click on the backdrop closes it and returns focus to the figure without losing the reader's place. Keyboard focus stays inside the viewer while it is open. Captions remain visible beneath the image. Omit the option, or set it to `false`, to leave an image unlinked.
+Set `full_size = true` on a teaser or gallery image, or `full_size={true}` on `media.image`, to open it in Persona's lightbox. The viewer uses the theme's colors and typography and fits the image to the viewport. Escape, the close button, or a click on the backdrop closes it and returns focus to the figure without losing the reader's place. Keyboard focus stays inside the viewer while it is open. Captions remain visible beneath the image. Omit the option, or set it to `false`, to leave an image unlinked.
 
-For figures authored directly in Markdown/HTML, wrap the image in a link to its original asset and add `data-post-lightbox-trigger` to that link. Keep its `<figcaption>` outside the link. The viewer takes its heading from the caption's first `<strong>` element and preserves the image's alternative text. Without JavaScript or native dialog support, the links still open the original images. Other templates using this media component can include `{{ <post.lightbox /> }}` once inside their `.post` wrapper, alongside `page-post.css` and `post.js`.
+The components generate the figure, caption, and lightbox link together; no hand-written HTML wrapper is needed for image figures. The viewer preserves the image's alternative text. Without JavaScript or native dialog support, the links still open the original images. Other templates using these media components can include `{{ <post.lightbox /> }}` once inside their `.post` wrapper, alongside `page-post.css` and `post.js`.
 
 The gallery supports touch and native horizontal scrolling. JavaScript adds previous/next buttons beside the results heading, an announced position, and left/right arrow keys when the gallery track has focus. It respects reduced-motion preferences and pauses videos when another slide becomes active. The gallery remains scrollable without JavaScript.
 
@@ -275,7 +309,7 @@ The template provides a canonical URL, description, Open Graph tags, Twitter car
 
 The sharing image defaults to the card image: `extra.post.thumbnail`, then `extra.thumbnail`, then the teaser image or a video teaser's `poster`. Set `extra.post.social_image` only to use a different image for sharing. Missing or whitespace-only overrides use the default. When no image is available, the template omits `og:image` and uses the small `summary` Twitter card type.
 
-BibTeX is rendered as text, without a citation-processing dependency. Long lines wrap to fit the screen while preserving the original citation text and line breaks for copying; surrounding whitespace is trimmed. JavaScript enables both copy buttons. Copying from Share announces success inside that menu, while copying from Citation announces it beside the code block. If clipboard access fails, either button selects and focuses the citation for manual copying, with the fallback announced in the Citation section. Without JavaScript, the code block remains selectable and Share's ordinary links remain available. Use the separate [Citation Pipeline](../README.md#-citation-pipeline) if you need formatted references within the article itself.
+BibTeX is rendered as text, without a citation-processing dependency. Long lines wrap to fit the screen while preserving the original citation text and line breaks for copying; surrounding whitespace is trimmed. JavaScript enables the copy buttons in Citation, Share, and configured resource actions. Every copy button shows **BibTex Copied!** for three seconds after success, then restores its original name. Success is also announced to assistive technology, without an additional visible message below the citation or inside Share. If clipboard access fails, the action selects and focuses the citation for manual copying, with a visible fallback message in the Citation section. Without JavaScript, the code block remains selectable and resource copy actions link to it. Use the separate [Citation Pipeline](../README.md#-citation-pipeline) if you need formatted references within the article itself.
 
 ## Resource URL rules
 
@@ -296,6 +330,8 @@ These rules apply to post front matter and components, not ordinary Markdown lin
 Tera 2 registers these components globally. On a post page, use them directly in Markdown where you want media within the article:
 
 ```tera
+{{ <media.image page={page} path="img/example.png" width={1000} alt="Method overview" caption="**Overview.** The method's main stages." full_size={true} /> }}
+
 {{ <post.media page={page} item={page.extra.post.teaser} /> }}
 
 {{ <post.gallery page={page} items={page.extra.post.gallery} id="method-gallery" title="Method comparison" /> }}
@@ -305,11 +341,11 @@ Tera 2 registers these components globally. On a post page, use them directly in
 {{ <post.poster page={page} src="poster.pdf" title="Conference poster" /> }}
 ```
 
-The first two examples reuse front matter already rendered by the template; use separate data under `extra` if you want an additional figure or gallery. Give each gallery a unique `id` when displaying more than one on a page. Set `heading_id="method-gallery-title"` on `post.gallery` to show its title beside the controls; otherwise the controls appear above the gallery without a visible heading. `post.media` accepts `eager={true}` when immediate image loading is appropriate. Other templates can use these components inside a `.post` wrapper by also loading `page-post.css` and, for gallery controls, `post.js`.
+The `post.media` and `post.gallery` examples reuse front matter already rendered by the template; use separate data under `extra` if you want an additional figure or gallery. Give each gallery a unique `id` when displaying more than one on a page. Set `heading_id="method-gallery-title"` on `post.gallery` to show its title beside the controls; otherwise the controls appear above the gallery without a visible heading. `post.media` accepts `eager={true}` when immediate image loading is appropriate. Other templates can use these components inside a `.post` wrapper by also loading `page-post.css` and, for gallery controls, `post.js`.
 
 ## Customization
 
-The public template and component names are `post.html` and `post.*`; configure optional article features under `[extra.post]`. Styles use `.post` classes and reserved `post-` fragment IDs. The implementation lives in `templates/post.html`, `templates/components/post.html`, `sass/assets/stylesheet/pages/_post.scss`, and `static/assets/script/post.js`. `page-post.scss` compiles through Zola and includes the shared variables and final custom overrides. Adjust Persona's existing tokens or your `_custom.scss` overrides to change the post styling alongside the rest of your site.
+The public template and component names are `post.html`, `post.*`, and `media.image`; configure optional article features under `[extra.post]`. Styles use `.post` classes and reserved `post-` fragment IDs. The implementation lives in `templates/post.html`, `templates/components/post.html`, `templates/components/media.html`, `sass/assets/stylesheet/pages/_post.scss`, and `static/assets/script/post.js`. `page-post.scss` compiles through Zola and includes the shared variables and final custom overrides. Adjust Persona's existing tokens or your `_custom.scss` overrides to change the post styling alongside the rest of your site.
 
 Category and tag labels share `taxonomy.labels(page, name)` in `templates/components/taxonomy.html`, with the `.taxonomy-labels` classes styled by `sass/assets/stylesheet/components/_taxonomy.scss`. The shared `pill` mixin in `components/_labels.scss` keeps tag pills and résumé skill items consistent. Category and tag front matter belongs under `[taxonomies]`.
 
@@ -319,4 +355,4 @@ The [Academic Project Page Template](https://github.com/eliahuhorwitz/Academic-p
 
 ## Development checks
 
-From the theme directory, run `python3 tests/test_posts.py` to build isolated minimal and populated examples and check their rendered output. The tests require Zola and Python 3, and leave the theme's content unchanged. Run `node tests/test_post_gallery.cjs` for scoped category filtering and masonry layout, and `node --test tests/test_post_outline.cjs` for the outline's breakpoint and disclosure behavior. These checks cover template rendering, URL handling, and scripted state changes; check actual media playback and responsive interactions in a browser when changing the media components or script.
+From the theme directory, run `python3 tests/test_posts.py` to build isolated minimal and populated examples and check their rendered output. The tests require Zola and Python 3, and leave the theme's content unchanged. Run `node tests/test_post_gallery.cjs` for scoped category filtering and masonry layout, `node --test tests/test_post_outline.cjs` for the outline's breakpoint and disclosure behavior, and `node --test tests/test_share_bibtex.cjs` for clipboard actions and feedback. These checks cover template rendering, URL handling, and scripted state changes; check actual media playback and responsive interactions in a browser when changing the media components or script.

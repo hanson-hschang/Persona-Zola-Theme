@@ -240,19 +240,56 @@
   }
 
   const citation = document.getElementById('post-bibtex');
-  const citationStatus = document.querySelector('[data-copy-status]');
+  const citationStatus = document.getElementById('post-citation')?.querySelector('[data-copy-status]');
 
   document.querySelectorAll('[data-copy-citation]').forEach(copyButton => {
-    const copyStatus = copyButton.closest('[data-share]')?.querySelector('[role="status"]') || citationStatus;
+    const resource = copyButton.closest('[data-copy-resource]');
+    const copyStatus = resource?.closest('.post__resources')?.querySelector('[data-copy-status]') ||
+      copyButton.closest('[data-share]')?.querySelector('[role="status"]') || citationStatus;
     if (!citation || !copyStatus) return;
+    const label = copyButton.querySelector('[data-copy-label]');
+    const originalLabel = label?.textContent;
+    const keepsFocus = Boolean(label || resource);
+    const feedback = copyButton.getAttribute('data-copy-feedback') || 'BibTeX copied to clipboard.';
+    let feedbackTimer = null;
+    let copying = false;
+    function restoreLabel() {
+      if (feedbackTimer !== null) window.clearTimeout(feedbackTimer);
+      feedbackTimer = null;
+      if (label) label.textContent = originalLabel;
+    }
+
     copyButton.hidden = false;
+    const fallback = resource?.querySelector('[data-copy-citation-fallback]');
+    if (fallback) fallback.hidden = true;
     copyButton.addEventListener('click', async () => {
+      if (copying || copyButton.disabled) return;
+      copying = true;
+      restoreLabel();
       copyStatus.textContent = '';
-      if (citationStatus) citationStatus.textContent = '';
-      copyButton.disabled = true;
+      if (citationStatus) {
+        citationStatus.textContent = '';
+        citationStatus.classList.add('visually-hidden');
+      }
+      const hadFocus = document.activeElement === copyButton;
+      let copied = false;
+      if (keepsFocus) {
+        copyButton.setAttribute('aria-disabled', 'true');
+        copyButton.setAttribute('aria-busy', 'true');
+      } else {
+        copyButton.disabled = true;
+      }
       try {
         await navigator.clipboard.writeText(citation.textContent.trim());
-        copyStatus.textContent = 'BibTeX copied to clipboard.';
+        copied = true;
+        copyStatus.textContent = feedback;
+        if (label) {
+          copyStatus.classList.add('visually-hidden');
+          label.textContent = feedback;
+          feedbackTimer = window.setTimeout(restoreLabel, 3000);
+        } else {
+          copyStatus.classList.remove('visually-hidden');
+        }
       } catch (_) {
         // Clipboard access can be unavailable or denied. Keep a manual path.
         const selection = window.getSelection();
@@ -262,9 +299,22 @@
         selection.addRange(range);
         citation.parentElement.focus();
         // Focusing the citation closes Share; show the fallback beside the selection.
-        (citationStatus || copyStatus).textContent = 'Copy unavailable. The citation is selected; use your browser’s Copy command.';
+        const fallbackStatus = citationStatus || copyStatus;
+        fallbackStatus.classList.remove('visually-hidden');
+        fallbackStatus.textContent = 'Copy unavailable. The citation is selected; use your browser’s Copy command.';
       } finally {
-        copyButton.disabled = false;
+        copying = false;
+        if (keepsFocus) {
+          copyButton.removeAttribute('aria-disabled');
+          copyButton.removeAttribute('aria-busy');
+        } else {
+          copyButton.disabled = false;
+        }
+        // Disabling a focused native button can move focus to the body. Restore
+        // it after success without scrolling or taking focus from another control.
+        if (copied && hadFocus && document.activeElement === document.body) {
+          copyButton.focus({ preventScroll: true });
+        }
       }
     });
   });

@@ -118,13 +118,7 @@
       </div>
       {% endif %}
       {{ <render.article_meta page={page} /> }}
-      {% if post.links %}
-      <nav class="post__resources" aria-label="Post resources">
-        {% for link in post.links %}
-        <a class="post__button{% if loop.first %} post__button--primary{% endif %}" href="{{ <post.url page={page} path={link.url} /> }}">{% if link.icon_class %}<i class="{{ link.icon_class }}" aria-hidden="true"></i>{% endif %}{{ link.name }}</a>
-        {% endfor %}
-      </nav>
-      {% endif %}
+      {{ <post.resource_links page={page} links={post.links | default(value=[])} has_bibtex={bibtex != ""} /> }}
     </header>
 
     {% if post.teaser %}
@@ -194,10 +188,10 @@
         <section class="post__section post__citation" id="post-citation" aria-labelledby="post-citation-title">
           <div class="post__section-heading">
             <h2 id="post-citation-title">Citation</h2>
-            <button class="post__button" type="button" data-copy-citation aria-controls="post-bibtex" hidden><i class="bi bi-copy" aria-hidden="true"></i> Copy BibTeX</button>
+            <button class="post__button" type="button" data-copy-citation data-copy-feedback="BibTex Copied!" aria-controls="post-bibtex" hidden><i class="bi bi-copy" aria-hidden="true"></i><span data-copy-label>Copy BibTeX</span></button>
           </div>
           <pre tabindex="0" aria-label="BibTeX citation"><code id="post-bibtex">{{ bibtex }}</code></pre>
-          <p class="post__copy-status" data-copy-status role="status" aria-live="polite"></p>
+          <p class="post__copy-status visually-hidden" data-copy-status role="status" aria-live="polite"></p>
         </section>
         {% endif %}
 

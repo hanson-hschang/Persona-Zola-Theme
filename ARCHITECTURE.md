@@ -159,6 +159,8 @@ Tera 2 components are globally registered by component name. They do not need im
   - `render.article_meta(page)`: Article metadata and sharing controls
   - `render.article_tags(page)`: Compatibility wrapper for `taxonomy.labels(page, name="tags")`; current posts call the taxonomy component directly
   - `render.section_title`: Renders section titles
+  - `render.breadcrumb_label(pos)`: Uses the optional `extra.breadcrumb_title`, falling back to the page or section title when missing or blank
+  - `render.breadcrumbs(crumbs=[], page={}, class_name="", section={})`: Renders page/section ancestry with configured labels and original permalinks; preserves the explicit `crumbs` fallback API
   - `render.text_content`: Renders text content
   - `render.cards`: Renders card layouts
   - And more...
@@ -185,9 +187,10 @@ Tera 2 components are globally registered by component name. They do not need im
   - Preserved for reference; current pages use `render.*`, `segment.*`, and `post.*` instead
 
 - **media.html**: Content media components
-  - `media.image`: Resizes and renders colocated images
+  - `media.image(page, path, width=0, alt="", caption="", full_size=false, eager=false)`: Renders article image figures, with optional resized colocated raster previews, Markdown captions, and lightbox links to the original asset
+  - `media.figure(page, item, eager=false)`: Shared image/video figure markup for body images, teasers, and galleries; `src` remains the original asset and optional `preview_src` supplies the resized image
   - `media.block`: Renders image/text media rows
-  - Content usage example: `{{ <media.image page={page} path="img/example.png" width={700} alt="Example" /> }}`
+  - Content usage example: `{{ <media.image page={page} path="img/example.png" width={700} alt="Example" caption="**Overview.** A short explanation." full_size={true} /> }}`
 
 - **video.html**: Native video player component
   - `video.player(src, title, start_time=0)`: Renders an MP4 player and direct-link fallback with a media fragment for the start time
@@ -196,7 +199,8 @@ Tera 2 components are globally registered by component name. They do not need im
 
 - **post.html**: Post components
   - `post.url(page, path)`: Resolves page-relative, site-root, and content URLs while preserving external links and fragments
-  - `post.media(page, item, eager=false)`: Renders an image or native video with optional caption
+  - `post.resource_links(page, links=[], has_bibtex=false)`: Renders URL links and `action="copy-bibtex"` resources, retaining configured names/icons and supplied order; copy actions provide a Citation link without JavaScript and are omitted when no BibTeX exists
+  - `post.media(page, item, eager=false)`: Compatibility entry point forwarding to the shared `media.figure` renderer
   - `post.gallery(page, items, id="post-gallery", title="Results gallery")`: Renders a scrollable media gallery
   - `post.embed(src, title)`: Renders a responsive iframe using a provider embed URL
   - `post.poster(page, src, title="Research poster")`: Renders a PDF object with a direct-link fallback
@@ -381,8 +385,9 @@ JavaScript files in `static/assets/script/`:
 
 - **post.js**: Progressive enhancements for all post pages
   - Sets Outline's expanded state when crossing the 992px breakpoint, preserving manual disclosure choices while staying within the same breakpoint; native disclosure remains usable without JavaScript
-  - Enables both Citation and Share's BibTeX copy buttons when nonblank `[extra.post].bibtex` is provided; Share otherwise starts with Permalink
-  - Copies the citation's literal text, reports success next to the chosen control, and selects/focuses Citation with an announced manual-copy fallback when clipboard access fails
+  - Enables Citation, Share, and explicit resource BibTeX copy actions when nonblank `[extra.post].bibtex` is provided; Share otherwise starts with Permalink
+  - All copy buttons replace their label with `BibTex Copied!` for three seconds after success, retaining the icon, scroll position, and keyboard focus; resource actions hide their no-script Citation link only after enhancement
+  - Copies the citation's literal text and announces success through screen-reader-only status regions; clipboard failures select/focus Citation and show a visible manual-copy message
   - Adds gallery navigation, keyboard controls, and announced slide positions
   - Respects reduced-motion preferences and pauses videos on inactive slides
   - Builds the contents navigation from Pandoc HTML headings and highlights the current section as the reader scrolls

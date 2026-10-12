@@ -1,30 +1,52 @@
 {# Post asset URLs follow the rendered page, including custom slugs/base paths. #}
 {% component post.url(page, path) -%}
   {%- if path is starting_with(pat="https://") or path is starting_with(pat="http://") or path is starting_with(pat="//") or path is starting_with(pat="mailto:") or path is starting_with(pat="#") -%}
-    {{- path -}}
+    {{- path | escape_html | safe -}}
   {%- elif path is starting_with(pat="/") or path is starting_with(pat="@/") -%}
-    {{- get_url(path=path) -}}
+    {{- get_url(path=path) | escape_html | safe -}}
   {%- else -%}
-    {{- page.permalink ~ path -}}
+    {{- (page.permalink ~ path) | escape_html | safe -}}
   {%- endif -%}
 {%- endcomponent post.url %}
 
-{% component post.media(page, item, eager=false) %}
-<figure class="post__figure">
-  {% if item.type is defined and item.type == "video" %}
-    <video controls playsinline preload="metadata"{% if item.poster %} poster="{{ <post.url page={page} path={item.poster} /> }}"{% endif %}{% if item.title %} aria-label="{{ item.title }}"{% endif %}>
-      <source src="{{ <post.url page={page} path={item.src} /> }}"{% if item.mime %} type="{{ item.mime }}"{% endif %}>
-      {% if item.captions %}<track kind="captions" src="{{ <post.url page={page} path={item.captions} /> }}" srclang="{{ item.lang | default(value='en') }}" label="{{ item.caption_label | default(value='English') }}" default>{% endif %}
-      <a href="{{ <post.url page={page} path={item.src} /> }}">Download the video</a>.
-    </video>
-  {% else %}
-    {% if item.full_size | default(value=false) %}<a href="{{ <post.url page={page} path={item.src} /> }}" data-post-lightbox-trigger aria-label="View full-size image: {{ item.alt }}">{% endif %}
-    <img src="{{ <post.url page={page} path={item.src} /> }}" alt="{{ item.alt }}"{% if item.width %} width="{{ item.width }}"{% endif %}{% if item.height %} height="{{ item.height }}"{% endif %} loading="{% if eager %}eager{% else %}lazy{% endif %}" decoding="async">
-    {% if item.full_size | default(value=false) %}</a>{% endif %}
+{# Resource navigation and explicit actions keep the same configurable labels. #}
+{% component post.resource_links(page, links=[], has_bibtex=false) %}
+  {% set_global resources = [] %}
+  {% set_global has_copy = false %}
+  {% for link in links %}
+    {% set action = link.action | default(value="") %}
+    {% if action == "copy-bibtex" %}
+      {% if has_bibtex %}
+        {% set_global resources = [...resources, link] %}
+        {% set_global has_copy = true %}
+      {% endif %}
+    {% elif not action and link.url %}
+      {% set_global resources = [...resources, link] %}
+    {% endif %}
+  {% endfor %}
+  {% if resources %}
+  <nav class="post__resources" aria-label="Post resources">
+    {% for link in resources %}
+      {% set button_class = "post__button" %}
+      {% if loop.first %}{% set button_class = button_class ~ " post__button--primary" %}{% endif %}
+      {% if link.action is defined and link.action == "copy-bibtex" %}
+      <span class="post__resource" data-copy-resource>
+        <a class="{{ button_class }}" href="#post-citation" data-copy-citation-fallback>{% if link.icon_class %}<i class="{{ link.icon_class }}" aria-hidden="true"></i>{% endif %}{{ link.name }}</a>
+        <button class="{{ button_class }}" type="button" data-copy-citation data-copy-feedback="BibTex Copied!" aria-controls="post-bibtex" hidden>{% if link.icon_class %}<i class="{{ link.icon_class }}" aria-hidden="true"></i>{% endif %}<span data-copy-label>{{ link.name }}</span></button>
+      </span>
+      {% else %}
+      <a class="{{ button_class }}" href="{{ <post.url page={page} path={link.url} /> }}">{% if link.icon_class %}<i class="{{ link.icon_class }}" aria-hidden="true"></i>{% endif %}{{ link.name }}</a>
+      {% endif %}
+    {% endfor %}
+    {% if has_copy %}<p class="visually-hidden" data-copy-status role="status" aria-live="polite"></p>{% endif %}
+  </nav>
   {% endif %}
-  {% if item.caption %}<figcaption>{{ item.caption | markdown | safe }}</figcaption>{% endif %}
-</figure>
-{% endcomponent post.media %}
+{% endcomponent post.resource_links %}
+
+{% component post.media(page, item, eager=false) -%}
+{# Retain the public helper while all figures share the media renderer. #}
+{{- <media.figure page={page} item={item} eager={eager} /> -}}
+{%- endcomponent post.media %}
 
 {% component post.lightbox() %}
 <dialog class="post__lightbox" id="post-lightbox" data-post-lightbox aria-labelledby="post-lightbox-title">

@@ -63,6 +63,7 @@
   }
 
   &__subtitle {
+    text-align: center;
     max-width: 44rem;
     margin: 0 auto;
     color: var(--color-accent);
@@ -678,12 +679,12 @@
   &__summary > :is(ul, ol) li,
   &__skills-summary > :is(ul, ol) li,
   &__entry-content li {
-    text-align: justify;
+    text-align: left;
   }
 
   &__summary > p,
   &__skills-summary > p {
-    text-align: justify;
+    text-align: left;
   }
 
   &__entry-content > ul {

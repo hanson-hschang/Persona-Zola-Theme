@@ -13,6 +13,8 @@
   position: relative;
   margin: var(--spacing-xxl) 0 0 0;
 
+  p { text-align: inherit; }
+
   &__sitename {
     font-size: var(--font-size-heading);
     font-weight: 700;

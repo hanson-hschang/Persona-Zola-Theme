@@ -88,7 +88,7 @@
 
 {% component segment.posts(pos, preview=false, limit=3) %}
   {% if not preview %}
-    {{ <render.breadcrumbs crumbs={pos.components} /> }}
+    {{ <render.breadcrumbs section={pos} /> }}
   {% endif %}
 
   {# Theme drafts remain buildable at their URL but never consume listing slots. #}
