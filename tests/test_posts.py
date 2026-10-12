@@ -364,7 +364,8 @@ template = "post.html"
 {breadcrumb}
 [extra.post]
 thumbnail = "/test-assets/shared.svg"
-social_image = {json.dumps(social_image)}
+[extra.post.social]
+image = {json.dumps(social_image)}
 +++
 Social image metadata fixture.
 ''')
@@ -373,17 +374,41 @@ title = "Dedicated social image"
 template = "post.html"
 path = "research/social-details"
 [extra.post]
-social_image = "social.png?v=new&source=card"
-social_image_width = 8
-social_image_height = 4
-social_image_type = "image/png"
-social_image_alt = {json.dumps(MEDIA_ALT)}
 thumbnail = "/test-assets/shared.svg"
-teaser = {{ src = "/test-assets/shared.svg", alt = "Different article image", width = 2, height = 2 }}
+teaser = {{ src = "/test-assets/shared.svg", alt = "Different article image", size = [2, 2] }}
+[extra.post.social]
+image = "social.png?v=new&source=card"
+image_size = [8, 4]
+image_type = "image/png"
+image_alt = {json.dumps(MEDIA_ALT)}
 +++
 The social image has different dimensions from the article image.
 ''')
         cls.write("content/test-social-details/social.png", PNG)
+        for name, nested in (
+                ("legacy", ""),
+                ("override", f'''[extra.post.social]
+image = "/test-assets/shared.svg?v=new&source=card"
+image_size = [2, 2]
+image_type = "image/svg+xml"
+image_alt = {json.dumps(MEDIA_ALT)}'''),
+                ("override-minimal", '''[extra.post.social]
+image = "/test-assets/shared.svg?v=new&source=card"''')):
+            cls.write(f"content/test-social-{name}.md", f'''+++
+title = "Social image {name}"
+template = "post.html"
+[extra.post]
+thumbnail = "/test-assets/shared.svg"
+social_image = "/test-assets/social.png?v=old&source=card"
+social_image_width = 8
+social_image_height = 4
+social_image_type = "image/png"
+social_image_alt = "Legacy social image"
+{nested}
++++
+Social image compatibility fixture.
+''')
+        cls.write("static/test-assets/social.png", PNG)
         quote = json.dumps
         cls.write("content/test-full/index.md", f'''+++
 title = {quote(TITLE)}
@@ -403,7 +428,7 @@ subtitle = {quote(SUBTITLE)}
 award = "Example award"
 doi = "10.1234/example"
 paper = "paper.pdf"
-social_image = "plot.svg"
+social = {{ image = "plot.svg" }}
 thumbnail = "/test-assets/shared.svg"
 authors = [{{ name = {quote(AUTHOR)}, url = "https://example.test/author?a=1&b=2", affiliations = "1,2", equal = true }}, {{ name = "Second author" }}]
 affiliations = [{{ id = "1", name = "Example institute" }}, {{ id = "2", name = "Other institute" }}]
@@ -422,7 +447,7 @@ links = [
 ]
 related = [{{ title = "Minimal post", url = "@/test-minimal.md", date = "2024-11-09" }}]
 abstract = "A **formatted** abstract."
-teaser = {{ src = "plot.svg", alt = "Teaser image", width = 2, height = 2, caption = "A **teaser** caption.", full_size = true }}
+teaser = {{ src = "plot.svg", alt = "Teaser image", size = [2, 2], caption = "A **teaser** caption.", full_size = true }}
 gallery_title = "Research results"
 gallery = [
   {{ src = "/test-assets/shared.svg", alt = "Gallery image", caption = "Image result.", full_size = true }},
@@ -456,7 +481,13 @@ title = "Shared image renderer"
 template = "post.html"
 path = "research/media-fixture"
 [extra]
-vector = {{ src = "vector.svg", alt = "Canonical SVG", width = 2, height = 2, caption = "Canonical **figure**.", full_size = false }}
+vector = {{ src = "vector.svg", alt = "Canonical SVG", size = [2, 2], caption = "Canonical **figure**.", full_size = false }}
+legacy_vector = {{ src = "vector.svg", alt = "Legacy SVG", width = 2, height = 2 }}
+preferred_size = {{ src = "vector.svg", alt = "Preferred size", size = [8, 4], width = 2, height = 2 }}
+empty_size = {{ src = "vector.svg", alt = "Empty size", size = [], width = 2, height = 2 }}
+short_size = {{ src = "vector.svg", alt = "Short size", size = [8], width = 2, height = 2 }}
+zero_size = {{ src = "vector.svg", alt = "Zero size", size = [0, 4], width = 2, height = 2 }}
+negative_size = {{ src = "vector.svg", alt = "Negative size", size = [8, -4], width = 2, height = 2 }}
 +++
 {{{{ <media.image page={{page}} path="raster.png" width={{4}} alt={json.dumps(MEDIA_ALT)} caption={json.dumps(MEDIA_CAPTION)} full_size={{true}} /> }}}}
 
@@ -465,6 +496,18 @@ vector = {{ src = "vector.svg", alt = "Canonical SVG", width = 2, height = 2, ca
 {{{{ <media.image page={{page}} path="raster.png" width={{4}} alt="Legacy resized bitmap" /> }}}}
 
 {{{{ <media.figure page={{page}} item={{page.extra.vector}} /> }}}}
+
+{{{{ <media.figure page={{page}} item={{page.extra.legacy_vector}} /> }}}}
+
+{{{{ <media.figure page={{page}} item={{page.extra.preferred_size}} /> }}}}
+
+{{{{ <media.figure page={{page}} item={{page.extra.empty_size}} /> }}}}
+
+{{{{ <media.figure page={{page}} item={{page.extra.short_size}} /> }}}}
+
+{{{{ <media.figure page={{page}} item={{page.extra.zero_size}} /> }}}}
+
+{{{{ <media.figure page={{page}} item={{page.extra.negative_size}} /> }}}}
 ''')
         cls.write("content/test-media/raster.png", PNG)
         cls.write("content/test-media/vector.svg", SVG)
@@ -927,6 +970,20 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                 bold = [attrs for tag, attrs in page.descendants(figure) if tag == "strong"]
                 self.assertEqual([page.text_content(item) for item in bold], ["Pandoc"])
 
+    def test_figure_size_pairs_prefer_valid_dimensions_and_preserve_legacy_fallbacks(self):
+        page = self.document("research/media-fixture")
+        for alt, dimensions in (("Canonical SVG", ("2", "2")),
+                                ("Legacy SVG", ("2", "2")),
+                                ("Preferred size", ("8", "4")),
+                                ("Empty size", ("2", "2")),
+                                ("Short size", ("2", "2")),
+                                ("Zero size", ("2", "2")),
+                                ("Negative size", ("2", "2"))):
+            with self.subTest(alt=alt):
+                image = self.single(page, "img", alt=alt)
+                self.assertEqual(image["src"], BASE + "research/media-fixture/vector.svg")
+                self.assertEqual((image.get("width"), image.get("height")), dimensions)
+
     def test_metadata_and_plain_text_are_escaped(self):
         page = self.document("research/custom-output")
         self.assertIn(TITLE, page.text)
@@ -982,6 +1039,37 @@ bibtex = "@misc{legacy, title={Legacy post}}"
         self.single(page, "img", src=BASE + "test-assets/shared.svg", width="2", height="2")
         self.assertEqual((self.site / "public/research/social-details/social.png").read_bytes(), PNG)
         self.assertFalse(any("onerror" in attrs for _, attrs in page.elements))
+
+    def test_flat_social_metadata_remains_supported(self):
+        page = self.document("test-social-legacy")
+        expected = BASE + "test-assets/social.png?v=old&source=card"
+        self.single(page, "meta", property="og:image", content=expected)
+        self.single(page, "meta", property="og:image:width", content="8")
+        self.single(page, "meta", property="og:image:height", content="4")
+        self.single(page, "meta", property="og:image:type", content="image/png")
+        self.single(page, "meta", property="og:image:alt", content="Legacy social image")
+        self.single(page, "meta", name="twitter:image", content=expected)
+        self.single(page, "meta", name="twitter:image:alt", content="Legacy social image")
+        self.single(page, "meta", name="twitter:card", content="summary_large_image")
+
+    def test_nested_social_metadata_takes_precedence_without_legacy_details(self):
+        expected = BASE + "test-assets/shared.svg?v=new&source=card"
+        for output in ("test-social-override", "test-social-override-minimal"):
+            with self.subTest(output=output):
+                page = self.document(output)
+                self.single(page, "meta", property="og:image", content=expected)
+                self.single(page, "meta", name="twitter:image", content=expected)
+                self.single(page, "meta", name="twitter:card", content="summary_large_image")
+                if output == "test-social-override":
+                    self.single(page, "meta", property="og:image:width", content="2")
+                    self.single(page, "meta", property="og:image:height", content="2")
+                    self.single(page, "meta", property="og:image:type", content="image/svg+xml")
+                    self.single(page, "meta", property="og:image:alt", content=MEDIA_ALT)
+                    self.single(page, "meta", name="twitter:image:alt", content=MEDIA_ALT)
+                else:
+                    for property in ("og:image:width", "og:image:height", "og:image:type", "og:image:alt"):
+                        self.assertFalse(page.find("meta", property=property))
+                    self.assertFalse(page.find("meta", name="twitter:image:alt"))
 
     def test_posts_without_a_usable_image_keep_summary_social_cards(self):
         for output in ("test-minimal", "posts/b-no-image", "posts/c-excerpt", "test-blog/minimal"):

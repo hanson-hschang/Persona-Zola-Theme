@@ -51,8 +51,7 @@ bibtex = """
 [extra.post.teaser]
 src = "workflow.svg"
 alt = "A workflow moving from observations through organized records to an explanation, with provenance retained throughout."
-width = 1200
-height = 480
+size = [1200, 480]
 caption = "From a first observation to a shareable result, keep the reasoning visible."
 +++
 

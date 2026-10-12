@@ -22,8 +22,15 @@
 {%- else -%}
 {%- set alt = item.alt | default(value="") -%}
 {%- set preview = item.preview_src | default(value=item.src) -%}
+{%- set width = item.width | default(value=0) -%}
+{%- set height = item.height | default(value=0) -%}
+{%- set size = item.size | default(value=[]) -%}
+{%- if size | length == 2 and size[0] > 0 and size[1] > 0 -%}
+  {%- set width = size[0] -%}
+  {%- set height = size[1] -%}
+{%- endif -%}
 {%- if item.full_size | default(value=false) -%}<a href="{{ <post.url page={page} path={item.src} /> }}" data-post-lightbox-trigger aria-label="View full-size image: {{ alt | escape_html | safe }}">{%- endif -%}
-<img src="{{ <post.url page={page} path={preview} /> }}" alt="{{ alt | escape_html | safe }}"{% if item.width %} width="{{ item.width | str | escape_html | safe }}"{% endif %}{% if item.height %} height="{{ item.height | str | escape_html | safe }}"{% endif %} loading="{% if eager %}eager{% else %}lazy{% endif %}" decoding="async">
+<img src="{{ <post.url page={page} path={preview} /> }}" alt="{{ alt | escape_html | safe }}"{% if width %} width="{{ width | str | escape_html | safe }}"{% endif %}{% if height %} height="{{ height | str | escape_html | safe }}"{% endif %} loading="{% if eager %}eager{% else %}lazy{% endif %}" decoding="async">
 {%- if item.full_size | default(value=false) -%}</a>{%- endif -%}
 {%- endif -%}
 {%- if item.caption -%}<figcaption>{{ item.caption | markdown | safe }}</figcaption>{%- endif -%}

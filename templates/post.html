@@ -9,7 +9,16 @@
   <meta property="og:description" content="{{ page.description | default(value=config.description) }}">
   <meta property="og:url" content="{{ page.permalink }}">
   <meta property="og:site_name" content="{{ config.title }}">
-  {% set social_image = post.social_image | default(value="") | trim %}
+  {% set social = post.social | default(value={}) %}
+  {% if post.social is not defined %}
+    {% set social = {
+      "image": post.social_image | default(value=""),
+      "image_size": [post.social_image_width | default(value=0), post.social_image_height | default(value=0)],
+      "image_type": post.social_image_type | default(value=""),
+      "image_alt": post.social_image_alt | default(value="")
+    } %}
+  {% endif %}
+  {% set social_image = social.image | default(value="") | trim %}
   {% set has_social_image = social_image != "" %}
   {% if not social_image %}
     {% set social_image = post.thumbnail | default(value=page.extra.thumbnail | default(value="")) | trim %}
@@ -24,16 +33,17 @@
   {% if social_image %}
     <meta property="og:image" content="{{ <post.url page={page} path={social_image} /> }}">
     {% if has_social_image %}
-      {% if post.social_image_width and post.social_image_height %}
-    <meta property="og:image:width" content="{{ post.social_image_width }}">
-    <meta property="og:image:height" content="{{ post.social_image_height }}">
+      {% set image_size = social.image_size | default(value=[]) %}
+      {% if image_size | length == 2 and image_size[0] > 0 and image_size[1] > 0 %}
+    <meta property="og:image:width" content="{{ image_size[0] }}">
+    <meta property="og:image:height" content="{{ image_size[1] }}">
       {% endif %}
-      {% if post.social_image_type %}<meta property="og:image:type" content="{{ post.social_image_type }}">{% endif %}
-      {% if post.social_image_alt %}<meta property="og:image:alt" content="{{ post.social_image_alt }}">{% endif %}
+      {% if social.image_type %}<meta property="og:image:type" content="{{ social.image_type }}">{% endif %}
+      {% if social.image_alt %}<meta property="og:image:alt" content="{{ social.image_alt }}">{% endif %}
     {% endif %}
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="{{ <post.url page={page} path={social_image} /> }}">
-    {% if has_social_image and post.social_image_alt %}<meta name="twitter:image:alt" content="{{ post.social_image_alt }}">{% endif %}
+    {% if has_social_image and social.image_alt %}<meta name="twitter:image:alt" content="{{ social.image_alt }}">{% endif %}
   {% else %}
     <meta name="twitter:card" content="summary">
   {% endif %}
