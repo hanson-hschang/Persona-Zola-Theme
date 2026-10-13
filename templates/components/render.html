@@ -52,23 +52,16 @@
     {% endif %}
     <li><i class="bi bi-hourglass-split" aria-hidden="true"></i><span class="article-meta__reading-time">{% if page.reading_time > 0 %}{{ page.reading_time }}{% else %}1{% endif %} min read</span></li>
   </ul>
-  {% set post = page.extra.post | default(value={}) %}
-  {% set bibtex = post.bibtex | default(value="") | trim %}
-  {{ <render.share_menu title={page.title} permalink={page.permalink} has_bibtex={bibtex != ""} /> }}
+  {{ <render.share_menu title={page.title} permalink={page.permalink} /> }}
 </div>
 {% endcomponent render.article_meta %}
 
-{% component render.share_menu(title, permalink, has_bibtex=false) %}
+{% component render.share_menu(title, permalink) %}
 <aside class="share" data-share aria-label="Article sharing">
   <button class="share__button" data-share-toggle type="button" aria-expanded="false" aria-controls="article-share-menu" hidden>
     <i class="bi bi-box-arrow-up" aria-hidden="true"></i><span>Share</span>
   </button>
   <nav id="article-share-menu" class="share-menu" aria-label="Share this article">
-    {% if has_bibtex %}
-    <button class="share-menu__item" data-copy-citation data-copy-feedback="BibTex Copied!" aria-controls="post-bibtex" type="button" hidden>
-      <i class="bi bi-copy" aria-hidden="true"></i><span data-copy-label>Copy BibTeX</span>
-    </button>
-    {% endif %}
     <a class="share-menu__item" href="{{ permalink }}">
       <i class="bi bi-link-45deg" aria-hidden="true"></i><span>Permalink</span>
     </a>
@@ -88,7 +81,6 @@
       <i class="bi bi-envelope-fill" aria-hidden="true"></i>
       <span>Email</span>
     </a>
-    <p class="share__status visually-hidden" role="status" aria-live="polite"></p>
   </nav>
 </aside>
 {% endcomponent render.share_menu %}

@@ -245,7 +245,7 @@
   document.querySelectorAll('[data-copy-citation]').forEach(copyButton => {
     const resource = copyButton.closest('[data-copy-resource]');
     const copyStatus = resource?.closest('.post__resources')?.querySelector('[data-copy-status]') ||
-      copyButton.closest('[data-share]')?.querySelector('[role="status"]') || citationStatus;
+      citationStatus;
     if (!citation || !copyStatus) return;
     const label = copyButton.querySelector('[data-copy-label]');
     const originalLabel = label?.textContent;
@@ -298,7 +298,7 @@
         selection.removeAllRanges();
         selection.addRange(range);
         citation.parentElement.focus();
-        // Focusing the citation closes Share; show the fallback beside the selection.
+        // Show the manual-copy fallback beside the selected citation.
         const fallbackStatus = citationStatus || copyStatus;
         fallbackStatus.classList.remove('visually-hidden');
         fallbackStatus.textContent = 'Copy unavailable. The citation is selected; use your browser’s Copy command.';

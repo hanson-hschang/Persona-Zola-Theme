@@ -5,8 +5,7 @@
     document.querySelectorAll("[data-share]").forEach((share) => {
       const toggle = share.querySelector("[data-share-toggle]");
       const menu = share.querySelector(".share-menu");
-      const status = share.querySelector("[role='status']");
-      if (!toggle || !menu || !status) return;
+      if (!toggle || !menu) return;
 
       function closeMenu(restoreFocus = false) {
         menu.hidden = true;
@@ -23,7 +22,6 @@
         const opening = menu.hidden;
         menu.hidden = !opening;
         toggle.setAttribute("aria-expanded", String(opening));
-        if (opening) status.textContent = "";
       });
 
       share.addEventListener("keydown", (event) => {

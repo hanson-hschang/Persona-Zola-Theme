@@ -825,28 +825,27 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                     title="Presentation video", loading="lazy")
         self.single(page, "object", data=FULL_URL + "poster.pdf", type="application/pdf")
         self.single(page, "div", **{"data-gallery-controls": None, "hidden": None})
-        for container in (page.with_class("share-menu")[0],
-                          self.single(page, "section", id="post-citation")):
-            copy_buttons = self.copy_buttons_within(page, container)
-            self.assertEqual(len(copy_buttons), 1)
-            button = copy_buttons[0]
-            self.assertIn("hidden", button)
-            self.assertEqual(button.get("aria-controls"), "post-bibtex")
-            self.assertEqual(button.get("data-copy-feedback"), "BibTex Copied!")
-            labels = [attrs for tag, attrs in page.descendants(button)
-                      if tag == "span" and "data-copy-label" in attrs]
-            self.assertEqual(len(labels), 1)
-            self.assertEqual(page.text_content(labels[0]), "Copy BibTeX")
-            self.assertFalse(page.descendants(labels[0]))
-            icons = [attrs for tag, attrs in page.descendants(button) if tag == "i"]
-            self.assertEqual(icons, [{"class": "bi bi-copy", "aria-hidden": "true"}])
-            statuses = [attrs for tag, attrs in page.descendants(container)
-                        if tag == "p" and attrs.get("role") == "status"]
-            self.assertEqual(len(statuses), 1)
-            self.assertIn("visually-hidden", statuses[0].get("class", "").split())
-            self.assertEqual(statuses[0].get("aria-live"), "polite")
-            self.assertNotIn("hidden", statuses[0])
-            self.assertEqual(page.text_content(statuses[0]), "")
+        citation = self.single(page, "section", id="post-citation")
+        copy_buttons = self.copy_buttons_within(page, citation)
+        self.assertEqual(len(copy_buttons), 1)
+        button = copy_buttons[0]
+        self.assertIn("hidden", button)
+        self.assertEqual(button.get("aria-controls"), "post-bibtex")
+        self.assertEqual(button.get("data-copy-feedback"), "BibTex Copied!")
+        labels = [attrs for tag, attrs in page.descendants(button)
+                  if tag == "span" and "data-copy-label" in attrs]
+        self.assertEqual(len(labels), 1)
+        self.assertEqual(page.text_content(labels[0]), "Copy BibTeX")
+        self.assertFalse(page.descendants(labels[0]))
+        icons = [attrs for tag, attrs in page.descendants(button) if tag == "i"]
+        self.assertEqual(icons, [{"class": "bi bi-copy", "aria-hidden": "true"}])
+        statuses = [attrs for tag, attrs in page.descendants(citation)
+                    if tag == "p" and attrs.get("role") == "status"]
+        self.assertEqual(len(statuses), 1)
+        self.assertIn("visually-hidden", statuses[0].get("class", "").split())
+        self.assertEqual(statuses[0].get("aria-live"), "polite")
+        self.assertNotIn("hidden", statuses[0])
+        self.assertEqual(page.text_content(statuses[0]), "")
         self.assertNotIn("BibTex Copied!", page.text, "Success feedback appears only after copying")
         for asset in ("plot.svg", "clip.mp4", "captions.vtt", "paper.pdf", "poster.pdf"):
             self.assertTrue((self.site / "public/research/custom-output" / asset).is_file(), asset)
@@ -1147,7 +1146,7 @@ bibtex = "@misc{legacy, title={Legacy post}}"
         self.assertTrue(any(link["href"] == FULL_URL for link in links))
         self.assertFalse(self.document("test-minimal").with_class("taxonomy-labels"))
 
-    def test_share_menu_copies_available_bibtex_and_otherwise_starts_with_permalink(self):
+    def test_share_menu_starts_with_permalink_and_leaves_bibtex_in_citation(self):
         for output, has_bibtex in (("research/custom-output", True),
                                    ("test-minimal", False),
                                    ("test-bibtex-empty", False),
@@ -1158,23 +1157,21 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                 actions = [(tag, attrs) for tag, attrs in page.descendants(menu)
                            if tag in {"a", "button"}]
                 first_tag, first = actions[0]
-                self.assertEqual(page.text_content(first).strip(),
-                                 "Copy BibTeX" if has_bibtex else "Permalink")
-                self.assertEqual(first_tag, "button" if has_bibtex else "a")
+                self.assertEqual(page.text_content(first).strip(), "Permalink")
+                self.assertEqual(first_tag, "a")
+                self.assertEqual(first["href"], BASE + output + "/")
                 copies = self.copy_buttons_within(page, menu)
-                self.assertEqual(len(copies), 1 if has_bibtex else 0)
+                self.assertFalse(copies)
+                self.assertTrue(all(tag == "a" for tag, _ in actions))
                 self.assertFalse(page.find(**{"data-share-copy": None}))
+                self.assertNotIn("Copy BibTeX", page.text_content(menu))
                 self.assertNotIn("Copy link", page.text_content(menu))
                 if has_bibtex:
-                    self.assertIn("hidden", first, "Copy needs JavaScript; links do not")
-                    self.assertEqual(first.get("aria-controls"), "post-bibtex")
                     code = self.single(page, "code", id="post-bibtex")
                     self.assertEqual(page.text_content(code).strip(), BIBTEX)
-                    self.assertEqual(page.text_content(actions[1][1]).strip(), "Permalink")
                     citation = self.single(page, "section", id="post-citation")
                     self.assertEqual(len(self.copy_buttons_within(page, citation)), 1)
                 else:
-                    self.assertEqual(first["href"], BASE + output + "/")
                     self.assertFalse(page.find(id="post-citation"))
                     self.assertFalse(page.find("a", href="#post-citation"))
 

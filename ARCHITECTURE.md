@@ -367,7 +367,7 @@ JavaScript files in `static/assets/script/`:
 
 - **share.js**: Share menu disclosure
   - Opens the menu and closes it on Escape, outside clicks, or focus leaving the menu
-  - Enhances the template's Permalink and social links even when no BibTeX copy action is present; links remain available without JavaScript
+  - Enhances the template's Permalink and social links; links remain available without JavaScript
 
 - **post-gallery.js**: Progressive category filtering for post galleries
   - Reveals native category buttons when a displayed gallery has category labels; All restores every displayed card, including cards without categories
@@ -385,7 +385,7 @@ JavaScript files in `static/assets/script/`:
 
 - **post.js**: Progressive enhancements for all post pages
   - Sets Outline's expanded state when crossing the 992px breakpoint, preserving manual disclosure choices while staying within the same breakpoint; native disclosure remains usable without JavaScript
-  - Enables Citation, Share, and explicit resource BibTeX copy actions when nonblank `[extra.post].bibtex` is provided; Share otherwise starts with Permalink
+  - Enables Citation and explicit resource BibTeX copy actions when nonblank `[extra.post].bibtex` is provided; Share contains only Permalink and sharing links
   - All copy buttons replace their label with `BibTex Copied!` for three seconds after success, retaining the icon, scroll position, and keyboard focus; resource actions hide their no-script Citation link only after enhancement
   - Copies the citation's literal text and announces success through screen-reader-only status regions; clipboard failures select/focus Citation and show a visible manual-copy message
   - Adds gallery navigation, keyboard controls, and announced slide positions

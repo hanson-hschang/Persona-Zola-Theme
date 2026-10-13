@@ -89,7 +89,7 @@ Existing optional fields under `[extra]` remain supported: `subtitle`, `thumbnai
 
 Keep categories and tags in the standard `[taxonomies]` table and the date at the top level. Categories appear as separate linked rectangular boxes above the title, followed by the optional publication venue. Choose labels that describe the article's topic or format, such as `Research paper`, `Travel journal`, or `Theme development`. Tags appear below the title and subtitle as rounded pills with a decorative dot, sharing the résumé skill-item styling. Both lists wrap and retain their supplied order. The publication date, estimated reading time, and Share menu occupy a separate row after the author byline and before the resource buttons, aligned to the same full width as the resources. The row still appears when authors or resources are omitted. It has no Save action.
 
-Share starts with **Copy BibTeX** when `[extra.post].bibtex` contains a citation, followed by **Permalink** and the social sharing links. Without a citation, or when the field contains only whitespace, it starts with **Permalink**. Both the Share action and the Citation section's copy button copy the same literal BibTeX; Permalink remains the direct link to the article.
+Share starts with **Permalink**, followed by the social sharing links and Email. Copy BibTeX is available in the Citation section and through an optional `action = "copy-bibtex"` resource button.
 
 ```toml
 date = 2026-09-21
@@ -152,7 +152,7 @@ All fields below belong to `[extra.post]` unless another location is shown. Omit
 | `video` | Embed table | Embedded video after the gallery. |
 | `poster` | Poster table | PDF viewer and a direct link after the video. |
 | `related` | Array of related-work tables | Related Posts widget below Outline on the left; below the article on screens narrower than 992px. When omitted, shows up to five other listed pages from the parent section. Set `[]` to hide it. |
-| `bibtex` | String | Literal BibTeX displayed in a code block with a copy button and a Copy BibTeX action in Share. Empty or whitespace-only values hide both. |
+| `bibtex` | String | Literal BibTeX displayed in the Citation section with a copy button; optional copy resource actions use the same text. Empty or whitespace-only values hide the section and copy resources. |
 | `doi` | String | DOI for citation metadata. |
 | `social_image` | URL string | Optional sharing-image override. Falls back to the card image: `extra.post.thumbnail`, `extra.thumbnail`, then the teaser image or video poster. A usable image enables the large-image Twitter card. |
 
@@ -309,7 +309,7 @@ The template provides a canonical URL, description, Open Graph tags, Twitter car
 
 The sharing image defaults to the card image: `extra.post.thumbnail`, then `extra.thumbnail`, then the teaser image or a video teaser's `poster`. Set `extra.post.social_image` only to use a different image for sharing. Missing or whitespace-only overrides use the default. When no image is available, the template omits `og:image` and uses the small `summary` Twitter card type.
 
-BibTeX is rendered as text, without a citation-processing dependency. Long lines wrap to fit the screen while preserving the original citation text and line breaks for copying; surrounding whitespace is trimmed. JavaScript enables the copy buttons in Citation, Share, and configured resource actions. Every copy button shows **BibTex Copied!** for three seconds after success, then restores its original name. Success is also announced to assistive technology, without an additional visible message below the citation or inside Share. If clipboard access fails, the action selects and focuses the citation for manual copying, with a visible fallback message in the Citation section. Without JavaScript, the code block remains selectable and resource copy actions link to it. Use the separate [Citation Pipeline](../README.md#-citation-pipeline) if you need formatted references within the article itself.
+BibTeX is rendered as text, without a citation-processing dependency. Long lines wrap to fit the screen while preserving the original citation text and line breaks for copying; surrounding whitespace is trimmed. JavaScript enables the copy buttons in Citation and configured resource actions. Every copy button shows **BibTex Copied!** for three seconds after success, then restores its original name. Success is also announced to assistive technology, without an additional visible message below the citation. If clipboard access fails, the action selects and focuses the citation for manual copying, with a visible fallback message in the Citation section. Without JavaScript, the code block remains selectable and resource copy actions link to it. Use the separate [Citation Pipeline](../README.md#-citation-pipeline) if you need formatted references within the article itself.
 
 ## Resource URL rules
 

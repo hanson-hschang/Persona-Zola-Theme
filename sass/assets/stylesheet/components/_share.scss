@@ -56,15 +56,6 @@
     }
   }
 
-  &__status {
-    margin: 0;
-    padding: 0 var(--spacing-sm);
-    color: var(--color-heading);
-    overflow-wrap: anywhere;
-
-    &:not(:empty) { padding-block: var(--spacing-xs); }
-  }
-
   &--enhanced {
     width: auto;
     margin-inline-start: auto;
@@ -112,7 +103,6 @@
     i { flex: 0 0 1rem; }
   }
 
-  button { width: 100%; }
 }
 
 .share a:focus-visible,

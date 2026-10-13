@@ -44,13 +44,9 @@ function fixture({ hasCitation = true, clipboard = 'success', deferReady = false
   const share = element();
   const menu = element();
   const toggle = element();
-  const shareStatus = element();
   const citationStatus = element();
-  const menuCopy = element();
   const citationCopy = element();
-  const menuLabel = element();
   const citationLabel = element();
-  const menuIcon = element();
   const citationIcon = element();
   const citationSection = element();
   const resourceNav = element();
@@ -68,7 +64,7 @@ function fixture({ hasCitation = true, clipboard = 'success', deferReady = false
     removeAllRanges() { this.ranges = []; },
     addRange(range) { this.ranges.push(range); },
   };
-  const copies = [...(hasCitation ? [menuCopy, citationCopy] : []), ...(resource ? [resourceCopy] : [])];
+  const copies = [...(hasCitation ? [citationCopy] : []), ...(resource ? [resourceCopy] : [])];
   const timers = new Map();
   let time = 0;
   let nextTimer = 0;
@@ -76,17 +72,14 @@ function fixture({ hasCitation = true, clipboard = 'success', deferReady = false
   document.activeElement = document.body;
   citationStatus.classList.add('visually-hidden');
   resourceStatus.classList.add('visually-hidden');
-  if (labeled) shareStatus.classList.add('visually-hidden');
-  for (const [button, label, icon] of [[menuCopy, menuLabel, menuIcon], [citationCopy, citationLabel, citationIcon]]) {
-    label.textContent = 'Copy BibTeX';
-    button.querySelector = selector => ({ '[data-copy-label]': labeled ? label : null, i: icon })[selector] || null;
-    if (labeled) button.setAttribute('data-copy-feedback', 'BibTex Copied!');
-    button.focus = options => {
-      button.focusCount += 1;
-      button.focusOptions = options;
-      document.activeElement = button;
-    };
-  }
+  citationLabel.textContent = 'Copy BibTeX';
+  citationCopy.querySelector = selector => ({ '[data-copy-label]': labeled ? citationLabel : null, i: citationIcon })[selector] || null;
+  if (labeled) citationCopy.setAttribute('data-copy-feedback', 'BibTex Copied!');
+  citationCopy.focus = options => {
+    citationCopy.focusCount += 1;
+    citationCopy.focusOptions = options;
+    document.activeElement = citationCopy;
+  };
   resourceLabel.textContent = 'Cite this paper';
   resourceFallback.hidden = false;
   resourceCopy.setAttribute('data-copy-feedback', 'BibTex Copied!');
@@ -108,11 +101,8 @@ function fixture({ hasCitation = true, clipboard = 'success', deferReady = false
   share.querySelector = selector => ({
     '[data-share-toggle]': toggle,
     '.share-menu': menu,
-    "[role='status']": shareStatus,
-    '[role="status"]': shareStatus,
   })[selector] || null;
-  share.contains = target => [share, toggle, menu, menuCopy, shareStatus].includes(target);
-  menuCopy.closest = selector => selector === '[data-share]' ? share : null;
+  share.contains = target => [share, toggle, menu].includes(target);
   pre.focus = () => {
     pre.focusCount += 1;
     document.activeElement = pre;
@@ -144,8 +134,8 @@ function fixture({ hasCitation = true, clipboard = 'success', deferReady = false
   } };
   vm.runInNewContext(shareScript, context);
   vm.runInNewContext(postScript, context);
-  return { document, share, menu, toggle, shareStatus, citationStatus, menuCopy,
-    citationCopy, menuLabel, citationLabel, pre, citation, copies, writes, selection, resourceCopy,
+  return { document, share, menu, toggle, citationStatus,
+    citationCopy, citationLabel, pre, citation, copies, writes, selection, resourceCopy,
     resourceFallback, resourceLabel, resourceIcon, resourceStatus,
     timerCount: () => timers.size,
     advance(milliseconds) {
@@ -158,27 +148,29 @@ function fixture({ hasCitation = true, clipboard = 'success', deferReady = false
   };
 }
 
-test('Share works without a copy action, including Escape and outside/focus dismissal', async () => {
-  const f = fixture({ hasCitation: false });
-  assert.equal(f.toggle.hidden, false);
-  assert.equal(f.menu.hidden, true);
-  assert.equal(f.share.classList.has('share--enhanced'), true);
-  await f.toggle.emit('click');
-  assert.equal(f.menu.hidden, false);
-  assert.equal(f.toggle.getAttribute('aria-expanded'), 'true');
-  const escape = await f.share.emit('keydown', { key: 'Escape' });
-  assert.equal(escape.defaultPrevented, true);
-  assert.equal(f.menu.hidden, true);
-  assert.equal(f.toggle.focusCount, 1);
-  await f.toggle.emit('click');
-  await f.document.emit('click', { target: f.menu });
-  assert.equal(f.menu.hidden, false);
-  await f.document.emit('click', { target: element() });
-  assert.equal(f.menu.hidden, true);
-  await f.toggle.emit('click');
-  await f.share.emit('focusout', { relatedTarget: element() });
-  assert.equal(f.menu.hidden, true);
-});
+for (const hasCitation of [false, true]) {
+  test(`Share initializes without a status region with citation=${hasCitation}, including Escape and outside/focus dismissal`, async () => {
+    const f = fixture({ hasCitation });
+    assert.equal(f.toggle.hidden, false);
+    assert.equal(f.menu.hidden, true);
+    assert.equal(f.share.classList.has('share--enhanced'), true);
+    await f.toggle.emit('click');
+    assert.equal(f.menu.hidden, false);
+    assert.equal(f.toggle.getAttribute('aria-expanded'), 'true');
+    const escape = await f.share.emit('keydown', { key: 'Escape' });
+    assert.equal(escape.defaultPrevented, true);
+    assert.equal(f.menu.hidden, true);
+    assert.equal(f.toggle.focusCount, 1);
+    await f.toggle.emit('click');
+    await f.document.emit('click', { target: f.menu });
+    assert.equal(f.menu.hidden, false);
+    await f.document.emit('click', { target: element() });
+    assert.equal(f.menu.hidden, true);
+    await f.toggle.emit('click');
+    await f.share.emit('focusout', { relatedTarget: element() });
+    assert.equal(f.menu.hidden, true);
+  });
+}
 
 test('Share also initializes without a citation when loaded before DOMContentLoaded', async () => {
   const f = fixture({ hasCitation: false, deferReady: true });
@@ -190,68 +182,60 @@ test('Share also initializes without a citation when loaded before DOMContentLoa
   assert.equal(f.menu.hidden, false);
 });
 
-for (const action of ['menuCopy', 'citationCopy']) {
-  test(`${action} copies literal BibTeX with temporary in-button success and an unobtrusive live status`, async () => {
-    const f = fixture();
-    assert.equal(f.menuCopy.hidden, false);
-    assert.equal(f.citationCopy.hidden, false);
-    await f.toggle.emit('click');
-    const icon = f[action].querySelector('i');
-    f[action].focus();
-    await f[action].emit('click');
-    assert.deepEqual(f.writes, [bibtex]);
-    const ownStatus = action === 'menuCopy' ? f.shareStatus : f.citationStatus;
-    const otherStatus = action === 'menuCopy' ? f.citationStatus : f.shareStatus;
-    const label = action === 'menuCopy' ? f.menuLabel : f.citationLabel;
-    assert.equal(ownStatus.textContent, 'BibTex Copied!');
-    assert.equal(ownStatus.classList.has('visually-hidden'), true);
-    assert.equal(label.textContent, 'BibTex Copied!');
-    assert.equal(otherStatus.textContent, '');
-    assert.equal(f[action].disabled, false);
-    assert.equal(f[action].querySelector('i'), icon);
-    assert.equal(f.document.activeElement, f[action]);
-    assert.equal(f.pre.focusCount, 0);
-    f.advance(3000);
-    assert.equal(label.textContent, 'Copy BibTeX');
-  });
+test('Citation copies literal BibTeX with temporary in-button success and an unobtrusive live status', async () => {
+  const f = fixture();
+  assert.equal(f.citationCopy.hidden, false);
+  await f.toggle.emit('click');
+  const icon = f.citationCopy.querySelector('i');
+  f.citationCopy.focus();
+  await f.citationCopy.emit('click');
+  assert.deepEqual(f.writes, [bibtex]);
+  assert.equal(f.citationStatus.textContent, 'BibTex Copied!');
+  assert.equal(f.citationStatus.classList.has('visually-hidden'), true);
+  assert.equal(f.citationLabel.textContent, 'BibTex Copied!');
+  assert.equal(f.citationCopy.disabled, false);
+  assert.equal(f.citationCopy.querySelector('i'), icon);
+  assert.equal(f.document.activeElement, f.citationCopy);
+  assert.equal(f.pre.focusCount, 0);
+  f.advance(3000);
+  assert.equal(f.citationLabel.textContent, 'Copy BibTeX');
+});
 
-  for (const clipboard of ['denied', 'unavailable']) {
-    test(`${action} selects citation and keeps fallback visible when clipboard is ${clipboard}`, async () => {
-      const f = fixture({ clipboard });
-      await f.toggle.emit('click');
-      await f[action].emit('click');
-      assert.equal(f.selection.ranges.length, 1);
-      assert.equal(f.selection.ranges[0].node, f.citation);
-      assert.equal(f.pre.focusCount, 1);
-      assert.equal(f.menu.hidden, true);
-      assert.equal(f.shareStatus.textContent, '');
-      assert.match(f.citationStatus.textContent, /citation is selected/);
-      assert.equal(f.citationStatus.classList.has('visually-hidden'), false);
-      assert.equal((action === 'menuCopy' ? f.menuLabel : f.citationLabel).textContent, 'Copy BibTeX');
-      assert.equal(f[action].disabled, false);
-    });
-  }
+for (const clipboard of ['denied', 'unavailable']) {
+  test(`Citation selects its code and keeps fallback visible when clipboard is ${clipboard}`, async () => {
+    const f = fixture({ clipboard });
+    await f.toggle.emit('click');
+    await f.citationCopy.emit('click');
+    assert.equal(f.selection.ranges.length, 1);
+    assert.equal(f.selection.ranges[0].node, f.citation);
+    assert.equal(f.pre.focusCount, 1);
+    assert.equal(f.menu.hidden, true);
+    assert.match(f.citationStatus.textContent, /citation is selected/);
+    assert.equal(f.citationStatus.classList.has('visually-hidden'), false);
+    assert.equal(f.citationLabel.textContent, 'Copy BibTeX');
+    assert.equal(f.citationCopy.disabled, false);
+  });
 }
 
 test('labeled copy actions expose busy state while preserving native focus and blocking duplicate requests', async () => {
   let finish;
-  const f = fixture({ clipboard: () => new Promise(resolve => { finish = resolve; }) });
-  f.menuCopy.focus();
-  const pending = f.menuCopy.emit('click');
-  assert.equal(f.menuCopy.disabled, false);
-  assert.equal(f.menuCopy.getAttribute('aria-disabled'), 'true');
-  assert.equal(f.menuCopy.getAttribute('aria-busy'), 'true');
-  assert.equal(f.document.activeElement, f.menuCopy);
+  const f = fixture({ resource: true, clipboard: () => new Promise(resolve => { finish = resolve; }) });
+  f.citationCopy.focus();
+  const pending = f.citationCopy.emit('click');
   assert.equal(f.citationCopy.disabled, false);
-  assert.equal(f.citationCopy.getAttribute('aria-busy'), undefined);
-  await f.menuCopy.emit('click');
+  assert.equal(f.citationCopy.getAttribute('aria-disabled'), 'true');
+  assert.equal(f.citationCopy.getAttribute('aria-busy'), 'true');
+  assert.equal(f.document.activeElement, f.citationCopy);
+  assert.equal(f.resourceCopy.disabled, false);
+  assert.equal(f.resourceCopy.getAttribute('aria-busy'), undefined);
+  await f.citationCopy.emit('click');
   assert.equal(f.writes.length, 1);
   finish();
   await pending;
-  assert.equal(f.menuCopy.disabled, false);
-  assert.equal(f.menuCopy.getAttribute('aria-disabled'), undefined);
-  assert.equal(f.menuCopy.getAttribute('aria-busy'), undefined);
-  assert.equal(f.shareStatus.textContent, 'BibTex Copied!');
+  assert.equal(f.citationCopy.disabled, false);
+  assert.equal(f.citationCopy.getAttribute('aria-disabled'), undefined);
+  assert.equal(f.citationCopy.getAttribute('aria-busy'), undefined);
+  assert.equal(f.citationStatus.textContent, 'BibTex Copied!');
 });
 
 test('resource Cite progressively replaces its fallback and copies literal BibTeX with temporary feedback', async () => {
@@ -337,18 +321,18 @@ test('successful copy restores departed focus without taking focus from another 
   }
 });
 
-test('resource status does not capture Share or Citation feedback', async () => {
+test('Citation and resource actions report feedback only in their own status region', async () => {
   const f = fixture({ resource: true });
-  await f.menuCopy.emit('click');
-  assert.equal(f.shareStatus.textContent, 'BibTex Copied!');
-  assert.equal(f.resourceStatus.textContent, '');
   await f.citationCopy.emit('click');
   assert.equal(f.citationStatus.textContent, 'BibTex Copied!');
   assert.equal(f.resourceStatus.textContent, '');
+  await f.resourceCopy.emit('click');
+  assert.equal(f.resourceStatus.textContent, 'BibTex Copied!');
+  assert.equal(f.citationStatus.textContent, '');
 });
 
 test('retrying any labeled copy control hides the visible manual-copy message before reporting success', async () => {
-  for (const action of ['menuCopy', 'citationCopy', 'resourceCopy']) {
+  for (const action of ['citationCopy', 'resourceCopy']) {
     let finish;
     let attempt = 0;
     const f = fixture({ resource: true, clipboard: () => {
@@ -363,18 +347,17 @@ test('retrying any labeled copy control hides the visible manual-copy message be
     assert.equal(f.citationStatus.textContent, '');
     finish();
     await pending;
-    const ownStatus = action === 'menuCopy' ? f.shareStatus :
-      action === 'citationCopy' ? f.citationStatus : f.resourceStatus;
+    const ownStatus = action === 'citationCopy' ? f.citationStatus : f.resourceStatus;
     assert.equal(ownStatus.textContent, 'BibTex Copied!');
     assert.equal(ownStatus.classList.has('visually-hidden'), true);
   }
 });
 
-test('legacy Share controls without a feedback label retain a visible success status', async () => {
+test('unlabeled Citation controls retain a visible success status', async () => {
   const f = fixture({ labeled: false });
-  await f.menuCopy.emit('click');
-  assert.equal(f.shareStatus.textContent, 'BibTeX copied to clipboard.');
-  assert.equal(f.shareStatus.classList.has('visually-hidden'), false);
+  await f.citationCopy.emit('click');
+  assert.equal(f.citationStatus.textContent, 'BibTeX copied to clipboard.');
+  assert.equal(f.citationStatus.classList.has('visually-hidden'), false);
   assert.equal(f.timerCount(), 0);
 });
 
