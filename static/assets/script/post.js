@@ -116,6 +116,8 @@
     const caption = lightbox.querySelector('[data-lightbox-caption]');
     const count = lightbox.querySelector('[data-lightbox-count]');
     const close = lightbox.querySelector('[data-lightbox-close]');
+    const previous = lightbox.querySelector('[data-lightbox-previous]');
+    const next = lightbox.querySelector('[data-lightbox-next]');
     const viewport = lightbox.querySelector('[data-lightbox-viewport]');
     const status = lightbox.querySelector('[data-lightbox-status]');
     const triggers = Array.from(post.querySelectorAll('a[data-post-lightbox-trigger]'))
@@ -124,7 +126,9 @@
     if (image && title && caption && count && close && viewport) {
       let source = null;
       let request = 0;
+      let currentIndex = -1;
       let backdropPress = false;
+      let swipe = null;
       let description = '';
       const plainText = (element) => element?.textContent.replace(/\s+/g, ' ').trim() || '';
       const setStatus = (message) => {
@@ -135,34 +139,27 @@
           caption.textContent = [description, message].filter(Boolean).join(' ');
         }
       };
-      const openFigure = (trigger) => {
-        if (lightbox.open) return true;
+      const showFigure = (index) => {
+        currentIndex = (index + triggers.length) % triggers.length;
+        swipe = null;
+        const trigger = triggers[currentIndex];
         const thumbnail = trigger.querySelector('img');
-        const index = triggers.indexOf(trigger);
         const figureCaption = trigger.closest('figure')?.querySelector('figcaption')?.cloneNode(true);
         const captionTitle = figureCaption?.querySelector('strong');
-        title.textContent = plainText(captionTitle) || `Figure ${index + 1}`;
+        title.textContent = plainText(captionTitle) || `Figure ${currentIndex + 1}`;
         captionTitle?.remove();
         description = plainText(figureCaption);
         caption.textContent = description;
-        count.textContent = `Figure ${index + 1} of ${triggers.length}`;
+        count.textContent = `Figure ${currentIndex + 1} of ${triggers.length}`;
         image.alt = thumbnail.alt;
         image.hidden = true;
         image.removeAttribute('src');
         viewport.scrollTo({ left: 0, top: 0, behavior: 'instant' });
+        caption.scrollTo({ left: 0, top: 0, behavior: 'instant' });
         setStatus('Loading figure…');
-        const position = { trigger, x: window.scrollX, y: window.scrollY };
-        try {
-          lightbox.showModal();
-        } catch (_) {
-          return false;
-        }
-        source = position;
-        document.documentElement.classList.add('post-lightbox-open');
-        close.focus({ preventScroll: true });
 
         // A separate loader prevents a previous figure's late response from
-        // replacing the current image or error state after reopening.
+        // replacing the current image or error state after switching/reopening.
         const currentRequest = ++request;
         const loader = new Image();
         loader.onload = () => {
@@ -178,8 +175,60 @@
           setStatus('The full-size figure could not be loaded. Close this viewer and try again.');
         };
         loader.src = trigger.href;
+      };
+      const openFigure = (trigger) => {
+        if (lightbox.open) return true;
+        const position = { trigger, x: window.scrollX, y: window.scrollY };
+        try {
+          lightbox.showModal();
+        } catch (_) {
+          return false;
+        }
+        source = position;
+        document.documentElement.classList.add('post-lightbox-open');
+        showFigure(triggers.indexOf(trigger));
+        close.focus({ preventScroll: true });
         return true;
       };
+      const moveFigure = (direction) => {
+        if (lightbox.open && triggers.length > 1) showFigure(currentIndex + direction);
+      };
+
+      [previous, next].forEach((button) => {
+        if (button) button.hidden = triggers.length < 2;
+      });
+      previous?.addEventListener('click', () => moveFigure(-1));
+      next?.addEventListener('click', () => moveFigure(1));
+
+      // Keep vertical scrolling and browser pinch zoom native. Once a gesture
+      // becomes vertical or gains another finger, it cannot turn into a swipe.
+      const isZoomed = () => (window.visualViewport?.scale || 1) > 1;
+      viewport.addEventListener('touchstart', (event) => {
+        swipe = null;
+        if (!lightbox.open || triggers.length < 2 || event.touches.length !== 1 || isZoomed()) return;
+        const touch = event.touches[0];
+        swipe = { id: touch.identifier, x: touch.clientX, y: touch.clientY };
+      }, { passive: true });
+      viewport.addEventListener('touchmove', (event) => {
+        if (!swipe) return;
+        const touch = Array.from(event.touches).find((item) => item.identifier === swipe.id);
+        if (event.touches.length !== 1 || !touch || isZoomed() ||
+          (Math.abs(touch.clientY - swipe.y) > 10 &&
+            Math.abs(touch.clientY - swipe.y) >= Math.abs(touch.clientX - swipe.x))) swipe = null;
+      }, { passive: true });
+      viewport.addEventListener('touchend', (event) => {
+        const gesture = swipe;
+        swipe = null;
+        if (!gesture || event.touches.length || isZoomed()) return;
+        const touch = Array.from(event.changedTouches).find((item) => item.identifier === gesture.id);
+        if (!touch) return;
+        const horizontal = touch.clientX - gesture.x;
+        const vertical = touch.clientY - gesture.y;
+        if (Math.abs(horizontal) >= 40 && Math.abs(horizontal) > Math.abs(vertical) * 1.5) {
+          moveFigure(horizontal < 0 ? 1 : -1);
+        }
+      }, { passive: true });
+      viewport.addEventListener('touchcancel', () => { swipe = null; }, { passive: true });
 
       triggers.forEach((trigger) => {
         trigger.setAttribute('role', 'button');
@@ -199,7 +248,13 @@
 
       close.addEventListener('click', () => lightbox.close());
       lightbox.addEventListener('keydown', (event) => {
-        if (event.key !== 'Tab' || event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey) return;
+        if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey) return;
+        if (['ArrowLeft', 'ArrowRight'].includes(event.key) && triggers.length > 1 && !event.shiftKey) {
+          event.preventDefault();
+          moveFigure(event.key === 'ArrowRight' ? 1 : -1);
+          return;
+        }
+        if (event.key !== 'Tab') return;
         const focusable = Array.from(lightbox.querySelectorAll('button:not(:disabled), [tabindex="0"]'))
           .filter((element) => !element.matches(':disabled') && !element.closest('[hidden]') &&
             element.getClientRects().length && window.getComputedStyle(element).visibility !== 'hidden');
@@ -227,6 +282,8 @@
       lightbox.addEventListener('close', () => {
         ++request;
         backdropPress = false;
+        swipe = null;
+        currentIndex = -1;
         document.documentElement.classList.remove('post-lightbox-open');
         image.hidden = true;
         image.removeAttribute('src');

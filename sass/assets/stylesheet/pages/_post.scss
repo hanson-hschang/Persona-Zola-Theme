@@ -95,7 +95,7 @@ html.post-lightbox-open { overflow: hidden; scrollbar-gutter: stable; }
   }
 
   &-actions { display: flex; flex-shrink: 0; align-items: center; gap: var(--spacing-xs); }
-  &-actions button { white-space: nowrap; }
+  &-actions .post__button { width: 44px; padding: 0; white-space: nowrap; }
   .post__lightbox-close { width: 44px; padding: 0; border-radius: 50%; color: var(--color-accent); background: var(--post-tint); }
 
   &-viewport {
@@ -103,6 +103,7 @@ html.post-lightbox-open { overflow: hidden; scrollbar-gutter: stable; }
     min-height: 0;
     overflow: auto;
     overscroll-behavior: contain;
+    touch-action: pan-y pinch-zoom;
     padding: var(--spacing-md);
     border-block: 1px solid var(--post-line);
     background: var(--post-tint);
@@ -147,7 +148,7 @@ html.post-lightbox-open { overflow: hidden; scrollbar-gutter: stable; }
     &-count { grid-column: 1; grid-row: 1; }
     &-heading p { grid-column: 1 / -1; grid-row: 2; font-size: 1.0625rem; }
     &-actions { grid-column: 2; grid-row: 1; gap: var(--spacing-xxs); }
-    &-actions .post__button { font-size: 0.8125rem; padding-inline: 0.65rem; }
+    &-actions .post__button { font-size: 0.8125rem; }
     &-viewport { padding: 0.75rem; }
     &-footer { padding: 0.75rem; }
     &-caption { max-height: 22dvh; font-size: 0.875rem; }

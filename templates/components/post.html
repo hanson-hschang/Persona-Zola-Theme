@@ -52,15 +52,17 @@
 <dialog class="post__lightbox" id="post-lightbox" data-post-lightbox aria-labelledby="post-lightbox-title">
   <header class="post__lightbox-header">
     <div class="post__lightbox-heading">
-      <span class="post__lightbox-count" data-lightbox-count>Figure</span>
+      <span class="post__lightbox-count" data-lightbox-count aria-live="polite" aria-atomic="true">Figure</span>
       <p id="post-lightbox-title" data-lightbox-title>Figure viewer</p>
     </div>
     <div class="post__lightbox-actions">
+      <button class="post__button" type="button" data-lightbox-previous aria-label="Previous figure" title="Previous figure" hidden><i class="bi bi-arrow-left" aria-hidden="true"></i></button>
+      <button class="post__button" type="button" data-lightbox-next aria-label="Next figure" title="Next figure" hidden><i class="bi bi-arrow-right" aria-hidden="true"></i></button>
       <button class="post__button post__lightbox-close" type="button" data-lightbox-close aria-label="Close image viewer" title="Close" autofocus><i class="bi bi-x-lg" aria-hidden="true"></i></button>
     </div>
   </header>
   <div class="post__lightbox-viewport" data-lightbox-viewport role="region" aria-label="Figure image">
-    <img data-lightbox-image alt="">
+    <img data-lightbox-image alt="" draggable="false">
     <p class="post__lightbox-status" data-lightbox-status role="status"></p>
   </div>
   <footer class="post__lightbox-footer">
