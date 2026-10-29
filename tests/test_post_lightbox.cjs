@@ -350,3 +350,161 @@ test('native image links survive modified clicks and unavailable dialogs', () =>
   assert.equal(fixture({ failOpen: true }).open().defaultPrevented, false);
   assert.doesNotThrow(() => fixture({ figures: 0 }));
 });
+
+test('unlinked HTML figures and Markdown images become clickable in document order', () => {
+  const f = fixture({ figures: 0, setup({ prose, el }) {
+    const figure = prose.append(el('figure'));
+    const figureImage = figure.append(el('img', { src: 'chart.png', alt: 'Chart' }));
+    const paragraph = prose.append(el('p'));
+    const markdownImage = paragraph.append(el('img', { src: '../plot.svg', alt: 'Plot' }));
+    return { figure, figureImage, paragraph, markdownImage };
+  } });
+  assert.equal(f.triggers.length, 2);
+  assert.equal(f.triggers[0].parent, f.content.figure);
+  assert.equal(f.triggers[1].parent, f.content.paragraph);
+  assert.equal(f.content.figureImage.parent, f.triggers[0]);
+  assert.equal(f.content.markdownImage.parent, f.triggers[1]);
+  assert.equal(f.triggers[0].href, 'https://example.com/project/posts/note/chart.png');
+  assert.equal(f.triggers[1].href, 'https://example.com/project/posts/plot.svg');
+  f.open();
+  assert.equal(f.count.textContent, 'Figure 1 of 2');
+  f.swipe(-90);
+  assert.equal(f.count.textContent, 'Figure 2 of 2');
+  assert.equal(f.title.textContent, 'Figure 2');
+  assert.equal(f.image.alt, 'Plot');
+  f.load();
+  assert.equal(f.image.src, f.content.markdownImage.src);
+});
+
+test('responsive pictures retain their source children inside one clickable wrapper', () => {
+  const f = fixture({ figures: 0, setup({ prose, el }) {
+    const figure = prose.append(el('figure'));
+    const picture = figure.append(el('picture'));
+    const source = picture.append(el('source', { srcset: 'large.avif', type: 'image/avif' }));
+    const image = picture.append(el('img', { src: 'fallback.png', alt: 'Responsive chart' }));
+    return { figure, picture, source, image };
+  } });
+  assert.equal(f.triggers.length, 1);
+  assert.equal(f.triggers[0].parent, f.content.figure);
+  assert.equal(f.content.picture.parent, f.triggers[0]);
+  assert.equal(f.content.source.parent, f.content.picture);
+  assert.equal(f.content.image.parent, f.content.picture);
+  assert.equal(f.content.source.getAttribute('srcset'), 'large.avif');
+  assert.equal(f.triggers[0].querySelectorAll('a').length, 0);
+  f.open();
+  assert.equal(f.loaders[0].src, f.content.image.src);
+});
+
+test('existing image links join the viewer while links to other pages retain navigation', () => {
+  const f = fixture({ figures: 0, setup({ prose, el }) {
+    const imageLink = prose.append(el('a', { href: '/assets/original.JPG?download=1' }));
+    imageLink.append(el('img', { src: 'thumbnail.jpg', alt: 'Image link' }));
+    const pageLink = prose.append(el('a', { href: '/research/' }));
+    pageLink.append(el('img', { src: 'cover.jpg', alt: 'Research page' }));
+    return { imageLink, pageLink };
+  } });
+  assert.deepEqual(f.triggers, [f.content.imageLink]);
+  assert.equal(f.content.imageLink.querySelectorAll('a').length, 0);
+  assert.equal(f.content.pageLink.hasAttribute('data-post-lightbox-trigger'), false);
+  assert.equal(f.dispatch('click', f.content.pageLink).defaultPrevented, false);
+  f.open();
+  assert.equal(f.loaders[0].src, 'https://example.com/assets/original.JPG?download=1');
+});
+
+test('authored captions and links remain intact while unlinked figures use their own image source', () => {
+  const f = fixture({ figures: 0, setup({ prose, el }) {
+    const figure = prose.append(el('figure'));
+    const image = figure.append(el('img', { src: 'thumbnail.png', alt: 'Detailed chart' }));
+    const caption = figure.append(el('figcaption'));
+    const paragraph = caption.append(el('p'));
+    const title = paragraph.append(el('strong', {}, 'Chart title.'));
+    paragraph.append(el('#text', {}, ' Caption. '));
+    const reference = paragraph.append(el('a', { href: '/paper/' }, 'Reference'));
+    paragraph.append(el('#text', {}, '. '));
+    const opener = paragraph.append(el('a', { href: 'original.png' }, 'Open full-size figure'));
+    paragraph.append(el('#text', {}, '.'));
+    return { figure, image, caption, paragraph, title, reference, opener };
+  } });
+  assert.equal(f.triggers[0].href, f.content.image.src);
+  assert.equal(f.content.opener.parent, f.content.paragraph);
+  assert.equal(f.content.caption.textContent.trim(), 'Chart title. Caption. Reference. Open full-size figure.');
+  assert.equal(f.content.reference.href, 'https://example.com/paper/');
+  assert.equal(f.content.title.textContent, 'Chart title.');
+  f.open();
+  assert.equal(f.title.textContent, 'Chart title.');
+  assert.equal(f.caption.textContent, 'Caption. Reference. Open full-size figure.');
+  assert.equal(f.loaders[0].src, f.triggers[0].href);
+});
+
+test('authored parenthesized image links and link-only paragraphs are preserved', () => {
+  for (const label of ['View the original image', 'See full-resolution figure', 'Download larger image']) {
+    const f = fixture({ figures: 0, setup({ prose, el }) {
+      const figure = prose.append(el('figure'));
+      figure.append(el('img', { src: 'figure.webp' }));
+      const caption = figure.append(el('figcaption'));
+      caption.append(el('#text', {}, 'Figure description. ('));
+      caption.append(el('a', { href: 'figure.webp' }, label));
+      caption.append(el('#text', {}, '). '));
+      const paragraph = caption.append(el('p'));
+      paragraph.append(el('a', { href: 'figure.webp' }, 'Open full-size figure'));
+      paragraph.append(el('#text', {}, '.'));
+      return { caption, paragraph };
+    } });
+    assert.equal(f.content.caption.textContent.trim(),
+      `Figure description. (${label}). Open full-size figure.`, label);
+    assert.equal(f.content.paragraph.parent, f.content.caption, label);
+    assert.equal(f.content.caption.querySelectorAll('a').length, 2, label);
+  }
+});
+
+test('caption references, image links, and attribution images remain unchanged', () => {
+  const f = fixture({ figures: 0, setup({ prose, el }) {
+    const figure = prose.append(el('figure'));
+    const existing = figure.append(el('a', { href: 'current.png' }));
+    existing.append(el('img', { src: 'thumbnail.png' }));
+    const caption = figure.append(el('figcaption'));
+    const reference = caption.append(el('a', { href: '/paper/' }, 'Open original image'));
+    const otherImage = caption.append(el('a', { href: 'other.png' }, 'Open full-size figure'));
+    const sourceImage = caption.append(el('a', { href: 'current.png' }, 'Source image credit'));
+    const captionImage = caption.append(el('img', { src: 'credit-badge.svg' }));
+    return { caption, reference, otherImage, sourceImage, captionImage };
+  } });
+  assert.equal(f.triggers.length, 1);
+  assert.deepEqual(f.content.caption.querySelectorAll('a'),
+    [f.content.reference, f.content.otherImage, f.content.sourceImage]);
+  assert.equal(f.content.captionImage.parent, f.content.caption);
+});
+
+test('an unrelated generic caption image link cannot replace an unlinked figure source', () => {
+  const f = fixture({ figures: 0, setup({ prose, el }) {
+    const figure = prose.append(el('figure'));
+    const image = figure.append(el('img', { src: 'current.png', alt: 'Current chart' }));
+    const caption = figure.append(el('figcaption'));
+    const otherImage = caption.append(el('a', { href: 'other.png' }, 'See image'));
+    return { image, caption, otherImage };
+  } });
+  assert.equal(f.triggers.length, 1);
+  assert.equal(f.triggers[0].href, f.content.image.src);
+  assert.equal(f.content.otherImage.parent, f.content.caption);
+  assert.equal(f.content.otherImage.href, 'https://example.com/project/posts/note/other.png');
+  f.open();
+  assert.equal(f.loaders[0].src, 'https://example.com/project/posts/note/current.png');
+});
+
+test('without native dialogs newly clickable images use their own source and preserve captions', () => {
+  const f = fixture({ figures: 0, modal: false, setup({ prose, el }) {
+    const figure = prose.append(el('figure'));
+    figure.append(el('img', { src: 'thumb.jpg', alt: 'Chart' }));
+    const caption = figure.append(el('figcaption'));
+    caption.append(el('a', { href: 'full.jpg' }, 'Open full-size figure'));
+    return { figure, caption };
+  } });
+  assert.equal(f.triggers.length, 1);
+  assert.equal(f.triggers[0].href, 'https://example.com/project/posts/note/thumb.jpg');
+  assert.equal(f.triggers[0].getAttribute('role'), null);
+  assert.equal(f.open().defaultPrevented, false);
+  assert.equal(f.lightbox.open, false);
+  assert.equal(f.content.caption.querySelectorAll('a').length, 1);
+  assert.equal(f.content.caption.querySelector('a').href, 'https://example.com/project/posts/note/full.jpg');
+  assert.equal(f.content.caption.textContent, 'Open full-size figure');
+});

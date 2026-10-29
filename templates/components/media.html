@@ -10,6 +10,7 @@
 
 {# One figure renderer for body images, teasers, and article media galleries.
    src remains the original asset; preview_src may point to a resized image.
+   The legacy full_size option is accepted, but every image is now linked.
    Explicitly escape attributes: Markdown component calls lack HTML autoescaping. #}
 {% component media.figure(page, item, eager=false) -%}
 <figure class="post__figure">
@@ -29,9 +30,9 @@
   {%- set width = size[0] -%}
   {%- set height = size[1] -%}
 {%- endif -%}
-{%- if item.full_size | default(value=false) -%}<a href="{{ <post.url page={page} path={item.src} /> }}" data-post-lightbox-trigger aria-label="View full-size image: {{ alt | escape_html | safe }}">{%- endif -%}
+<a href="{{ <post.url page={page} path={item.src} /> }}" data-post-lightbox-trigger aria-label="View full-size image: {{ alt | escape_html | safe }}">
 <img src="{{ <post.url page={page} path={preview} /> }}" alt="{{ alt | escape_html | safe }}"{% if width %} width="{{ width | str | escape_html | safe }}"{% endif %}{% if height %} height="{{ height | str | escape_html | safe }}"{% endif %} loading="{% if eager %}eager{% else %}lazy{% endif %}" decoding="async">
-{%- if item.full_size | default(value=false) -%}</a>{%- endif -%}
+</a>
 {%- endif -%}
 {%- if item.caption -%}<figcaption>{{ item.caption | markdown | safe }}</figcaption>{%- endif -%}
 </figure>

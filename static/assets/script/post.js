@@ -109,6 +109,33 @@
     scheduleCurrentSection();
   }
 
+  // Include plain Markdown/HTML figures as well as the shared media component.
+  // Keep authored links to other pages intact; image links join the viewer.
+  const isImageURL = (href) => {
+    try {
+      const url = new URL(href, document.baseURI);
+      return ['http:', 'https:', 'file:'].includes(url.protocol) &&
+        /\.(?:avif|bmp|gif|jpe?g|png|svg|tiff?|webp)$/i.test(url.pathname);
+    } catch (_) {
+      return false;
+    }
+  };
+  post?.querySelectorAll('figure img, .post__prose img').forEach((thumbnail) => {
+    if (thumbnail.closest('figcaption') || !thumbnail.getAttribute('src')) return;
+    let trigger = thumbnail.closest('a');
+    if (!trigger) {
+      trigger = document.createElement('a');
+      trigger.href = thumbnail.src;
+      const media = thumbnail.closest('picture') || thumbnail;
+      media.before(trigger);
+      trigger.append(media);
+    }
+    if (!trigger.hasAttribute('data-post-lightbox-trigger') &&
+      trigger.href !== thumbnail.src && !isImageURL(trigger.href)) return;
+    trigger.setAttribute('data-post-lightbox-trigger', '');
+    trigger.setAttribute('aria-label', `View full-size image: ${thumbnail.alt}`);
+  });
+
   const lightbox = post?.querySelector('[data-post-lightbox]');
   if (lightbox && typeof lightbox.showModal === 'function') {
     const image = lightbox.querySelector('[data-lightbox-image]');

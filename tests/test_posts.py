@@ -447,10 +447,10 @@ links = [
 ]
 related = [{{ title = "Minimal post", url = "@/test-minimal.md", date = "2024-11-09" }}]
 abstract = "A **formatted** abstract."
-teaser = {{ src = "plot.svg", alt = "Teaser image", size = [2, 2], caption = "A **teaser** caption.", full_size = true }}
+teaser = {{ src = "plot.svg", alt = "Teaser image", size = [2, 2], caption = "A **teaser** caption." }}
 gallery_title = "Research results"
 gallery = [
-  {{ src = "/test-assets/shared.svg", alt = "Gallery image", caption = "Image result.", full_size = true }},
+  {{ src = "/test-assets/shared.svg", alt = "Gallery image", caption = "Image result." }},
   {{ type = "video", src = "clip.mp4", mime = "video/mp4", poster = "plot.svg", title = "Video result", captions = "captions.vtt", lang = "en", caption_label = "English", caption = "Video result caption." }}
 ]
 video = {{ src = "https://www.youtube-nocookie.com/embed/example", title = "Presentation video" }}
@@ -898,6 +898,7 @@ bibtex = "@misc{legacy, title={Legacy post}}"
         self.assertFalse(page.find("img", src="x"))
         self.assertFalse(any("onerror" in attrs for _, attrs in page.elements))
 
+    def test_teaser_and_gallery_images_are_clickable_by_default(self):
         populated = self.document("research/custom-output")
         for alt, original, loading in (("Teaser image", FULL_URL + "plot.svg", "eager"),
                                        ("Gallery image", BASE + "test-assets/shared.svg", "lazy")):
@@ -913,6 +914,21 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                 self.assertEqual(len([attrs for tag, attrs in populated.descendants(figure)
                                       if tag == "figcaption"]), 1)
 
+    def test_body_figures_are_clickable_without_opt_in_and_with_legacy_false(self):
+        page = self.document("research/media-fixture")
+        for alt, filename in (("Legacy resized bitmap", "raster.png"),
+                              ("Legacy SVG", "vector.svg"),
+                              ("Original bitmap", "raster.png"),
+                              ("Canonical SVG", "vector.svg")):
+            with self.subTest(alt=alt):
+                image = self.single(page, "img", alt=alt)
+                figure = self.figure_for_image(page, image)
+                triggers = [attrs for tag, attrs in page.descendants(figure)
+                            if tag == "a" and "data-post-lightbox-trigger" in attrs]
+                self.assertEqual(len(triggers), 1)
+                self.assertEqual(triggers[0]["href"], BASE + "research/media-fixture/" + filename)
+                self.assertEqual(page.descendants(triggers[0]), [("img", image)])
+
     def test_media_image_defaults_preserve_legacy_resizing_and_original_svg_assets(self):
         page = self.document("research/media-fixture")
         original = self.single(page, "img", alt="Original bitmap")
@@ -922,20 +938,19 @@ bibtex = "@misc{legacy, title={Legacy post}}"
         self.assertEqual(original.get("decoding"), "async")
         self.assertNotIn("width", original)
         self.assertNotIn("height", original)
-        self.assertFalse(any(tag in ("a", "figcaption") for tag, _ in page.descendants(figure)))
+        self.assertFalse(any(tag == "figcaption" for tag, _ in page.descendants(figure)))
 
         legacy = self.single(page, "img", alt="Legacy resized bitmap")
         figure = self.figure_for_image(page, legacy)
         self.assertEqual(legacy["src"], self.single(page, "img", alt=MEDIA_ALT)["src"])
         self.assertEqual((legacy.get("width"), legacy.get("height")), ("4", "2"))
         self.assertEqual(legacy.get("loading"), "lazy")
-        self.assertFalse(any(tag in ("a", "figcaption") for tag, _ in page.descendants(figure)))
+        self.assertFalse(any(tag == "figcaption" for tag, _ in page.descendants(figure)))
 
         canonical = self.single(page, "img", alt="Canonical SVG")
         figure = self.figure_for_image(page, canonical)
         self.assertEqual(canonical["src"], BASE + "research/media-fixture/vector.svg")
         self.assertEqual((canonical.get("width"), canonical.get("height")), ("2", "2"))
-        self.assertFalse(any(tag == "a" for tag, _ in page.descendants(figure)))
 
         slug_page = self.document("media-custom-slug")
         svg = self.single(slug_page, "img", alt="Original SVG")

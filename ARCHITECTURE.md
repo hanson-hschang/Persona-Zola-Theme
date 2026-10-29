@@ -187,10 +187,10 @@ Tera 2 components are globally registered by component name. They do not need im
   - Preserved for reference; current pages use `render.*`, `segment.*`, and `post.*` instead
 
 - **media.html**: Content media components
-  - `media.image(page, path, width=0, alt="", caption="", full_size=false, eager=false)`: Renders article image figures, with optional resized colocated raster previews, Markdown captions, and lightbox links to the original asset
-  - `media.figure(page, item, eager=false)`: Shared image/video figure markup for body images, teasers, and galleries; `src` remains the original asset and optional `preview_src` supplies the resized image
+  - `media.image(page, path, width=0, alt="", caption="", full_size=false, eager=false)`: Renders article image figures, with optional resized colocated raster previews, Markdown captions, and lightbox links to the original asset; the legacy `full_size` parameter is accepted but images always link to their originals
+  - `media.figure(page, item, eager=false)`: Shared image/video figure markup for body images, teasers, and galleries; every image has a lightbox link, `src` remains the original asset, and optional `preview_src` supplies the resized image
   - `media.block`: Renders image/text media rows
-  - Content usage example: `{{ <media.image page={page} path="img/example.png" width={700} alt="Example" caption="**Overview.** A short explanation." full_size={true} /> }}`
+  - Content usage example: `{{ <media.image page={page} path="img/example.png" width={700} alt="Example" caption="**Overview.** A short explanation." /> }}`
 
 - **video.html**: Native video player component
   - `video.player(src, title, start_time=0)`: Renders an MP4 player and direct-link fallback with a media fragment for the start time
@@ -384,6 +384,8 @@ JavaScript files in `static/assets/script/`:
   - Prevents duplicate event bindings when a page contains multiple players
 
 - **post.js**: Progressive enhancements for all post pages
+  - Makes ordinary Markdown and HTML figure images clickable and includes links to image assets in the lightbox, preserving intentional links to other web pages
+  - Preserves authored captions and links; redundant image-opening prompts should be omitted from the Markdown source
   - Sets Outline's expanded state when crossing the 992px breakpoint, preserving manual disclosure choices while staying within the same breakpoint; native disclosure remains usable without JavaScript
   - Enables Citation and explicit resource BibTeX copy actions when nonblank `[extra.post].bibtex` is provided; Share contains only Permalink and sharing links
   - All copy buttons replace their label with `BibTex Copied!` for three seconds after success, retaining the icon, scroll position, and keyboard focus; resource actions hide their no-script Citation link only after enhancement

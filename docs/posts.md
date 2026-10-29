@@ -217,17 +217,16 @@ Use `media.image` for images within the article. It shares the figure renderer w
   width={1000}
   alt="Structured State Space Duality"
   caption="**Structured State Space Duality.** A short explanation of the figure."
-  full_size={true}
 /> }}
 ```
 
-`path` is required; `alt`, `width`, `caption`, `full_size`, and `eager` are optional. A positive `width` generates a resized preview for a colocated raster image. Omitting it uses the original image. SVGs and external or site-root images remain unprocessed. With `full_size={true}`, clicking the preview opens the original asset. Captions support Markdown; the first bold phrase becomes the viewer's heading. Images load lazily unless `eager={true}` is supplied. Existing calls with only `page`, `path`, `width`, and `alt` continue to work.
+`path` is required; `alt`, `width`, `caption`, and `eager` are optional. A positive `width` generates a resized preview for a colocated raster image. Omitting it uses the original image. SVGs and external or site-root images remain unprocessed. Every image links to its original asset. The legacy `full_size` option remains accepted for compatibility, but neither omission nor `false` disables the link. Captions support Markdown; the first bold phrase becomes the viewer's heading. Images load lazily unless `eager={true}` is supplied. Existing calls with only `page`, `path`, `width`, and `alt` continue to work.
 
 For citation sources processed by Pandoc (`*.src.md`), preserve component calls inside a raw HTML fence:
 
 ````markdown
 ```{=html}
-{{ <media.image page={page} path="img/example.png" width={1000} alt="Method overview" full_size={true} /> }}
+{{ <media.image page={page} path="img/example.png" width={1000} alt="Method overview" /> }}
 ```
 ````
 
@@ -260,9 +259,11 @@ caption = "The method running on a sample sequence."
 
 Article images are centered by default while respecting their intrinsic size and the available width. For images, `width` and `height` are optional intrinsic pixel dimensions. Use descriptive alt text, or an empty `alt` for a purely decorative image. The teaser image loads eagerly; gallery images load lazily. Videos expose native playback controls and do not autoplay. `title`, `mime`, `poster`, and the caption-track fields are optional. If `captions` is set, `lang` defaults to `en` and `caption_label` defaults to `English`.
 
-Set `full_size = true` on a teaser or gallery image, or `full_size={true}` on `media.image`, to open it in Persona's lightbox. The viewer uses the theme's colors and typography and fits its height to the image, with small margins and a viewport height limit. Swipe left or right across the image, use the previous/next buttons, or press the left/right arrow keys to move through the page's full-size figures. Navigation wraps from the last figure to the first and back; figures never advance automatically. Escape, the close button, or a click on the backdrop closes it and returns focus to the original figure without losing the reader's place. Keyboard focus stays inside the viewer while it is open. Captions remain visible beneath the image. Omit the option, or set it to `false`, to leave an image unlinked.
+Click any body, teaser, or gallery image to open it in Persona's lightbox. No `full_size` setting is needed. The viewer uses the theme's colors and typography and fits its height to the image, with small margins and a viewport height limit. Swipe left or right across the image, use the previous/next buttons, or press the left/right arrow keys to move through the page's full-size figures. Navigation wraps from the last figure to the first and back; figures never advance automatically. Escape, the close button, or a click on the backdrop closes it and returns focus to the original figure without losing the reader's place. Keyboard focus stays inside the viewer while it is open. Captions remain visible beneath the image.
 
 The components generate the figure, caption, and lightbox link together; no hand-written HTML wrapper is needed for image figures. The viewer preserves the image's alternative text. Without JavaScript or native dialog support, the links still open the original images. Other templates using these media components can include `{{ <post.lightbox /> }}` once inside their `.post` wrapper, alongside `page-post.css` and `post.js`.
+
+JavaScript also makes ordinary Markdown and HTML figure images clickable, including images inside `<picture>`. Unlinked images open their own source; existing links to image assets join the viewer, and intentional links to other web pages keep their destination. Author captions in Markdown and omit redundant “Open full-size figure” prompts from the source, since the image itself opens the viewer. JavaScript preserves authored caption text and links.
 
 The gallery supports touch and native horizontal scrolling. JavaScript adds previous/next buttons beside the results heading, an announced position, and left/right arrow keys when the gallery track has focus. It respects reduced-motion preferences and pauses videos when another slide becomes active. The gallery remains scrollable without JavaScript.
 
@@ -330,7 +331,7 @@ These rules apply to post front matter and components, not ordinary Markdown lin
 Tera 2 registers these components globally. On a post page, use them directly in Markdown where you want media within the article:
 
 ```tera
-{{ <media.image page={page} path="img/example.png" width={1000} alt="Method overview" caption="**Overview.** The method's main stages." full_size={true} /> }}
+{{ <media.image page={page} path="img/example.png" width={1000} alt="Method overview" caption="**Overview.** The method's main stages." /> }}
 
 {{ <post.media page={page} item={page.extra.post.teaser} /> }}
 
