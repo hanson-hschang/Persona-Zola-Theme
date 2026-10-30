@@ -45,12 +45,19 @@
 {% endcomponent render.article_tags %}
 
 {% component render.article_meta(page) %}
+{% set reading_time = page.reading_time %}
+{% if page.content is containing(pat="<!-- persona-math-protected -->") %}
+  {# Estimate from rendered text, before encoded TeX inflates source word counts.
+     238 words/minute matches Zola's reading-speed estimate. #}
+  {% set article_words = page.content | striptags | wordcount %}
+  {% set reading_time = (article_words / 238) | round(method="ceil") | int %}
+{% endif %}
 <div class="article-meta">
   <ul class="article-meta__details" aria-label="Article information">
     {% if page.date %}
     <li>{{ <render.date value={page.date | date(format='%Y-%m-%d')} class_name="article-meta__date" /> }}</li>
     {% endif %}
-    <li><i class="bi bi-hourglass-split" aria-hidden="true"></i><span class="article-meta__reading-time">{% if page.reading_time > 0 %}{{ page.reading_time }}{% else %}1{% endif %} min read</span></li>
+    <li><i class="bi bi-hourglass-split" aria-hidden="true"></i><span class="article-meta__reading-time">{% if reading_time > 0 %}{{ reading_time }}{% else %}1{% endif %} min read</span></li>
   </ul>
   {{ <render.share_menu title={page.title} permalink={page.permalink} /> }}
 </div>

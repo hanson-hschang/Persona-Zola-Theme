@@ -3,6 +3,7 @@
 
 # Zola build directory
 public/
+.persona-build/
 
 # pycache
 */__pycache__/
