@@ -6,7 +6,7 @@ title = "Persona - Zola Theme "
 author = "Persona, Zola Theme"
 description = "A modern, responsive and lightweight theme for resume, portfolio, and blog."
 
-# Prevent .src.md, .bib, and .csl files from being rendered as pages
+# Keep bibliography assets and legacy citation sources out of published content.
 ignored_content = ["*.src.md", "*.bib", "*.csl"]
 
 # Whether to automatically compile all Sass files in the sass directory
