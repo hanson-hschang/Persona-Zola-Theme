@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Build post fixtures in isolation: python3 tests/test_posts.py.
 
-Requires Zola 0.23+. Uses only the Python standard library and skips external
-link checks. Pandoc enables the citation-pipeline fixtures. Media fixtures test
+Requires Zola 0.23+, Pandoc, and Python 3.11+. Uses only the Python standard
+library and skips external link checks. Media fixtures test
 generated markup and URLs, not playback.
 """
 
@@ -13,6 +13,7 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from urllib.parse import parse_qs, urlparse
@@ -94,11 +95,13 @@ class PostIntegrationTests(unittest.TestCase):
         zola = shutil.which("zola")
         if zola is None:
             raise unittest.SkipTest("Zola 0.23+ is required for integration tests")
+        if shutil.which("pandoc") is None:
+            raise unittest.SkipTest("Pandoc is required to build the authored theme examples")
         cls.temporary = tempfile.TemporaryDirectory(prefix="persona-post-tests-")
         cls.addClassCleanup(cls.temporary.cleanup)
         cls.site = Path(cls.temporary.name)
         shutil.copy2(THEME / "config.toml", cls.site / "config.toml")
-        for directory in ("templates", "sass", "static", "content"):
+        for directory in ("templates", "sass", "static", "content", "citation-style"):
             shutil.copytree(THEME / directory, cls.site / directory)
 
         # Exercise runtime defaults independently of sample config values.
@@ -595,7 +598,9 @@ bibtex = "@misc{legacy, title={Legacy post}}"
 ''')
         for arguments in (("check", "--skip-external-links"),
                           ("build", "--base-url", BASE)):
-            result = subprocess.run([zola, *arguments], cwd=cls.site, text=True,
+            command = [sys.executable, "-B", str(THEME / "scripts/persona.py"),
+                       arguments[0], "--root", str(cls.site), "--", *arguments[1:]]
+            result = subprocess.run(command, cwd=cls.site, text=True,
                                     stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                     timeout=60, check=False)
             if result.returncode:
@@ -609,7 +614,8 @@ bibtex = "@misc{legacy, title={Legacy post}}"
             cls.write("config.toml", default_config.replace(
                 "[extra.persona]", f"[extra.persona]\n{settings}", 1))
             result = subprocess.run(
-                [zola, "build", "--base-url", BASE, "--output-dir", f"public-limit-{limit}"],
+                [sys.executable, "-B", str(THEME / "scripts/persona.py"), "build",
+                 "--root", str(cls.site), "--", "--base-url", BASE, "--output-dir", f"public-limit-{limit}"],
                 cwd=cls.site, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                 timeout=60, check=False)
             if result.returncode:
@@ -627,7 +633,8 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                 contents = contents.replace("[extra.post]", "[extra.post]\ndraft = true", 1)
             fixture.write_text(contents, encoding="utf-8")
         result = subprocess.run(
-            [zola, "build", "--base-url", BASE, "--output-dir", "public-all-drafts"],
+            [sys.executable, "-B", str(THEME / "scripts/persona.py"), "build",
+             "--root", str(cls.site), "--", "--base-url", BASE, "--output-dir", "public-all-drafts"],
             cwd=cls.site, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
             timeout=60, check=False)
         if result.returncode:
@@ -1292,7 +1299,7 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                 entry = self.single(page, "div", id="ref-fixture2025")
                 self.assertIn(("div", entry), page.descendants(refs))
                 self.assertIn("A cited fixture for post pages", page.text_content(entry))
-                self.assertTrue(page.find("a", href="#ref-fixture2025"))
+                self.assertTrue(page.find("a", href=BASE + output + "/#ref-fixture2025"))
                 self.assertNotIn("[@fixture2025]", page.text)
                 self.single(page, "h2", id="cited-method")
                 self.single(page, "h3", id="implementation-details")
@@ -1307,11 +1314,11 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                 self.assertIsNotNone(macro_data)
                 self.assertEqual(json.loads(macro_data[1]), {r"\RR": r"\mathbb{R}"})
                 self.assertIn(r"\RR", page.text_content(page.with_class("post__prose")[0]))
-                self.assertTrue(page.with_class("math"))
-                # Footnote references and backreferences retain their original IDs.
-                self.single(page, "li", id="fn1")
-                self.assertTrue(page.find("a", href="#fn1"))
-                self.assertTrue(page.find("a", href="#fnref1"))
+                self.assertTrue(page.with_class("persona-math"))
+                # Zola renders native Markdown footnotes and resolves references.
+                note = self.single(page, "div", id="1", **{"class": "footnote-definition"})
+                self.assertIn("This is the explanatory footnote.", page.text_content(note))
+                self.assertTrue(page.find("a", href="#1"))
 
     def test_previous_citation_output_is_relocated_without_regenerating(self):
         page = self.document("test-legacy-bibliography")
@@ -1397,7 +1404,7 @@ bibtex = "@misc{legacy, title={Legacy post}}"
                 self.assertTrue(page.with_class("taxonomy-labels--tags"))
                 self.single(page, "section", id="post-bibliography")
                 self.single(page, "div", id="refs")
-                self.assertTrue(page.find("a", href="#ref-zolathemes"))
+                self.assertTrue(page.find("a", href=BASE + output + "/#ref-zolathemes"))
                 self.assertFalse(page.find(id="bookmark-button"))
                 if slug == "begin-with-persona":
                     self.assertIn("From first installation to a personal website", page.text)

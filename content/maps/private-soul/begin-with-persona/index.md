@@ -14,103 +14,129 @@ subtitle = "From first installation to a personal website"
 bibliography = "references.bib"
 +++
 
-<p>This is a step-by-step tutorial on how to start a website using the Persona, a Zola theme <span class="citation" data-cites="zolathemes">[<a href="#ref-zolathemes" role="doc-biblioref">1</a>]</span>. It covers the basics of setting up your site, creating content, and customizing the appearance to make it your own.</p>
-<h2 id="setting-up-your-site">Setting Up Your Site</h2>
-<p>After <a href="https://github.com/hanson-hschang/Persona-Zola-Theme#-installation">installing Persona</a>, configure your <code>config.toml</code>:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode toml"><code class="sourceCode toml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The URL this site will be built for</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">base_url</span> <span class="op">=</span> <span class="st">&quot;https://yourdomain.com&quot;</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># The basic site information</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="dt">title</span> <span class="op">=</span> <span class="st">&quot;Your Site Name&quot;</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="dt">author</span> <span class="op">=</span> <span class="st">&quot;Your Name&quot;</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="dt">description</span> <span class="op">=</span> <span class="st">&quot;Your personal resume, portfolio and blog&quot;</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">[extra]</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">[extra.persona]</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: landing page title and subtitles are configured in `content/_index.md`</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Social links</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="dt">social_links</span> <span class="op">=</span> <span class="op">[</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="op">{ </span><span class="dt">name</span><span class="op"> =</span> <span class="st">&quot;GitHub&quot;</span><span class="op">, </span><span class="dt">url</span><span class="op"> =</span> <span class="st">&quot;https://github.com/yourusername&quot;</span><span class="op">, </span><span class="dt">icon_class</span><span class="op"> =</span> <span class="st">&quot;bi bi-github&quot;</span><span class="op"> },</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="op">{ </span><span class="dt">name</span><span class="op"> =</span> <span class="st">&quot;LinkedIn&quot;</span><span class="op">, </span><span class="dt">url</span><span class="op"> =</span> <span class="st">&quot;https://linkedin.com/in/yourprofile&quot;</span><span class="op">, </span><span class="dt">icon_class</span><span class="op"> =</span> <span class="st">&quot;bi bi-linkedin&quot;</span><span class="op"> },</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="op">{ </span><span class="dt">name</span><span class="op"> =</span> <span class="st">&quot;Twitter-X&quot;</span><span class="op">, </span><span class="dt">url</span><span class="op"> =</span> <span class="st">&quot;https://x.com/yourusername&quot;</span><span class="op">, </span><span class="dt">icon_class</span><span class="op"> =</span> <span class="st">&quot;bi bi-twitter-x&quot;</span><span class="op"> },</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="op">]</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Contact information</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="dt">contact_infos</span> <span class="op">=</span> <span class="op">[</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="op">{ </span><span class="dt">item</span><span class="op"> =</span> <span class="st">&quot;_navigation&quot;</span><span class="op">, </span><span class="dt">content</span><span class="op"> =</span> <span class="st">&quot;Contact&quot;</span><span class="op">, </span><span class="dt">icon_class</span><span class="op"> =</span> <span class="st">&quot;bi bi-chat-text&quot;</span><span class="op"> },</span> <span class="co"># Special item for header navigation (REQUIRED)</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="op">{ </span><span class="dt">item</span><span class="op"> =</span> <span class="st">&quot;Name&quot;</span><span class="op">, </span><span class="dt">content</span><span class="op"> =</span> <span class="st">&quot;Your Name&quot;</span><span class="op">, </span><span class="dt">icon_class</span><span class="op"> =</span> <span class="st">&quot;bi bi-person&quot;</span><span class="op"> },</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="op">{ </span><span class="dt">item</span><span class="op"> =</span> <span class="st">&quot;Location&quot;</span><span class="op">, </span><span class="dt">content</span><span class="op"> =</span> <span class="st">&quot;Your City, Country&quot;</span><span class="op">, </span><span class="dt">icon_class</span><span class="op"> =</span> <span class="st">&quot;bi bi-geo-alt&quot;</span><span class="op"> },</span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="op">{ </span><span class="dt">item</span><span class="op"> =</span> <span class="st">&quot;Email&quot;</span><span class="op">, </span><span class="dt">content</span><span class="op"> =</span> <span class="st">&quot;your.email@example.com&quot;</span><span class="op">, </span><span class="dt">icon_class</span><span class="op"> =</span> <span class="st">&quot;bi bi-envelope&quot;</span><span class="op"> },</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="op">{ </span><span class="dt">item</span><span class="op"> =</span> <span class="st">&quot;Phone&quot;</span><span class="op">, </span><span class="dt">content</span><span class="op"> =</span> <span class="st">&quot;+0 (123) 456-7890&quot;</span><span class="op">, </span><span class="dt">icon_class</span><span class="op"> =</span> <span class="st">&quot;bi bi-phone&quot;</span><span class="op"> },</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="op">]</span></span></code></pre></div>
-<p>Modify the landing page content in <code>content/_index.md</code>:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode toml"><code class="sourceCode toml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="er">+++</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">title</span> <span class="op">=</span> <span class="st">&quot;Presented Site Name&quot;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="dt">template</span> <span class="op">=</span> <span class="st">&quot;index.html&quot;</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">[extra]</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="dt">icon_class</span> <span class="op">=</span> <span class="st">&quot;bi bi-house&quot;</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="dt">subtitles</span> <span class="op">=</span> <span class="st">&quot;Item 1, Item 2, Item 3&quot;</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="er">+++</span></span></code></pre></div>
-<p>Also update your assets in <code>static/assets/img/</code>:</p>
-<ul>
-<li><a href="https://en.wiktionary.org/wiki/hero_image">hero image</a>: <code>background.jpg</code></li>
-<li><a href="https://en.wikipedia.org/wiki/Favicon">favicon</a>: <code>favicon.ico</code></li>
-<li><a href="https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html">apple touch icon</a>: <code>apple-touch-icon.png</code></li>
-</ul>
-<h2 id="creating-content">Creating Content</h2>
-<p>Once your site is configured, you can start creating content by adding Markdown files to the <code>content</code> directory. Each file represents a page or blog post, and you can use frontmatter to specify metadata such as the title, date, tags, and categories.</p>
-<h2 id="customizing-appearance">Customizing Appearance</h2>
-<p>The Persona theme provides extensive options to customize colors and fonts by overriding CSS variables in <code>sass/assets/stylesheet/_custom.scss</code> without modifying the core theme files. For example, to change the accent color, heading color, and title font size, you can use the following CSS:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sass/assets/stylesheet/_custom.scss */</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="in">:root</span> {</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="va">--color-accent</span><span class="ch">:</span> <span class="cn">#FF5F05</span><span class="op">;</span>   <span class="co">/* Override accent color to vibrant orange */</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="va">--color-heading</span><span class="ch">:</span> <span class="cn">#13294B</span><span class="op">;</span>  <span class="co">/* Override heading color to dark blue */</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="va">--font-size-title</span><span class="ch">:</span> <span class="dv">72</span><span class="dt">px</span><span class="op">;</span>   <span class="co">/* Increase title font size for more impact */</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<p><strong>Available Customization Variables:</strong></p>
-<p>Colors:</p>
-<ul>
-<li><code>--color-background</code>: Background color for the entire website</li>
-<li><code>--color-default</code>: Default text color</li>
-<li><code>--color-heading</code>: Color for headings and titles</li>
-<li><code>--color-accent</code>: Brand color for buttons, links, and highlights</li>
-<li><code>--color-surface</code>: Background for cards and boxed elements</li>
-<li><code>--color-contrast</code>: Text color for use against accent colors</li>
-</ul>
-<p>Typography:</p>
-<ul>
-<li>Font Families
-<ul>
-<li><code>--default-font</code>: Main font family for body text</li>
-<li><code>--heading-font</code>: Font family for headings</li>
-<li><code>--nav-font</code>: Font family for navigation</li>
-</ul></li>
-<li>Font Sizes
-<ul>
-<li><code>--footer-font-size</code>: Footer text size (default: 14px)</li>
-<li><code>--normal-font-size</code>: Base font size (default: 16px)</li>
-<li><code>--subtitle-font-size</code>: Subtitle font size (default: 24px)</li>
-<li><code>--heading-font-size</code>: Base font size for heading (default: 32px)</li>
-<li><code>--title-font-size</code>: Base font size for title (default: 64px)</li>
-</ul></li>
-</ul>
-<p>See <code>sass/assets/stylesheet/_variables.scss</code> for the complete list of customizable variables with detailed descriptions (the compiled CSS is emitted under <code>public/assets/stylesheet/</code> at build time).</p>
-<h2 id="troubleshooting">Troubleshooting</h2>
-<ul>
-<li><strong>Navigation not working:</strong>
-<ul>
-<li>Ensure <code>[extra].order</code> is set correctly in the section front matter.</li>
-<li>Check that <code>[extra].type</code> is specified correctly in the section front matter.</li>
-</ul></li>
-</ul>
-<h2 id="conclusion">Conclusion</h2>
-<p>Starting a website with the Persona theme is a great way to share your thoughts and ideas with the world. With its user-friendly setup and extensive customization options, you can create a unique and engaging site that reflects your personality and style.</p>
-<!-- persona-bibliography -->
-<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
-<h2 class="unnumbered" id="bibliography">Bibliography</h2>
-<div id="ref-zolathemes" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[1] </div><div class="csl-right-inline"><a href="https://www.getzola.org/themes/">Zola themes</a>, </div>
-</div>
-</div>
+
+This is a step-by-step tutorial on how to start a website using the Persona, a Zola theme [@zolathemes].
+It covers the basics of setting up your site, creating content, and customizing the appearance to make it your own.
+
+## Setting Up Your Site
+
+After [installing Persona](https://github.com/hanson-hschang/Persona-Zola-Theme#-installation), configure your `config.toml`:
+
+```toml
+# The URL this site will be built for
+base_url = "https://yourdomain.com"
+
+# The basic site information
+title = "Your Site Name"
+author = "Your Name"
+description = "Your personal resume, portfolio and blog"
+
+[extra]
+
+[extra.persona]
+# Note: landing page title and subtitles are configured in `content/_index.md`
+
+# Social links
+social_links = [
+  { name = "GitHub", url = "https://github.com/yourusername", icon_class = "bi bi-github" },
+  { name = "LinkedIn", url = "https://linkedin.com/in/yourprofile", icon_class = "bi bi-linkedin" },
+  { name = "Twitter-X", url = "https://x.com/yourusername", icon_class = "bi bi-twitter-x" },
+]
+
+# Contact information
+contact_infos = [
+  { item = "_navigation", content = "Contact", icon_class = "bi bi-chat-text" }, # Special item for header navigation (REQUIRED)
+  { item = "Name", content = "Your Name", icon_class = "bi bi-person" },
+  { item = "Location", content = "Your City, Country", icon_class = "bi bi-geo-alt" },
+  { item = "Email", content = "your.email@example.com", icon_class = "bi bi-envelope" },
+  { item = "Phone", content = "+0 (123) 456-7890", icon_class = "bi bi-phone" },
+]
+```
+
+Modify the landing page content in `content/_index.md`:
+
+```toml
++++
+title = "Presented Site Name"
+template = "index.html"
+[extra]
+icon_class = "bi bi-house"
+subtitles = "Item 1, Item 2, Item 3"
++++
+```
+
+Also update your assets in `static/assets/img/`:
+
+- [hero image](https://en.wiktionary.org/wiki/hero_image): `background.jpg`
+- [favicon](https://en.wikipedia.org/wiki/Favicon): `favicon.ico`
+- [apple touch icon](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html): `apple-touch-icon.png`
+
+## Creating Content
+
+Once your site is configured, you can start creating content by adding Markdown files to the `content` directory.
+Each file represents a page or blog post, and you can use frontmatter to specify metadata such as the title, date, tags, and categories.
+
+Write and edit each post directly in `index.md`. The same file can contain
+ordinary Markdown, mathematics, and Pandoc citations. Keep a post's
+`references.bib` beside it when you use citations, and enable mathematics with
+an `[extra.tex]` table in its front matter.
+
+Use `$...$` for inline mathematics and `$$...$$` for display mathematics. Persona
+preserves the LaTeX before Markdown processing, so equations do not need HTML
+wrappers or extra backslashes to work around Markdown escaping.
+
+Build the complete site with `make build` or start a live preview with
+`make serve`. These commands prepare a separate copy for Zola; your authored
+Markdown stays unchanged in `content/`. You do not need to maintain generated
+Markdown beside it.
+
+## Customizing Appearance
+
+The Persona theme provides extensive options to customize colors and fonts by overriding CSS variables in `sass/assets/stylesheet/_custom.scss` without modifying the core theme files.
+For example, to change the accent color, heading color, and title font size, you can use the following CSS:
+
+```css
+/* sass/assets/stylesheet/_custom.scss */
+:root {
+  --color-accent: #FF5F05;   /* Override accent color to vibrant orange */
+  --color-heading: #13294B;  /* Override heading color to dark blue */
+  --font-size-title: 72px;   /* Increase title font size for more impact */
+}
+```
+
+**Available Customization Variables:**
+
+Colors:
+
+- `--color-background`: Background color for the entire website
+- `--color-default`: Default text color
+- `--color-heading`: Color for headings and titles
+- `--color-accent`: Brand color for buttons, links, and highlights
+- `--color-surface`: Background for cards and boxed elements
+- `--color-contrast`: Text color for use against accent colors
+
+Typography:
+
+- Font Families
+  - `--default-font`: Main font family for body text
+  - `--heading-font`: Font family for headings
+  - `--nav-font`: Font family for navigation
+- Font Sizes
+  - `--footer-font-size`: Footer text size (default: 14px)
+  - `--normal-font-size`: Base font size (default: 16px)
+  - `--subtitle-font-size`: Subtitle font size (default: 24px)
+  - `--heading-font-size`: Base font size for heading (default: 32px)
+  - `--title-font-size`: Base font size for title (default: 64px)
+
+See `sass/assets/stylesheet/_variables.scss` for the complete list of customizable variables with detailed descriptions (the compiled CSS is emitted under `public/assets/stylesheet/` at build time).
+
+## Troubleshooting
+
+- **Navigation not working:**
+  - Ensure `[extra].order` is set correctly in the section front matter.
+  - Check that `[extra].type` is specified correctly in the section front matter.
+
+## Conclusion
+
+Starting a website with the Persona theme is a great way to share your thoughts and ideas with the world.
+With its user-friendly setup and extensive customization options, you can create a unique and engaging site that reflects your personality and style.

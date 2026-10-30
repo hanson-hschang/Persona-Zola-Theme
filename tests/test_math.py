@@ -63,6 +63,13 @@ class MathProtectionTests(unittest.TestCase):
         self.assertEqual(protect_math(source),
                          "The plain text x<y precedes " + protect_math("$a_i$") + ".")
 
+    def test_citation_guide_math_is_protected(self):
+        source = (THEME / "content/maps/private-soul/citation-pipeline-guide/index.md").read_text()
+        body = source.split("+++", 2)[2]
+        math = MathText(protect_math(body)).math
+        self.assertIn(r"$x \in \Real{n}$", math)
+        self.assertTrue(any(r"\norm{x}_2" in equation for equation in math))
+
     def test_code_examples_are_unchanged(self):
         source = r"""Inline `$x_i$` and ``a `$y$` b``.
 
