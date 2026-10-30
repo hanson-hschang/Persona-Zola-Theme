@@ -3,7 +3,7 @@
 <script>
   document.addEventListener("DOMContentLoaded", function() {
     const katexMacros = {{ page.extra.tex.macros | default(value={}) | json_encode | safe }};
-    renderMathInElement(document.body, {
+    const mathOptions = {
       delimiters: [
         {left: '$$', right: '$$', display: true},
         {left: '$', right: '$', display: false},
@@ -11,6 +11,21 @@
         {left: '\\(', right: '\\)', display: false},
       ],
       macros: katexMacros
-    });
+    };
+    const protectedMath = {{ page.content is containing(pat="<!-- persona-math-protected -->") | json_encode | safe }};
+    if (protectedMath) {
+      // Only recognized math is rendered inside processed prose. Otherwise
+      // Markdown's decoded \$ would be mistaken for a new math delimiter.
+      document.querySelectorAll('.post__prose .persona-math').forEach(function(element) {
+        renderMathInElement(element, mathOptions);
+      });
+      // Component captions are rendered by Tera after body preprocessing.
+      document.querySelectorAll('.post__prose figcaption').forEach(function(element) {
+        renderMathInElement(element, { ...mathOptions, ignoredClasses: ['persona-math'] });
+      });
+      renderMathInElement(document.body, { ...mathOptions, ignoredClasses: ['post__prose'] });
+    } else {
+      renderMathInElement(document.body, mathOptions);
+    }
   });
 </script>
