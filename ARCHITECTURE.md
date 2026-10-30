@@ -408,9 +408,9 @@ JavaScript files in `static/assets/script/`:
 
 ## Development Workflow
 
-For citation-enabled content, author `.src.md` and run `bash scripts/build.sh` before Zola. `scripts/process_post.sh` preserves front matter and mathematical expressions, resolves the bibliography and CSL, runs Pandoc citeproc, moves the bibliography heading inside the references container, and inserts the stable bibliography boundary used by `post.html`. Generated `.md` files remain ordinary Zola content.
+Author all posts as ordinary `.md`. `scripts/persona.py` stages a separate site copy and runs preprocessing before Zola: `persona_math.py` preserves math regions on pages with `[extra.tex]`, and Pandoc resolves citations for bibliography-enabled pages. Component calls are retained for Tera. Bibliography output includes the stable boundary used by `post.html`. Author files are never replaced with generated HTML.
 
-The incremental build checks source files, preprocessing scripts, configuration, and bibliography/CSL dependencies. `scripts/watch.sh` watches these inputs while excluding generated Markdown to avoid rebuild loops. When calling the pipeline from an installed theme, use `bash themes/persona/scripts/build.sh` from the site root. Existing article URLs, taxonomy data, and math macros are unaffected by changing their template.
+`make build`, `make check`, and `make serve` use this runner. The server synchronizes source, configuration, templates, assets, bibliography, and CSL changes into the staged site and lets Zola reload the preview. Consuming sites can include the theme Makefile; CI uses the `prepare` subcommand followed by Zola in the prepared directory. Legacy `.src.md` sources and the explicit `scripts/process_post.sh` converter remain available for compatibility, but examples use `.md` authoring.
 
 1. **Check theme**: `zola check`
 2. **Build**: `zola build`

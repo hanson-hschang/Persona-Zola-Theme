@@ -14,16 +14,24 @@ Always reference these instructions first and fallback to search or bash command
   tar -xzf /tmp/zola.tar.gz -C /tmp
   sudo mv /tmp/zola /usr/local/bin/
   ```
+- Install Python 3.11 or newer for the staged build tools.
+- Install Pandoc for citation-enabled posts, including the theme's demo guides.
 
 ### Build and Development Commands
 - **NEVER CANCEL builds or commands** - they complete quickly but set appropriate timeouts
-- Check the theme for errors: `zola check` -- takes ~10-20ms. Set timeout to 30+ seconds.
-- Build the theme: `zola build` -- takes ~50ms. Set timeout to 60+ seconds.
-- Serve development version: `zola serve --interface 0.0.0.0 --port 8000` -- starts immediately
-- Clean build: Remove `public/` directory before building if needed
+- Check the theme for errors: `make check`.
+- Build the complete theme demo: `make build`.
+- Serve the development version: `make serve ZOLA_ARGS="--interface 0.0.0.0 --port 8000"`.
+- Clean generated output: `make clean`. Authored files in `content/` are preserved.
+- Always use these helpers for pages with mathematics or citations. Bare Zola commands bypass preprocessing.
+- Write posts directly in ordinary `.md` files. The build prepares a separate copy for Zola instead of writing generated pages beside the sources.
+- Enable mathematics with `[extra.tex]` or `[extra.tex.macros]`. Write `$...$` and `$$...$$` normally, without `<div>` wrappers or extra Markdown escape backslashes.
+- Enable citations with `[extra].bibliography` or a local `references.bib`; Persona resolves citation keys with Pandoc while preserving Tera component calls.
+- In a consuming site, add `include themes/persona/Makefile` to its Makefile. Do not copy the theme's scripts into that site.
 
 ### Content Structure Requirements
-This is a **theme repository**, not a complete site. To test functionality:
+This is a **theme repository** with demo content in `content/`. Use that content
+for validation and preserve existing pages. To create an isolated test fixture:
 
 1. Create `content/` directory in repository root
 2. Create `content/_index.md` with basic frontmatter:
@@ -51,11 +59,11 @@ This is a **theme repository**, not a complete site. To test functionality:
 
 ### Validation and Testing
 - **CRITICAL**: Always test theme functionality after making changes by:
-  1. Creating test content structure as described above
-  2. Running `zola build` to ensure no template errors
-  3. Running `zola serve` and testing navigation
+  1. Using the existing demo content or an isolated test fixture
+  2. Running `make build` to ensure no template errors
+  3. Running `make serve` and testing navigation
   4. Verifying sections display correctly with proper metadata
-- Always run `zola check` before committing changes
+- Always run `make check` before committing changes
 - Test both home page (all sections) and individual section pages
 - Verify responsive design and navigation functionality
 
@@ -91,8 +99,10 @@ This is a **theme repository**, not a complete site. To test functionality:
 ├── .github/workflows/deploy.yml    # GitHub Pages deployment
 ├── config.toml                     # Site configuration
 ├── theme.toml                      # Theme metadata
-├── content/                        # Test content (for theme testing only)
+├── content/                        # Authored Markdown for the theme demo
 │   └── _index.md                   # Homepage content
+├── Makefile                        # Staged build, preview, and validation commands
+├── scripts/                        # Math/citation processing and build tools
 ├── static/                         # Static assets
 │   ├── assets/                     # Theme assets (CSS, JS, images)
 │   └── vendor/                     # Third-party libraries
@@ -154,10 +164,9 @@ After making template or style changes, always validate by:
 
 1. **Basic functionality test:**
    ```bash
-   mkdir -p content
-   echo "+++\ntitle = \"Persona\"\ntemplate = \"index.html\"\n[extra]\nsubtitles = \"a Portfolio, a Resume, a Blog, a Zola Theme\"\n+++" > content/_index.md
-   zola build
-   zola serve --interface 0.0.0.0 --port 8000
+   make build
+   make check
+   make serve ZOLA_ARGS="--interface 0.0.0.0 --port 8000"
    ```
 
 2. **Full theme test with sections:**
@@ -175,19 +184,21 @@ After making template or style changes, always validate by:
      mkdir -p content/blog
      echo "+++\ntitle = \"Blog\"\ntemplate = \"section.html\"\n\n[extra]\norder = 2\nicon_class = \"bi bi-journal\"\ntype = \"category\"\n+++" > content/blog/_index.md
      echo "+++\ntitle = \"Test Post\"\ndate = 2023-01-01\n\n[extra]\nexcerpt = \"Sample post\"\n+++\n\nTest content" > content/blog/test.md
-     zola build && zola serve --interface 0.0.0.0 --port 8000
+     make build
+     make serve ZOLA_ARGS="--interface 0.0.0.0 --port 8000"
      ```
 
 ### Deployment
 The theme includes automated GitHub Pages deployment via `.github/workflows/deploy.yml`:
 - Triggers on pushes to main branch
-- Uses `shalzz/zola-deploy-action@v0.23.4`
+- Installs Python and Pandoc, then prepares content with `scripts/persona.py prepare`
+- Uses `shalzz/zola-deploy-action@v0.23.4` to build the prepared `.persona-build/` directory
 - Deploys to `gh-pages` branch
 - **DO NOT** modify deployment workflow without testing
 
 ### Performance Notes
-- Builds are extremely fast (~50ms for typical content)
+- Build time depends on the content and whether citation processing is needed
 - Theme includes optimized vendor libraries
 - Static assets are properly organized for caching
 - No external JavaScript bundler is required
-- Zola compiles Sass entry points in `sass/` directly during `zola build` and `zola serve`
+- Zola compiles Sass entry points in `sass/` as part of `make build` and `make serve`

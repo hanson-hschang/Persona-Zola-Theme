@@ -7,7 +7,9 @@ We welcome contributions from the community and appreciate your help in making t
 
 ### Prerequisites
 
-- [Zola](https://www.getzola.org/documentation/getting-started/installation/) installed locally (check version with `zola --version`)
+- [Zola](https://www.getzola.org/documentation/getting-started/installation/) 0.23 or newer (check version with `zola --version`)
+- Python 3.11 or newer for the build tools
+- Pandoc for citation-enabled posts, including the theme's demo guides
 
 ### Development Setup
 
@@ -20,8 +22,16 @@ We welcome contributions from the community and appreciate your help in making t
 
 3. **Start the development server**:
     ```bash
-    zola serve
+    make serve
     ```
+
+   Persona prepares a separate copy for Zola and watches your authored files.
+   Edit posts directly in `content/**/*.md`; no separate `.src.md` files or
+   generated Markdown are needed. Enable math with `[extra.tex]` and use normal
+   `$...$` and `$$...$$` expressions without HTML wrappers. Keep a post's
+   bibliography beside it when using citations.
+
+   Use `make serve ZOLA_ARGS="--port 8000"` to pass options to the preview server.
 
 4. **Make your changes** and test them locally
 
@@ -105,9 +115,14 @@ Before submitting a Pull Request, please test:
 
 1. **Different screen sizes** (mobile, tablet, desktop)
 2. **Multiple browsers** (Chrome, Firefox, Safari, Edge)
-3. **Theme building** with `zola build`
-4. **Development server** with `zola serve`
+3. **Theme building** with `make build` and validation with `make check`
+4. **Development server** with `make serve`
 5. **Configuration options** work as expected
+
+Use the Makefile helpers so both local validation and deployment include math
+and citation processing. Bare `zola build`, `zola check`, and `zola serve`
+bypass that processing. `make clean` removes generated output while preserving
+the authored content.
 
 ## 🎨 Design Guidelines
 

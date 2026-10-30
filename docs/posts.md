@@ -2,7 +2,7 @@
 
 Persona's `post.html` is the unified layout for all posts and articles, using the theme's existing design tokens and an original layout. It includes tags, publication date, estimated reading time, Share, citations, and mathematics. Optional research features include authors and affiliations, resource links, a teaser, galleries, an embedded presentation, a PDF poster, and BibTeX. Each optional section appears only when configured; an ordinary article needs no `[extra.post]` table.
 
-See the [Field Notes example](../content/maps/public-self/field-notes/index.md) in [Public Self](../content/maps/public-self/_index.md). Copy the example directory into a post section such as your site's `content/maps/public-self/` directory, replace the text and assets, and run `zola serve`. The demo sections default to `post.html`, and an explicit `template = "post.html"` also works. The former blog layout is archived under filenames prefixed with `__old_` and is no longer used. Zola 0.23+ is required, as with the rest of Persona.
+See the [Field Notes example](../content/maps/public-self/field-notes/index.md) in [Public Self](../content/maps/public-self/_index.md). Copy the example directory into a post section such as your site's `content/maps/public-self/` directory, replace the text and assets, and run `make serve`. The demo sections default to `post.html`, and an explicit `template = "post.html"` also works. The former blog layout is archived under filenames prefixed with `__old_` and is no longer used. Zola 0.23+ is required, as with the rest of Persona.
 
 ## Page setup
 
@@ -102,11 +102,22 @@ tags = ["research", "mathematics"]
 '\Real' = '\mathbb{R}^{#1}'
 ```
 
-Use `$x \in \Real{n}$` for inline mathematics and `$$ ... $$` for display mathematics. Adding `[extra.tex.macros]` enables KaTeX, including page-specific macros. An empty `[extra.tex]` table enables mathematics without custom macros.
+Use `$x \in \Real{n}$` for inline mathematics and `$$ ... $$` for display mathematics. Adding `[extra.tex.macros]` enables KaTeX, including page-specific macros. An empty `[extra.tex]` table enables mathematics without custom macros. Build and preview through `make build` and `make serve`: the pipeline preserves the original math before Zola parses Markdown, so no manual `<div>` or doubled Markdown escaping is needed.
 
-For citations, author `index.src.md` using `[@citation-key]`, place `references.bib` beside it, and run the [citation pipeline](../README.md#-citation-pipeline) before building with Zola. Optional `[extra].bibliography` and `[extra].citation_style` keep their existing behavior. The preprocessor inserts a `<!-- persona-bibliography -->` boundary before its generated references, allowing the article to place **Bibliography** after the optional **Citation** section. Citation displays `[extra.post].bibtex` for readers who want to cite this article; Bibliography lists works cited in its text. Existing generated references without the marker remain supported.
+Inline `$...$` delimiters must touch non-whitespace characters, and the closing dollar must not be followed by a digit. Use `\$` for literal currency. Display `$$...$$` may span multiple lines. Inline code and fenced code remain examples; math inside those regions is not rendered. Native Tera component arguments and HTML attributes keep their existing syntax; the math protection applies to article text, not template-language string literals.
 
-The [Citation Pipeline Guide source](../content/maps/private-soul/citation-pipeline-guide/index.src.md) demonstrates citations, macro-based mathematics, and a sample BibTeX record together. Rebuild generated `.md` files after editing source, bibliography, CSL, or pipeline scripts. No source conversion is needed for an ordinary Markdown article without Pandoc citations.
+```latex
+$$
+\begin{aligned}
+a_i &= b_j + c_k \\
+d &= \{x, y\}
+\end{aligned}
+$$
+```
+
+For citations, author `index.md` using `[@citation-key]`, place `references.bib` beside it, and run `make build` or `make serve` through the [shared pipeline](../README.md#citation-pipeline). Optional `[extra].bibliography` and `[extra].citation_style` keep their existing behavior. The preprocessor inserts a `<!-- persona-bibliography -->` boundary before its generated references, allowing the article to place **Bibliography** after the optional **Citation** section. Citation displays `[extra.post].bibtex` for readers who want to cite this article; Bibliography lists works cited in its text. Existing generated references without the marker remain supported.
+
+The [Citation Pipeline Guide source](../content/maps/private-soul/citation-pipeline-guide/index.md) demonstrates citations, macro-based mathematics, and a sample BibTeX record together. Edit only the authored Markdown and its bibliography or CSL. The preview rebuilds a separate processed copy when inputs change; no generated `.md` belongs beside the source. Legacy `.src.md` input remains supported for compatibility.
 
 ### Draft posts with accessible URLs
 
@@ -123,7 +134,7 @@ draft = true
 +++
 ```
 
-The post and its assets still build at their normal URLs with `zola build` and `zola serve`. Drafts are filtered before applying the preview limit, so they do not take slots from listed pages or trigger an empty **View all** link. Set the flag to `false`, or omit it, to list the post again.
+The post and its assets still build at their normal URLs with `make build` and `make serve`. Drafts are filtered before applying the preview limit, so they do not take slots from listed pages or trigger an empty **View all** link. Set the flag to `false`, or omit it, to list the post again.
 
 This theme flag is separate from Zola's top-level `draft = true`, which excludes the page from a normal build. Keep it under `[extra.post]` for an accessible, unlisted post. It controls automatic page listings; direct links and manually authored links remain usable.
 
@@ -222,13 +233,7 @@ Use `media.image` for images within the article. It shares the figure renderer w
 
 `path` is required; `alt`, `width`, `caption`, and `eager` are optional. A positive `width` generates a resized preview for a colocated raster image. Omitting it uses the original image. SVGs and external or site-root images remain unprocessed. Every image links to its original asset. The legacy `full_size` option remains accepted for compatibility, but neither omission nor `false` disables the link. Captions support Markdown; the first bold phrase becomes the viewer's heading. Images load lazily unless `eager={true}` is supplied. Existing calls with only `page`, `path`, `width`, and `alt` continue to work.
 
-For citation sources processed by Pandoc (`*.src.md`), preserve component calls inside a raw HTML fence:
-
-````markdown
-```{=html}
-{{ <media.image page={page} path="img/example.png" width={1000} alt="Method overview" /> }}
-```
-````
+The shared citation pipeline preserves native component calls automatically, so use the same syntax in ordinary and citation-enabled posts. Existing Pandoc raw HTML fences remain supported for older content.
 
 The teaser and gallery use the same media schema. Images require `src` and `alt`. Set `type = "video"` for a local video; omitting `type` renders an image. `caption` supports Markdown.
 

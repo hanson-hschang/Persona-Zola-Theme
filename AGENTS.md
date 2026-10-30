@@ -9,16 +9,11 @@ Persona is a reusable Zola theme, not only one website. Prefer changes that work
 Before changing templates, run enough local checks to understand the current structure:
 
 ```bash
-zola build
-zola check
-```
-
-If the site contains citation sources (`content/**/*.src.md`), run the citation-aware helpers instead of plain Zola commands:
-
-```bash
 make build
-make serve
+make check ZOLA_ARGS=--skip-external-links
 ```
+
+Use `make serve` for live preview. The shared pipeline stages authored Markdown before Zola, preserving math and rendering citations. Bare Zola commands bypass this step.
 
 ## Zola Template Practices
 
@@ -62,16 +57,16 @@ make serve
 - Prefer existing mixins and classes over creating one-off styles.
 - Avoid globally loading vendor CSS/JS unless most pages need it.
 
-## Citation Pipeline
+## Markdown, Math, and Citation Pipeline
 
-- Citation source files use `*.src.md`; generated Zola pages use the matching `*.md`.
-- Keep `ignored_content = ["*.src.md", "*.bib", "*.csl"]` in site configs that use the pipeline.
-- Preserve TeX math when running Pandoc so KaTeX can render it with page macros.
-- When citation sources are present in a consuming site, prefer `make build` over `zola build` and `make serve` over `zola serve`.
-- When working inside the Persona theme repository, run `bash scripts/build.sh` before `zola build` if theme example content includes `*.src.md`.
+- Author all posts as ordinary `*.md`. Generated input belongs in the isolated staging directory, never beside authored content.
+- Keep `ignored_content = ["*.src.md", "*.bib", "*.csl"]` to exclude bibliography assets and support legacy source naming.
+- Preserve TeX math before Markdown and Tera processing so KaTeX receives the original expressions and page macros.
+- Use the shared `scripts/persona.py` entry point for build, preview, checks, and CI preparation. Consuming sites should delegate to this runner instead of maintaining their own preprocessing logic.
+- Keep legacy `.src.md` compatibility, but migrate examples to ordinary `.md`. Never let cleanup delete authored Markdown.
 - CSL resolution order should remain:
   1. per-post `[extra].citation_style`
-  2. local `style.csl` beside the `.src.md`
+  2. local `style.csl` beside the post
   3. site-level `config.toml`
   4. theme-level fallback
   5. clear error when citation processing needs a CSL and none is available
