@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Persona - Zola Theme  - blog</title>
+    <subtitle>A modern, responsive and lightweight theme for resume, portfolio, and blog.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://hanson-hschang.github.io/Persona-Zola-Theme/tags/blog/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://hanson-hschang.github.io/Persona-Zola-Theme/"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-03-17T00:00:00+00:00</updated>
+    <id>https://hanson-hschang.github.io/Persona-Zola-Theme/tags/blog/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Begin with Persona</title>
+        <published>2025-03-17T00:00:00+00:00</published>
+        <updated>2025-03-17T00:00:00+00:00</updated>
+        
+        <author>
+          <name>Persona, Zola Theme</name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/begin-with-persona/"/>
+        <id>https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/begin-with-persona/</id>
+        
+        <content type="html" xml:base="https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/begin-with-persona/">&lt;p&gt;This is a step-by-step tutorial on how to start a website using the Persona, a Zola theme [&lt;a href=&quot;https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/begin-with-persona/#ref-zolathemes&quot;&gt;1&lt;/a&gt;]. It covers the basics of setting up your site, creating content, and customizing the appearance to make it your own.&lt;/p&gt;
+&lt;h2 id=&quot;setting-up-your-site&quot;&gt;Setting Up Your Site&lt;/h2&gt;
+&lt;p&gt;After &lt;a rel=&quot;noopener noreferrer external&quot; target=&quot;_blank&quot; href=&quot;https://github.com/hanson-hschang/Persona-Zola-Theme#-installation&quot;&gt;installing Persona&lt;/a&gt;, configure your &lt;code&gt;config.toml&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&quot;giallo z-l-code z-d-code&quot; &gt;&lt;code data-lang=&quot;toml&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; The URL this site will be built for&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;base_url&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;https://yourdomain.com&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; The basic site information&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;title&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;Your Site Name&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;author&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;Your Name&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;description&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;Your personal resume, portfolio and blog&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;[&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;extra&lt;/span&gt;&lt;span&gt;]&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;[&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;extra&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;persona&lt;/span&gt;&lt;span&gt;]&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; Note: landing page title and subtitles are configured in `content/_index.md`&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; Social links&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;social_links&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span&gt; [&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;  {&lt;/span&gt;&lt;span&gt; name&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;GitHub&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span&gt; url&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;https://github.com/yourusername&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span&gt; icon_class&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;bi bi-github&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt; }&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;  {&lt;/span&gt;&lt;span&gt; name&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;LinkedIn&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span&gt; url&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;https://linkedin.com/in/yourprofile&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span&gt; icon_class&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;bi bi-linkedin&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt; }&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;  {&lt;/span&gt;&lt;span&gt; name&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;Twitter-X&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span&gt; url&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;https://x.com/yourusername&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span&gt; icon_class&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;bi bi-twitter-x&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt; }&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;]&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; Contact information&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;contact_infos&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span&gt; [&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;  {&lt;/span&gt;&lt;span&gt; item&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;_navigation&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span&gt; content&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;Contact&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span&gt; icon_class&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;bi bi-chat-text&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt; }&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; #&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; Special item for header navigation (REQUIRED)&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;  {&lt;/span&gt;&lt;span&gt; item&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;Name&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span&gt; content&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;Your Name&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span&gt; icon_class&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;bi bi-person&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt; }&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;  {&lt;/span&gt;&lt;span&gt; item&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;Location&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span&gt; content&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;Your City, Country&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span&gt; icon_class&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;bi bi-geo-alt&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt; }&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;  {&lt;/span&gt;&lt;span&gt; item&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;Email&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span&gt; content&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;your.email@example.com&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span&gt; icon_class&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;bi bi-envelope&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt; }&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;  {&lt;/span&gt;&lt;span&gt; item&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;Phone&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span&gt; content&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;+0 (123) 456-7890&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span&gt; icon_class&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;bi bi-phone&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt; }&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;]&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Modify the landing page content in &lt;code&gt;content/_index.md&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&quot;giallo z-l-code z-d-code&quot; &gt;&lt;code data-lang=&quot;toml&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-7 z-l-i z-d-11 z-d-i&quot;&gt;+++&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;title&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;Presented Site Name&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;template&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;index.html&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;[&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;extra&lt;/span&gt;&lt;span&gt;]&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;icon_class&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;bi bi-house&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;subtitles&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;Item 1, Item 2, Item 3&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-7 z-l-i z-d-11 z-d-i&quot;&gt;+++&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Also update your assets in &lt;code&gt;static/assets/img/&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a rel=&quot;noopener noreferrer external&quot; target=&quot;_blank&quot; href=&quot;https://en.wiktionary.org/wiki/hero_image&quot;&gt;hero image&lt;/a&gt;: &lt;code&gt;background.jpg&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a rel=&quot;noopener noreferrer external&quot; target=&quot;_blank&quot; href=&quot;https://en.wikipedia.org/wiki/Favicon&quot;&gt;favicon&lt;/a&gt;: &lt;code&gt;favicon.ico&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a rel=&quot;noopener noreferrer external&quot; target=&quot;_blank&quot; href=&quot;https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html&quot;&gt;apple touch icon&lt;/a&gt;: &lt;code&gt;apple-touch-icon.png&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;creating-content&quot;&gt;Creating Content&lt;/h2&gt;
+&lt;p&gt;Once your site is configured, you can start creating content by adding Markdown files to the &lt;code&gt;content&lt;/code&gt; directory. Each file represents a page or blog post, and you can use frontmatter to specify metadata such as the title, date, tags, and categories.&lt;/p&gt;
+&lt;p&gt;Write and edit each post directly in &lt;code&gt;index.md&lt;/code&gt;. The same file can contain ordinary Markdown, mathematics, and Pandoc citations. Keep a post&#39;s &lt;code&gt;references.bib&lt;/code&gt; beside it when you use citations, and enable mathematics with an &lt;code&gt;[extra.tex]&lt;/code&gt; table in its front matter.&lt;/p&gt;
+&lt;p&gt;Use &lt;code&gt;$...$&lt;/code&gt; for inline mathematics and &lt;code&gt;$$...$$&lt;/code&gt; for display mathematics. Persona preserves the LaTeX before Markdown processing, so equations do not need HTML wrappers or extra backslashes to work around Markdown escaping.&lt;/p&gt;
+&lt;p&gt;Build the complete site with &lt;code&gt;make build&lt;/code&gt; or start a live preview with &lt;code&gt;make serve&lt;/code&gt;. These commands prepare a separate copy for Zola; your authored Markdown stays unchanged in &lt;code&gt;content/&lt;/code&gt;. You do not need to maintain generated Markdown beside it.&lt;/p&gt;
+&lt;h2 id=&quot;customizing-appearance&quot;&gt;Customizing Appearance&lt;/h2&gt;
+&lt;p&gt;The Persona theme provides extensive options to customize colors and fonts by overriding CSS variables in &lt;code&gt;sass/assets/stylesheet/_custom.scss&lt;/code&gt; without modifying the core theme files. For example, to change the accent color, heading color, and title font size, you can use the following CSS:&lt;/p&gt;
+&lt;pre class=&quot;giallo z-l-code z-d-code&quot; &gt;&lt;code data-lang=&quot;css&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;/*&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; sass/assets/stylesheet/_custom.scss &lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;*/&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;root&lt;/span&gt;&lt;span&gt; {&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;  --color-accent&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; #&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;FF5F05&lt;/span&gt;&lt;span&gt;;&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;   /*&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; Override accent color to vibrant orange &lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;*/&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;  --color-heading&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; #&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;13294B&lt;/span&gt;&lt;span&gt;;&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;  /*&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; Override heading color to dark blue &lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;*/&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;  --font-size-title&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; 72&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;px&lt;/span&gt;&lt;span&gt;;&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;   /*&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; Increase title font size for more impact &lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;*/&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Available Customization Variables:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Colors:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--color-background&lt;/code&gt;: Background color for the entire website&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--color-default&lt;/code&gt;: Default text color&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--color-heading&lt;/code&gt;: Color for headings and titles&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--color-accent&lt;/code&gt;: Brand color for buttons, links, and highlights&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--color-surface&lt;/code&gt;: Background for cards and boxed elements&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--color-contrast&lt;/code&gt;: Text color for use against accent colors&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Typography:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Font Families
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--default-font&lt;/code&gt;: Main font family for body text&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--heading-font&lt;/code&gt;: Font family for headings&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--nav-font&lt;/code&gt;: Font family for navigation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Font Sizes
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;--footer-font-size&lt;/code&gt;: Footer text size (default: 14px)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--normal-font-size&lt;/code&gt;: Base font size (default: 16px)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--subtitle-font-size&lt;/code&gt;: Subtitle font size (default: 24px)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--heading-font-size&lt;/code&gt;: Base font size for heading (default: 32px)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--title-font-size&lt;/code&gt;: Base font size for title (default: 64px)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;See &lt;code&gt;sass/assets/stylesheet/_variables.scss&lt;/code&gt; for the complete list of customizable variables with detailed descriptions (the compiled CSS is emitted under &lt;code&gt;public/assets/stylesheet/&lt;/code&gt; at build time).&lt;/p&gt;
+&lt;h2 id=&quot;troubleshooting&quot;&gt;Troubleshooting&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Navigation not working:&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;Ensure &lt;code&gt;[extra].order&lt;/code&gt; is set correctly in the section front matter.&lt;/li&gt;
+&lt;li&gt;Check that &lt;code&gt;[extra].type&lt;/code&gt; is specified correctly in the section front matter.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;Starting a website with the Persona theme is a great way to share your thoughts and ideas with the world. With its user-friendly setup and extensive customization options, you can create a unique and engaging site that reflects your personality and style.&lt;/p&gt;
+&lt;!-- persona-bibliography --&gt;
+&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body&quot; role=&quot;list&quot;&gt;
+&lt;h2 class=&quot;unnumbered&quot; id=&quot;bibliography&quot;&gt;Bibliography&lt;/h2&gt;
+&lt;div id=&quot;ref-zolathemes&quot; class=&quot;csl-entry&quot; role=&quot;listitem&quot;&gt;
+&lt;div class=&quot;csl-left-margin&quot;&gt;[1] &lt;/div&gt;&lt;div class=&quot;csl-right-inline&quot;&gt;&lt;a href=&quot;https://www.getzola.org/themes/&quot;&gt;Zola themes&lt;/a&gt;, &lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</content>
+        
+    </entry>
+</feed>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Persona - Zola Theme  - bibtex</title>
+    <subtitle>A modern, responsive and lightweight theme for resume, portfolio, and blog.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://hanson-hschang.github.io/Persona-Zola-Theme/tags/bibtex/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://hanson-hschang.github.io/Persona-Zola-Theme/"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-03-19T00:00:00+00:00</updated>
+    <id>https://hanson-hschang.github.io/Persona-Zola-Theme/tags/bibtex/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Writing Citation-Enabled Posts in Persona</title>
+        <published>2025-03-19T00:00:00+00:00</published>
+        <updated>2025-03-19T00:00:00+00:00</updated>
+        
+        <author>
+          <name>Persona, Zola Theme</name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/"/>
+        <id>https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/</id>
+        
+        <content type="html" xml:base="https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/">&lt;!-- persona-math-protected --&gt;
+&lt;p&gt;&lt;code&gt;Persona&lt;/code&gt; uses Pandoc to turn citation keys into linked, formatted citations and a bibliography during the build. This guide covers setup, authoring, and previewing a citation-enabled post (&lt;a href=&quot;https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/#ref-zolathemes&quot;&gt;Zola themes&lt;/a&gt;). The workflow suits technical, research, and reference-heavy writing.&lt;/p&gt;
+&lt;h2 id=&quot;requirements-and-setup&quot;&gt;Requirements and setup&lt;/h2&gt;
+&lt;p&gt;Install Zola 0.23 or newer and Python 3.11 or newer. Citation-enabled posts also require Pandoc. The preview watcher is included; no separate watcher is needed.&lt;/p&gt;
+&lt;pre class=&quot;giallo z-l-code z-d-code&quot; &gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; macOS&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;brew&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; install&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; zola&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; python&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; pandoc&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; Ubuntu / Debian&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;sudo&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; apt&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; install&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; python3&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; pandoc&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In your site&#39;s &lt;code&gt;Makefile&lt;/code&gt;, include Persona&#39;s build targets:&lt;/p&gt;
+&lt;pre class=&quot;giallo z-l-code z-d-code&quot; &gt;&lt;code data-lang=&quot;make&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;include&lt;/span&gt;&lt;span&gt; themes/persona/Makefile&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This uses the scripts from the installed theme, so theme updates also update the build tools. You can also run &lt;code&gt;make -f themes/persona/Makefile build&lt;/code&gt; from the site root without creating a Makefile.&lt;/p&gt;
+&lt;p&gt;Add this to &lt;code&gt;config.toml&lt;/code&gt; so Zola skips citation data and any legacy source files retained while migrating an older site:&lt;/p&gt;
+&lt;pre class=&quot;giallo z-l-code z-d-code&quot; &gt;&lt;code data-lang=&quot;toml&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;ignored_content&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span&gt; [&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;*.src.md&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;*.bib&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;*.csl&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;]&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;write-a-post&quot;&gt;Write a post&lt;/h2&gt;
+&lt;p&gt;Keep the post and its bibliography in the same folder:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;index.md&lt;/code&gt; is the authoring source.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;references.bib&lt;/code&gt; stores the BibTeX entries.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The build prepares a separate copy for Zola and leaves the files in &lt;code&gt;content/&lt;/code&gt; unchanged. There is no second source filename or generated Markdown to maintain beside your post. Pages without citations use the same authoring workflow.&lt;/p&gt;
+&lt;h2 id=&quot;write-citations-in-.src.md&quot;&gt;Write citations&lt;/h2&gt;
+&lt;p&gt;Use &lt;a rel=&quot;noopener noreferrer external&quot; target=&quot;_blank&quot; href=&quot;https://pandoc.org/demo/example33/8.20-citation-syntax.html&quot;&gt;Pandoc citation syntax&lt;/a&gt; in Markdown:&lt;/p&gt;
+&lt;pre class=&quot;giallo z-l-code z-d-code&quot; &gt;&lt;code data-lang=&quot;markdown&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Climate change is accelerating&lt;/span&gt;&lt;span&gt;[&lt;/span&gt;&lt;span class=&quot;z-l-2 z-l-u z-d-9 z-d-u&quot;&gt;@ipcc2021&lt;/span&gt;&lt;span&gt;]&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Multiple studies confirm this[@ipcc2021; @nasa2023].&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Add citation settings to the post&#39;s &lt;code&gt;[extra]&lt;/code&gt; front matter:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;citation_style = &quot;apa&quot;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bibliography = &quot;references.bib&quot;&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Set the citation style once for the site if you want it to apply to posts by default.&lt;/p&gt;
+&lt;h2 id=&quot;mathematics-and-latex-macros&quot;&gt;Mathematics and LaTeX macros&lt;/h2&gt;
+&lt;p&gt;Define reusable KaTeX macros in &lt;code&gt;[extra.tex.macros]&lt;/code&gt;. TOML literal strings preserve backslashes:&lt;/p&gt;
+&lt;pre class=&quot;giallo z-l-code z-d-code&quot; &gt;&lt;code data-lang=&quot;toml&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;[&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;extra&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;tex&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;macros&lt;/span&gt;&lt;span&gt;]&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;&amp;#39;&lt;/span&gt;&lt;span&gt;\Real&lt;/span&gt;&lt;span&gt;&amp;#39;&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;#39;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;\mathbb{R}^{#1}&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;#39;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;&amp;#39;&lt;/span&gt;&lt;span&gt;\norm&lt;/span&gt;&lt;span&gt;&amp;#39;&lt;/span&gt;&lt;span&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;#39;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;\left\lVert #1 \right\rVert&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;#39;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For a vector &lt;span class=&quot;persona-math&quot;&gt;$x \in \Real{n}$&lt;/span&gt;, the Euclidean norm is&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;persona-math&quot;&gt;$$
+\norm{x}_2 = \sqrt{\sum_{i=1}^{n} x_i^2}.
+$$&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Write inline mathematics between &lt;code&gt;$&lt;/code&gt; delimiters and display mathematics between &lt;code&gt;$$&lt;/code&gt; delimiters. With &lt;code&gt;[extra.tex]&lt;/code&gt; or &lt;code&gt;[extra.tex.macros]&lt;/code&gt; enabled, Persona preserves the expressions before Markdown processing, including backslashes, underscores, and page-specific macros. You do not need to wrap equations in &lt;code&gt;&amp;lt;div&amp;gt;&lt;/code&gt; elements or add backslashes to compensate for Markdown escaping. Citation references and mathematics can appear together in the same article (&lt;a href=&quot;https://hanson-hschang.github.io/Persona-Zola-Theme/maps/private-soul/citation-pipeline-guide/#ref-zolathemes&quot;&gt;Zola themes&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;For example, write a multiline equation directly in Markdown:&lt;/p&gt;
+&lt;pre class=&quot;giallo z-l-code z-d-code&quot; &gt;&lt;code data-lang=&quot;latex&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;$$&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;begin&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;{&lt;/span&gt;&lt;span&gt;aligned&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;}&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;i &lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;= b&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;i &lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt; c&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;i &lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;\\&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;S &lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;= &lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;\{&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;x, y&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;\}&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;{&lt;/span&gt;&lt;span&gt;aligned&lt;/span&gt;&lt;span class=&quot;z-l-1 z-d-4&quot;&gt;}&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;$$&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Code examples keep their literal dollar signs. Escape a dollar sign in prose as &lt;code&gt;\$&lt;/code&gt; when you mean currency rather than the start of an equation.&lt;/p&gt;
+&lt;h2 id=&quot;build-and-preview&quot;&gt;Build and preview&lt;/h2&gt;
+&lt;p&gt;Use the Makefile to build or preview your site:&lt;/p&gt;
+&lt;pre class=&quot;giallo z-l-code z-d-code&quot; &gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;make&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; build&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;make&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; serve&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;make build&lt;/code&gt; prepares the content and builds the complete site into &lt;code&gt;public/&lt;/code&gt;. &lt;code&gt;make serve&lt;/code&gt; prepares the content, starts Zola&#39;s preview server, and watches for changes to posts, bibliography and CSL files, configuration, templates, and assets. Save the authored &lt;code&gt;index.md&lt;/code&gt; to update the preview.&lt;/p&gt;
+&lt;p&gt;Use these commands instead of bare &lt;code&gt;zola build&lt;/code&gt; and &lt;code&gt;zola serve&lt;/code&gt;, which bypass Persona&#39;s math and citation processing. Zola options can be passed through &lt;code&gt;ZOLA_ARGS&lt;/code&gt;, for example &lt;code&gt;make serve ZOLA_ARGS=&quot;--port 2222&quot;&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;citation-style-resolution-order&quot;&gt;Citation style resolution order&lt;/h2&gt;
+&lt;p&gt;The preprocessor selects a CSL style in this order:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;The post&#39;s &lt;code&gt;[extra].citation_style&lt;/code&gt;, resolved from &lt;code&gt;citation-style/&amp;lt;name&amp;gt;.csl&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;A &lt;code&gt;style.csl&lt;/code&gt; beside the &lt;code&gt;.md&lt;/code&gt; file.&lt;/li&gt;
+&lt;li&gt;Site &lt;code&gt;config.toml&lt;/code&gt;: &lt;code&gt;[extra].citation_style&lt;/code&gt; or &lt;code&gt;[extra.persona].citation_style&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Theme &lt;code&gt;themes/persona/theme.toml&lt;/code&gt; &lt;code&gt;[extra].citation_style&lt;/code&gt;, or &lt;code&gt;themes/persona/config.toml&lt;/code&gt; &lt;code&gt;[extra.persona].citation_style&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Persona includes the &lt;code&gt;ieee&lt;/code&gt; and &lt;code&gt;apa&lt;/code&gt; styles. Add custom CSL files to your site&#39;s &lt;code&gt;citation-style/&lt;/code&gt; directory or place a &lt;code&gt;style.csl&lt;/code&gt; beside a post source. If an explicitly configured style cannot be found, the build reports an error so you can correct its name or path. Citation processing requires a resolvable CSL style; posts without citations do not require a citation style.&lt;/p&gt;
+&lt;h2 id=&quot;output-and-styling&quot;&gt;Output and styling&lt;/h2&gt;
+&lt;p&gt;Pandoc emits HTML citations and a bibliography with stable classes that the theme styles:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;.citation&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.references&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.csl-entry&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.csl-left-margin&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.csl-right-inline&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Inline citations link to their bibliography entries. The bibliography appears inside the &lt;code&gt;references&lt;/code&gt; container under &lt;strong&gt;Bibliography&lt;/strong&gt;, after the optional &lt;strong&gt;Citation&lt;/strong&gt; section. That section displays the post&#39;s &lt;code&gt;[extra.post].bibtex&lt;/code&gt;; the bibliography lists works cited in the text. This guide includes a sample BibTeX record to demonstrate both.&lt;/p&gt;
+&lt;p&gt;For the complete example, see this guide&#39;s &lt;a rel=&quot;noopener noreferrer external&quot; target=&quot;_blank&quot; href=&quot;https://github.com/hanson-hschang/Persona-Zola-Theme/tree/main/content/maps/private-soul/citation-pipeline-guide/&quot;&gt;source directory&lt;/a&gt;.&lt;/p&gt;
+&lt;!-- persona-bibliography --&gt;
+&lt;div id=&quot;refs&quot; class=&quot;references csl-bib-body hanging-indent&quot; data-line-spacing=&quot;2&quot; role=&quot;list&quot;&gt;
+&lt;h2 class=&quot;unnumbered&quot; id=&quot;bibliography&quot;&gt;Bibliography&lt;/h2&gt;
+&lt;div id=&quot;ref-zolathemes&quot; class=&quot;csl-entry&quot; role=&quot;listitem&quot;&gt;
+Zola themes. &lt;a href=&quot;https://www.getzola.org/themes/&quot;&gt;https://www.getzola.org/themes/&lt;/a&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</content>
+        
+    </entry>
+</feed>
